@@ -263,6 +263,7 @@ RUSSIAN = {
         "COMPLEX_SYL_FACTOR",
         "DASH_PATTERN",
         "LONG_WORD_LETTER_FACTOR",
+        "NUMBER_PATTERN",
         "PUNCTUATION_MARKS",
         "SentsExtractor",
         "WordsExtractor",

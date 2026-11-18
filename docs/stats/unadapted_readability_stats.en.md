@@ -1,7 +1,7 @@
 # Formulas of other languages
 
 ``` {.python .signature}
-UnadaptedReadabilityStats(source, sents_extractor=None, words_extractor=None)
+UnadaptedReadabilityStats(source, sents_extractor=None, words_extractor=None, filter_nums=None)
 ```
 
 --8<-- "stats/unadapted_readability_stats.md:UnadaptedReadabilityStats"
@@ -49,7 +49,7 @@ The formulas give no grade of the Russian school (on the first-grade texts of th
 
 --8<-- "stats/unadapted_readability_stats.md:UnadaptedReadabilityStats-attributes"
 
-The basic statistics can be taken from a [`ReadabilityStats`](readability_stats.md) object:
+The basic statistics can be taken from a [`ReadabilityStats`](readability_stats.md) object; it leaves the numbers out of the words, while `UnadaptedReadabilityStats` of a text counts them:
 
 === "Code"
 

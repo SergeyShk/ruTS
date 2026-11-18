@@ -277,8 +277,10 @@ def first_grade_reader(tmp_path_factory):
 @pytest.fixture(scope="module")
 def presets(dataset, first_grade_reader):
     """Метки и объекты ReadabilityStats каждого пресета для TextsByGrade и SovChLit"""
-    records = [(record["grade"], BasicStats(record["text"])) for record in dataset]
-    reader = [(1, BasicStats(text)) for text in first_grade_reader.get_texts()]
+    records = [
+        (record["grade"], BasicStats(record["text"], filter_nums=True)) for record in dataset
+    ]
+    reader = [(1, BasicStats(text, filter_nums=True)) for text in first_grade_reader.get_texts()]
     return {
         name: [
             (

@@ -1,7 +1,7 @@
 # Базовые статистики
 
 ``` {.python .signature}
-BasicStats(source, sents_extractor=None, words_extractor=None, normalize=False, complex_syl_factor=4, long_word_letter_factor=6)
+BasicStats(source, sents_extractor=None, words_extractor=None, normalize=False, complex_syl_factor=4, long_word_letter_factor=6, filter_nums=False)
 ```
 
 <!-- core: stats/basic_stats.md:BasicStats 259a268 -->
@@ -51,7 +51,7 @@ BasicStats(source, sents_extractor=None, words_extractor=None, normalize=False, 
 
 ## Параметры
 
-<!-- core: stats/basic_stats.md:BasicStats-parameters 2d8e54b -->
+<!-- core: stats/basic_stats.md:BasicStats-parameters 831bb3f -->
 | Параметр | Тип | По умолчанию | Описание |
 | :------- | :-- | :----------- | :------- |
 | `source` | `str` / `Doc` / `Document` | - | Источник данных |
@@ -60,8 +60,9 @@ BasicStats(source, sents_extractor=None, words_extractor=None, normalize=False, 
 | `normalize` | `bool` | `False` | Вычислять нормализованные статистики |
 | `complex_syl_factor` | `int` | `COMPLEX_SYL_FACTOR` | Минимальное количество слогов в сложном слове |
 | `long_word_letter_factor` | `int` | `LONG_WORD_LETTER_FACTOR` | Минимальное количество букв в длинном слове |
+| `filter_nums` | `bool` | `False` | Не считать числа (`number_pattern`) словами |
 
-Объект хранит `normalize`, `complex_syl_factor` и `long_word_letter_factor` под их именами.
+Объект хранит `normalize`, `complex_syl_factor`, `long_word_letter_factor` и `filter_nums` под их именами, а число отброшенных чисел - в `n_numbers`.
 
 В ruTS сложное слово - от четырех слогов, длинное - от шести букв: `COMPLEX_SYL_FACTOR = 4` и `LONG_WORD_LETTER_FACTOR = 6` из `ruts.constants`.
 

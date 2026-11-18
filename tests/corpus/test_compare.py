@@ -4,7 +4,7 @@ import numpy as np
 import pytest
 import spacy
 
-from ruts import SyntaxStats
+from ruts import ReadabilityStats, SyntaxStats
 from ruts.constants import SYNTAX_STATS_DESC
 from ruts.corpus import (
     compare_corpora,
@@ -305,3 +305,12 @@ def test_set_sent_starts_keeps_whitespace():
     nlp = spacy.blank("ru")
     doc = _set_sent_starts(nlp.make_doc("  Кот спит.  Пёс лежит!"), [2, 13])
     assert [sent.text for sent in doc.sents] == ["  Кот спит.  ", "Пёс лежит!"]
+
+
+def test_text_features_readability_without_numbers():
+    """Удобочитаемость признаков - как у ReadabilityStats: числа не считаются словами"""
+    text = "В 2026 году было 1250000 читателей. Они прочитали 15 книг за 3 дня. Это много."
+    features = text_features(text)
+    assert features["readability_flesch_kincaid_grade"] == pytest.approx(
+        ReadabilityStats(text).flesch_kincaid_grade
+    )

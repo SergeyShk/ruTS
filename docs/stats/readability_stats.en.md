@@ -1,7 +1,7 @@
 # Readability metrics
 
 ``` {.python .signature}
-ReadabilityStats(source, sents_extractor=None, words_extractor=None, preset='plainrussian')
+ReadabilityStats(source, sents_extractor=None, words_extractor=None, preset='plainrussian', filter_nums=None)
 ```
 
 --8<-- "stats/readability_stats.md:ReadabilityStats"
@@ -47,6 +47,7 @@ The class extends the `ReadabilityStats` of the [anyTS](https://sergeyshk.github
 | `sents_extractor` | `SentsExtractor` | `None` | Sentence extraction tool |
 | `words_extractor` | `WordsExtractor` | `None` | Word extraction tool |
 | `preset` | `str` | `'plainrussian'` | Coefficient preset: `plainrussian`, `fiction` or `academic` |
+| `filter_nums` | `bool` | `None` | Leave out the numbers among the words; `None` - the class attribute `filter_nums`, `True` in ruTS; not used for ready `BasicStats` |
 
 The object keeps the basic statistics of the text in `bs`, the name of the preset in `preset` (read-only) and the coefficients of the preset in `coefficients`, a copy that can be changed for one object. The basic statistics can be passed to an object of another preset: `ReadabilityStats(rs.bs, preset="fiction")`.
 
@@ -86,10 +87,10 @@ On the [`TextsByGrade`](../datasets/textsbygrade.md) dataset, on which the coeff
 | 3-4 | 10 | 4.1 | 8.6 | 4.8 |
 | 5-9 | 12 | 4.4 | 8.6 | 4.8 |
 | 10-11 | 18 | 6.9 | 11.9 | 7.2 |
-| 12-17 | 17 | 23.7 | 24.4 | 15.9 |
+| 12-17 | 17 | 23.9 | 24.4 | 15.9 |
 | 1 ([`SovChLit`](../datasets/sovchlit.md)) | 179 | 1.3 | 6.0 | 3.0 |
 
-On school texts (labels 1-11) the test with the `fiction` preset is about four grades above the label (median deviation +3.7 against −1.0 for `plainrussian` and −0.1 for `academic`). For the grade of the reader use `plainrussian` or `academic`, and `fiction` to compare with works on Oborneva's coefficients. The consensus grade depends on the preset less: its median on `TextsByGrade` is 7.75 for `fiction` and 6.75 for `plainrussian`.
+On school texts (labels 1-11) the test with the `fiction` preset is about four grades above the label (median deviation +3.7 against −0.8 for `plainrussian` and −0.1 for `academic`). For the grade of the reader use `plainrussian` or `academic`, and `fiction` to compare with works on Oborneva's coefficients. The consensus grade depends on the preset less: its median on `TextsByGrade` is 7.75 for `fiction` and 6.75 for `plainrussian`.
 
 ## Metrics
 

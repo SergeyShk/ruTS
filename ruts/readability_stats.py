@@ -89,6 +89,8 @@ class ReadabilityStats(anyts.readability_stats.ReadabilityStats):
         sents_extractor (SentsExtractor): Инструмент для извлечения предложений
         words_extractor (WordsExtractor): Инструмент для извлечения слов
         preset (str): Пресет коэффициентов (plainrussian, fiction, academic)
+        filter_nums (bool): Не считать числа словами; None - атрибут класса filter_nums
+            (True); не используется для готового BasicStats
 
     Атрибуты:
         bs (BasicStats): Объект основных статистик текста
@@ -128,10 +130,12 @@ class ReadabilityStats(anyts.readability_stats.ReadabilityStats):
         SourceTypeError: Если источник данных не строка, не объект Doc, не Document
             и не BasicStats ruTS или экстрактор другого типа
         SourceError: Если в источнике данных отсутствуют слова или предложения
-        ParameterError: Если пресет коэффициентов не строка или неизвестен
+        ParameterError: Если пресет коэффициентов не строка или неизвестен или filter_nums
+            не bool
     """
 
     basic_stats_class = BasicStats
+    filter_nums = True
     presets = READABILITY_PRESETS
     grade_stats = READABILITY_GRADE_STATS
     stats_desc = READABILITY_STATS_DESC
@@ -151,8 +155,9 @@ class ReadabilityStats(anyts.readability_stats.ReadabilityStats):
         sents_extractor: anyts.SentsExtractor | None = None,
         words_extractor: anyts.WordsExtractor | None = None,
         preset: str = "plainrussian",
+        filter_nums: bool | None = None,
     ):
-        super().__init__(source, sents_extractor, words_extractor, preset)
+        super().__init__(source, sents_extractor, words_extractor, preset, filter_nums)
 
     @property
     def sis_grade(self) -> float:
@@ -721,7 +726,7 @@ def level_features(source: str | Doc | Document) -> dict[str, float]:
     Признаки текста, для которых есть нормы ступеней обучения (LEVEL_NORMS)
 
     Описание:
-        Слов в предложении, букв в слове (у слов, которые учитывают формулы класса),
+        Слов в предложении, букв в слове (числа - тоже слова, как при подборе норм),
         доля слов от пяти слогов (сложные слова SMOG) и лексическое разнообразие MTLD -
         так же, как у норм (describe_level_norm). Признаки Doc и Document считаются
         по их тексту

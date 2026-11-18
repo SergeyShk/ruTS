@@ -54,7 +54,7 @@ Chekhov versus Tolstoy over the prose of the [`RussianLiterature`](../datasets/r
 
 Cohesion sets the corpora apart most: Tolstoy repeats nouns and content words in adjacent and following sentences more often, and Chekhov has several times more ellipses and exclamations per 1000 words. The overlaps in adjacent and in all pairs of sentences partly repeat the sentence length (the Spearman ρ of `cohesion_content_overlap_all` with `sents_mean` over the windows is 0.90 for Chekhov and 0.75 for Tolstoy), while the share of the lemmas repeated in the next two sentences (`cohesion_content_overlap_2_sent`) repeats it only weakly (0.23 and 0.30). Twenty works of Chekhov and one of Tolstoy are shorter than a window, so the windows come from 57 and 41 works.
 
-The p-values take the 1671 windows for independent (see the [warning](#statistics) below): 109 of the 145 features have a corrected p-value below 0.01, but only 21 show a large effect by Cliff's delta. The interval of the difference of the medians resamples whole works and is the safer guide: it excludes zero for 80 of those 109 features, and for the length of a sentence it spans −5.2 to −1.6 words, where the windows alone would give −4.1 to −2.8.
+The p-values take the 1671 windows for independent (see the [warning](#statistics) below): 109 of the 145 features have a corrected p-value below 0.01, but only 25 show a large effect by Cliff's delta. The interval of the difference of the medians resamples whole works and is the safer guide: it excludes zero for 80 of those 109 features, and for the length of a sentence it spans −5.2 to −1.6 words, where the windows alone would give −4.1 to −2.8.
 
 ## Parameters
 

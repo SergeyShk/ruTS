@@ -137,7 +137,7 @@ class ReadabilityStatsComponent(_Component, anyts.components.ReadabilityStatsCom
         preset (str): Пресет коэффициентов (plainrussian, fiction, academic); None - пресет
             класса, plainrussian
         basic (str): Расширение компонента основных статистик, которые берутся
-            вместо повторного подсчета
+            вместо повторного подсчета, их слова - как есть, вместе с числами
 
     Исключения:
         ParameterError: Если пресет неизвестен или имя расширения не строка
@@ -172,7 +172,7 @@ class UnadaptedReadabilityStatsComponent(
     Аргументы:
         name (str): Наименование компонента в пайплайне
         basic (str): Расширение компонента основных статистик, которые берутся
-            вместо повторного подсчета
+            вместо повторного подсчета, их слова - как есть, вместе с числами
 
     Исключения:
         ParameterError: Если имя расширения не строка

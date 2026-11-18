@@ -16,7 +16,7 @@ from .constants import (
     LONG_WORD_LETTER_FACTOR,
 )
 from .exceptions import ParameterError
-from .extractors import WordsExtractor
+from .extractors import NUMBER_PATTERN, WordsExtractor
 from .syllables import count_syllables
 from .utils import document_words, get_document, strip_document_marks, strip_marks
 
@@ -79,6 +79,7 @@ class BasicStats(anyts.basic_stats.BasicStats):
         normalize (bool): Вычислять нормализованные статистики
         complex_syl_factor (int): Минимальное количество слогов в сложном слове
         long_word_letter_factor (int): Минимальное количество букв в длинном слове
+        filter_nums (bool): Не считать числа (NUMBER_PATTERN) словами
 
     Атрибуты:
         c_letters (dict[int, int]): Распределение слов по количеству букв
@@ -123,10 +124,11 @@ class BasicStats(anyts.basic_stats.BasicStats):
         SourceTypeError: Если источник данных не строка, не объект Doc и не Document
             или экстрактор другого типа
         SourceError: Если в источнике данных отсутствуют слова
-        ParameterError: Если порог не целое число или меньше 1
+        ParameterError: Если порог не целое число или меньше 1 или filter_nums не bool
     """
 
     stats_desc = BASIC_STATS_DESC
+    number_pattern = NUMBER_PATTERN
     stats_headers = ("Статистика", "Значение")
     messages = CORE_MESSAGES
 
@@ -138,6 +140,7 @@ class BasicStats(anyts.basic_stats.BasicStats):
         normalize: bool = False,
         complex_syl_factor: int = COMPLEX_SYL_FACTOR,
         long_word_letter_factor: int = LONG_WORD_LETTER_FACTOR,
+        filter_nums: bool = False,
     ):
         if isinstance(source, str):
             source = strip_marks(source)
@@ -150,6 +153,7 @@ class BasicStats(anyts.basic_stats.BasicStats):
             normalize,
             complex_syl_factor,
             long_word_letter_factor,
+            filter_nums,
         )
 
     def parse(self, source: str | Doc | Document) -> Document:
