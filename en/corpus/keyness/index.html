@@ -2565,11 +2565,11 @@
 </tr>
 <tr>
 <td style="text-align: left;"><code>key</code></td>
-<td style="text-align: left;">the lemma of the dictionary: the ruMorph lemma of a word form (with <code>lemmatize=False</code> the word itself) brought to the conventions of the dictionary, as in <a href="../../stats/lexical_stats/"><code>LexicalStats</code></a></td>
+<td style="text-align: left;">the lemma of the dictionary: the ruMorph lemma of a word form (with <code>lemmatize=False</code> and for an abbreviation the word itself) brought to the conventions of the dictionary, as in <a href="../../stats/lexical_stats/"><code>LexicalStats</code></a></td>
 </tr>
 <tr>
 <td style="text-align: left;"><code>keep</code></td>
-<td style="text-align: left;">words of Cyrillic letters; numbers and words with Latin letters are left out</td>
+<td style="text-align: left;">words of Cyrillic letters; numbers, words with Latin letters and abbreviations that ruMorph expands into another word and that have no entry of their own in the dictionary («т.», «г.») are left out</td>
 </tr>
 </tbody>
 </table>
