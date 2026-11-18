@@ -225,7 +225,9 @@ class HighlightedText(anyts.visualizers.highlight.HighlightedText):
             "complex_words": lambda: find_complex_words(words, self._complex_syl_factor),
             "rare_words": lambda: find_rare_words(words),
             "stopwords": lambda: find_stopwords(
-                words, self._stopwords, flags=self._doc_flags(doc).water
+                words,
+                self._stopwords,
+                flags=None if self._stopwords is not None else self._doc_flags(doc).water,
             ),
             "verbal_nouns": lambda: find_verbal_nouns(words),
             "compound_prepositions": lambda: find_compound_prepositions(words),
