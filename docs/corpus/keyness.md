@@ -1,7 +1,7 @@
 # Ключевые слова
 
 ``` {.python .signature}
-keyness(target, reference, measure='log_likelihood', min_freq=1, positive=True, top_n=None, n=1, lemmatize=True)
+keyness(target, reference, measure='log_likelihood', min_freq=1, positive=True, top_n=None, n=1, lemmatize=True, *, messages=None)
 ```
 
 <!-- core: corpus/keyness.md:keyness 4394918 -->
@@ -41,7 +41,7 @@ keyness(target, reference, measure='log_likelihood', min_freq=1, positive=True, 
 
 ## Параметры
 
-<!-- core: corpus/keyness.md:keyness-parameters a26b20f -->
+<!-- core: corpus/keyness.md:keyness-parameters 927fc84 -->
 | Параметр | Тип | По умолчанию | Описание |
 | :------- | :-- | :----------- | :------- |
 | `target` | `list[str]` / `list[list[str]]` / `dict[str, int]` | - | Слова целевого корпуса - одного текста или списка текстов - или их частоты |
@@ -51,6 +51,7 @@ keyness(target, reference, measure='log_likelihood', min_freq=1, positive=True, 
 | `positive` | `bool` | `True` | Положительные ключевые слова (чаще в целевом корпусе) или отрицательные (чаще в эталонном) |
 | `top_n` | `int` | `None` | Количество ключевых слов; `None` - все |
 | `n` | `int` | `1` | Длина N-грамм слов каждого текста; `1` - слова |
+| `messages` | `dict[str, str]` | `None` | Сообщения об ошибках по ключам вместо русских `CORE_MESSAGES` |
 
 Параметры и целевой корпус проверяет `check_keyness_params`; `n` больше 1 при частотах или `FrequencyReference` дает `ParameterError`. Эталон, который не список строк, не список таких списков, не справочник частот и не `FrequencyReference`, дает `SourceTypeError`, а отрицательная, `nan` или бесконечная частота справочника и корпус без слов или короче `n` слов - `SourceError`.
 
@@ -62,9 +63,9 @@ keyness(target, reference, measure='log_likelihood', min_freq=1, positive=True, 
 
 Незагруженный частотный словарь дает `DatasetNotFoundError`, а `n` больше 1 при нем - `ParameterError`.
 
-<!-- core: corpus/keyness.md:check_keyness_params 9e9c4da -->
+<!-- core: corpus/keyness.md:check_keyness_params 5873366 -->
 ``` {.python .signature}
-check_keyness_params(measure='log_likelihood', min_freq=1, top_n=None, target=None, n=1, positive=True)
+check_keyness_params(measure='log_likelihood', min_freq=1, top_n=None, target=None, n=1, positive=True, *, messages=None)
 ```
 
 Проверяет параметры `keyness` до чтения частотного словаря: дает `ParameterError`, если мера не из `KEYNESS_MEASURES`, минимальная частота не целое число, количество ключевых слов не `None` и не целое число не меньше единицы, длина N-грамм `n` не целое число не меньше единицы или `positive` не `bool`. С `target` дает также `SourceTypeError`, если целевой корпус не список строк, не список таких списков и не справочник строк с целыми частотами, и `SourceError` для отрицательной, `nan` или бесконечной частоты.

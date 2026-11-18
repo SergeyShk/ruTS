@@ -4,7 +4,7 @@ import functools
 import inspect
 import re
 from bisect import bisect_left
-from collections.abc import Callable, Collection, Iterable, Iterator, Sequence
+from collections.abc import Callable, Collection, Iterable, Iterator, Mapping, Sequence
 from functools import lru_cache
 from typing import TYPE_CHECKING, Any, TypeVar, cast
 
@@ -191,7 +191,35 @@ def with_stripped_marks(func: F, *names: str) -> F:
                 bound.arguments[name] = _strip_words(bound.arguments[name])
         return func(*bound.args, **bound.kwargs)
 
-    return cast(F, wrapper)
+    return cast(F, _in_ruts(wrapper))
+
+
+def with_core_messages(func: F) -> F:
+    """
+    Функция ядра с русскими сообщениями об ошибках
+
+    Описание:
+        messages=None функции ядра становится CORE_MESSAGES; сигнатура и описание -
+        функции ядра
+
+    Аргументы:
+        func (Callable): Функция ядра с параметром messages
+
+    Вывод:
+        Callable: Функция с той же сигнатурой
+    """
+
+    @functools.wraps(func)
+    def wrapper(*args: Any, messages: Mapping[str, str] | None = None, **kwargs: Any) -> Any:
+        return func(*args, messages=CORE_MESSAGES if messages is None else messages, **kwargs)
+
+    return cast(F, _in_ruts(wrapper))
+
+
+def _in_ruts(wrapper: Callable[..., Any]) -> Callable[..., Any]:
+    """Обертка функции ядра в модуле ruTS с тем же путем: pickle находит ее, а не функцию ядра"""
+    wrapper.__module__ = wrapper.__module__.replace("anyts.", "ruts.", 1)
+    return wrapper
 
 
 def _strip_words(value: Any) -> Any:

@@ -9,12 +9,6 @@ import anyts.corpus.compare
 import pandas as pd
 from anyts.corpus.compare import (
     COMPARISON_COLUMNS as COMPARISON_COLUMNS,
-    bootstrap_median_diff as bootstrap_median_diff,
-    calc_cliff_delta as calc_cliff_delta,
-    calc_cohen_d as calc_cohen_d,
-    check_comparison_params as check_comparison_params,
-    compare_features as compare_features,
-    holm_correction as holm_correction,
 )
 from anyts.extractors import FixedSentsExtractor, FixedWordsExtractor
 from anyts.utils import check_words, count_words_by_spans, is_language
@@ -33,7 +27,7 @@ from ..exceptions import SourceError, SourceTypeError
 from ..morph_stats import MorphStats
 from ..readability_stats import ReadabilityStats
 from ..syntax_stats import SyntaxStats
-from ..utils import iter_text_sents, iter_text_words
+from ..utils import iter_text_sents, iter_text_words, with_core_messages
 
 if TYPE_CHECKING:
     from spacy.language import Language
@@ -67,6 +61,13 @@ REDUNDANT_FEATURES = frozenset(
         "morph_involvement_Ex",
     }
 )
+
+bootstrap_median_diff = with_core_messages(anyts.corpus.compare.bootstrap_median_diff)
+calc_cliff_delta = with_core_messages(anyts.corpus.compare.calc_cliff_delta)
+calc_cohen_d = with_core_messages(anyts.corpus.compare.calc_cohen_d)
+check_comparison_params = with_core_messages(anyts.corpus.compare.check_comparison_params)
+compare_features = with_core_messages(anyts.corpus.compare.compare_features)
+holm_correction = with_core_messages(anyts.corpus.compare.holm_correction)
 
 
 def split_windows(text: str, window: int | None = 1000, min_words: int | None = None) -> list[str]:
@@ -294,7 +295,7 @@ def corpus_features(
         ParameterError: Если размер окна или min_words меньше единицы или min_words
             больше окна
     """
-    check_words(texts, "texts")
+    check_words(texts, "texts", message=CORE_MESSAGES["words_param"])
     if not callable(features):
         raise SourceTypeError(f"Признаки должны быть функцией, а не {type(features).__name__}")
     _check_windows(window, min_words)
@@ -366,8 +367,8 @@ def compare_corpora(
         ParameterError: Если число выборок меньше единицы
     """
     check_comparison_params(labels, n_bootstrap, seed)
-    check_words(a, "texts")
-    check_words(b, "texts")
+    check_words(a, "a", message=CORE_MESSAGES["words_param"])
+    check_words(b, "b", message=CORE_MESSAGES["words_param"])
     if features is not None and not callable(features):
         raise SourceTypeError(f"Признаки должны быть функцией, а не {type(features).__name__}")
     _check_windows(window, min_words)

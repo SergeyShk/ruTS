@@ -1,8 +1,8 @@
 # Дисперсия слов
 
-<!-- core: corpus/dispersion.md:dispersion 29fca84 -->
+<!-- core: corpus/dispersion.md:dispersion f58d196 -->
 ``` {.python .signature}
-dispersion(words, parts=10, word=None, min_freq=1)
+dispersion(words, parts=10, word=None, min_freq=1, *, messages=None)
 ```
 
 Дисперсия слова - насколько равномерно оно распределено по частям текста или корпуса. Частота не различает слово, встречающееся по разу в каждой главе, и слово, сосредоточенное в одной из них; меры дисперсии ([Gries 2008](https://www.stgries.info/research/2008_STG_Dispersion_IJCL.pdf), [2020](https://www.stgries.info/research/2020_STG_Dispersion_PHCL.pdf)) дополняют частоту.
@@ -43,13 +43,14 @@ dispersion(words, parts=10, word=None, min_freq=1)
 
 ## Параметры
 
-<!-- core: corpus/dispersion.md:dispersion-parameters 2fdf192 -->
+<!-- core: corpus/dispersion.md:dispersion-parameters 815cffd -->
 | Параметр | Тип | По умолчанию | Описание |
 | :------- | :-- | :----------- | :------- |
 | `words` | `list[str]` | - | Слова текста по порядку |
 | `parts` | `int` / `list[int]` | `10` | Число частей (от 2 до числа слов) или размеры частей |
 | `word` | `str` | `None` | Слово, дисперсия которого нужна; `None` - все слова |
 | `min_freq` | `int` | `1` | Минимальная частота слова |
+| `messages` | `dict[str, str]` | `None` | Сообщения об ошибках по ключам вместо русских `CORE_MESSAGES` |
 
 Слова, которые не список строк, дают `SourceTypeError`, а отсутствие слов - `SourceError`. `parts`, который не целое число от 2 до числа слов и не два или более положительных целых числа, в сумме равных ему, `word`, который не строка, и `min_freq`, который не целое число, дают `ParameterError`.
 

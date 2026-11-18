@@ -158,14 +158,14 @@ corpus_features(texts, window=1000, features=text_features, min_words=None)
 
 ## Сравнение таблиц признаков { #compare_features }
 
-<!-- core: corpus/compare.md:compare_features e0c139a -->
+<!-- core: corpus/compare.md:compare_features 7ae32fb -->
 ``` {.python .signature}
-compare_features(table_a, table_b, labels=('A', 'B'), n_bootstrap=1000, seed=0)
+compare_features(table_a, table_b, labels=('A', 'B'), n_bootstrap=1000, seed=0, *, messages=None)
 ```
 
 Сравнивает два корпуса признак за признаком. Каждый корпус - таблица признаков своих окон, частей текстов примерно одинакового размера, чтобы признаки не зависели от длины текстов. Результат - по строке на столбец, по убыванию модуля дельты Клиффа, признаки без статистик - в конце. Бутстрэп пересэмплирует целые тексты по уровню `text` индекса; без него каждая строка считается отдельным текстом. У каждого признака свой генератор, по зерну и имени признака, так что его интервал не зависит от остальных столбцов. Столбец, которого нет в одной из таблиц, дает `nan`.
 
-<!-- core: corpus/compare.md:compare_features-parameters 2ed21c1 -->
+<!-- core: corpus/compare.md:compare_features-parameters ded2441 -->
 | Параметр | Тип | По умолчанию | Описание |
 | :------- | :-- | :----------- | :------- |
 | `table_a` | `DataFrame` | - | Признаки окон первого корпуса, по строке на окно |
@@ -173,12 +173,13 @@ compare_features(table_a, table_b, labels=('A', 'B'), n_bootstrap=1000, seed=0)
 | `labels` | `tuple[str, str]` | `('A', 'B')` | Имена корпусов для столбцов, две строки, дающие разные столбцы |
 | `n_bootstrap` | `int` | `1000` | Число выборок бутстрэпа |
 | `seed` | `int` / `Generator` | `0` | Зерно генератора случайных чисел, неотрицательное целое число, или `Generator` numpy; `None` - случайное |
+| `messages` | `dict[str, str]` | `None` | Сообщения об ошибках по ключам вместо русских `CORE_MESSAGES` |
 
 Таблица, которая не `DataFrame`, повторяет имя столбца или содержит столбец, который не числовой, дает `SourceTypeError`; остальные параметры проверяет `check_comparison_params`.
 
-<!-- core: corpus/compare.md:check_comparison_params a56a706 -->
+<!-- core: corpus/compare.md:check_comparison_params 0e3a98a -->
 ``` {.python .signature}
-check_comparison_params(labels=('A', 'B'), n_bootstrap=1000, seed=0)
+check_comparison_params(labels=('A', 'B'), n_bootstrap=1000, seed=0, *, messages=None)
 ```
 
 Проверяет параметры `compare_features` до обработки текстов: дает `ParameterError`, если метки - не две строки, дающие разные столбцы (`("diff", "B")` повторило бы `median_diff`), число выборок бутстрэпа - не целое число не меньше единицы или зерно - не `None`, не неотрицательное целое число и не `Generator` numpy.
@@ -209,9 +210,9 @@ check_comparison_params(labels=('A', 'B'), n_bootstrap=1000, seed=0)
 
 Статистики строки доступны по отдельности из `ruts.corpus`:
 
-<!-- core: corpus/compare.md:calc_cohen_d 8318830 -->
+<!-- core: corpus/compare.md:calc_cohen_d 9fb4883 -->
 ``` {.python .signature}
-calc_cohen_d(values_a, values_b)
+calc_cohen_d(values_a, values_b, *, messages=None)
 ```
 
 d Коэна с объединенными выборочными дисперсиями (ddof=1); `nan` при менее чем двух значениях на стороне или без разброса.
@@ -220,12 +221,13 @@ d Коэна с объединенными выборочными дисперс
 | :------- | :-- | :----------- | :------- |
 | `values_a` | `list[float]` | - | Значения в первом корпусе |
 | `values_b` | `list[float]` | - | Значения во втором корпусе |
+| `messages` | `dict[str, str]` | `None` | Сообщения об ошибках по ключам вместо русских `CORE_MESSAGES` |
 
 Значение, которое не число и не пропуск (`None`, `NA`), и значения, которые не плоский список, дают `SourceTypeError`.
 
-<!-- core: corpus/compare.md:calc_cliff_delta 46d8def -->
+<!-- core: corpus/compare.md:calc_cliff_delta b906f6f -->
 ``` {.python .signature}
-calc_cliff_delta(values_a, values_b)
+calc_cliff_delta(values_a, values_b, *, messages=None)
 ```
 
 Дельта Клиффа - доля пар, где первое значение больше, минус доля пар, где оно меньше; `nan` для пустого набора или неопределенного значения. Считается сортировкой, за время $O((n_A + n_B) \log n_B)$ и с линейной памятью.
@@ -234,12 +236,13 @@ calc_cliff_delta(values_a, values_b)
 | :------- | :-- | :----------- | :------- |
 | `values_a` | `list[float]` | - | Значения в первом корпусе |
 | `values_b` | `list[float]` | - | Значения во втором корпусе |
+| `messages` | `dict[str, str]` | `None` | Сообщения об ошибках по ключам вместо русских `CORE_MESSAGES` |
 
 Значение, которое не число и не пропуск (`None`, `NA`), и значения, которые не плоский список, дают `SourceTypeError`.
 
-<!-- core: corpus/compare.md:bootstrap_median_diff eef19f3 -->
+<!-- core: corpus/compare.md:bootstrap_median_diff 63c1515 -->
 ``` {.python .signature}
-bootstrap_median_diff(values_a, values_b, n_bootstrap=1000, rng=None, confidence=0.95, texts_a=None, texts_b=None)
+bootstrap_median_diff(values_a, values_b, n_bootstrap=1000, rng=None, confidence=0.95, texts_a=None, texts_b=None, *, messages=None)
 ```
 
 Перцентильный бутстрэп-интервал разности медиан. С `texts_a` и `texts_b` пересэмплируются целые тексты, а медиана выборки берется по значениям ее текстов; при менее чем двух текстах на стороне интервал - `nan`.
@@ -253,12 +256,13 @@ bootstrap_median_diff(values_a, values_b, n_bootstrap=1000, rng=None, confidence
 | `confidence` | `float` | `0.95` | Уровень доверия |
 | `texts_a` | `list` | `None` | Тексты значений в первом корпусе; `None` - каждое значение пересэмплируется отдельно |
 | `texts_b` | `list` | `None` | Тексты значений во втором корпусе |
+| `messages` | `dict[str, str]` | `None` | Сообщения об ошибках по ключам вместо русских `CORE_MESSAGES` |
 
 Значение, которое не число и не пропуск, значения, которые не плоский список, и тексты, которые не метки одного типа, дают `SourceTypeError`; `n_bootstrap`, который не целое число не меньше единицы, `confidence`, который не число в интервале (0, 1), число текстов, не равное числу значений, и `rng`, который не `Generator` numpy, - `ParameterError`.
 
-<!-- core: corpus/compare.md:holm_correction e837116 -->
+<!-- core: corpus/compare.md:holm_correction 8dab7a9 -->
 ``` {.python .signature}
-holm_correction(p_values)
+holm_correction(p_values, *, messages=None)
 ```
 
 Поправка Холма на множественные сравнения: p-значения сортируются по возрастанию, i-е умножается на (m − i + 1), где m - число определенных значений, затем берется накопленный максимум, ограниченный единицей; `nan` остается `nan`.
@@ -266,6 +270,7 @@ holm_correction(p_values)
 | Параметр | Тип | По умолчанию | Описание |
 | :------- | :-- | :----------- | :------- |
 | `p_values` | `list[float]` | - | p-значения |
+| `messages` | `dict[str, str]` | `None` | Сообщения об ошибках по ключам вместо русских `CORE_MESSAGES` |
 
 P-значение, которое не число и не пропуск, и p-значения, которые не плоский список, дают `SourceTypeError`, а p-значение вне [0, 1] - `ParameterError`.
 

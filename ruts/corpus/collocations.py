@@ -11,6 +11,6 @@ from anyts.corpus.collocations import (
     collocations as core_collocations,
 )
 
-from ..utils import with_stripped_marks
+from ..utils import with_core_messages, with_stripped_marks
 
-collocations = with_stripped_marks(core_collocations, "words", "node")
+collocations = with_stripped_marks(with_core_messages(core_collocations), "words", "node")

@@ -8,10 +8,11 @@ from typing import TYPE_CHECKING
 import anyts.corpus
 from anyts.corpus.kwic import (
     Concordance as Concordance,
-    format_kwic as format_kwic,
-    print_kwic as print_kwic,
+    format_kwic as core_format_kwic,
+    print_kwic as core_print_kwic,
 )
 
+from ..constants import CORE_MESSAGES
 from ..utils import (
     analyze_words,
     iter_text_sents,
@@ -20,12 +21,16 @@ from ..utils import (
     normalize_yo,
     parse_all,
     strip_marks,
+    with_core_messages,
     word_form,
 )
 
 if TYPE_CHECKING:
     from anyseg import Document, Word
     from spacy.tokens import Doc
+
+format_kwic = with_core_messages(core_format_kwic)
+print_kwic = with_core_messages(core_print_kwic)
 
 
 def kwic(
@@ -85,6 +90,7 @@ def kwic(
         lemmatize=_string_lemmatizer(source) if by_lemma and isinstance(source, str) else _lemma,
         fold=_fold_marks if case_sensitive else _fold,
         sentenize=iter_text_sents,
+        messages=CORE_MESSAGES,
     )
 
 
