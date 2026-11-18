@@ -38,6 +38,9 @@ Features = Callable[[str], Mapping[str, float]]
 # Компоненты моделей ru_core_news, разметка которых синтаксическим признакам не нужна
 _UNUSED_COMPONENTS = ("ner", "lemmatizer")
 
+# Меры разнообразия, неустойчивые на окне в тысячу слов: Orlov's Z, а MA-MTLD и MTLD-W
+# усредняют немногие завершенные факторы
+WINDOW_UNSTABLE_DIVERSITY = frozenset({"orlov_z", "mamtld", "mtldw"})
 # Монотонно повторяют другие признаки (ранговое сравнение дает те же U, p и |δ|) или постоянны
 REDUNDANT_FEATURES = frozenset(
     {
@@ -126,7 +129,8 @@ def text_features(text: str, nlp: Language | None = None) -> dict[str, float]:
             basic_ - доли длинных, сложных, простых, одно- и многосложных слов, букв,
                 пробелов и знаков препинания, буквы и слоги на слово (BasicStats)
             readability_ - формулы удобочитаемости и сводный класс (ReadabilityStats)
-            diversity_ - меры лексического разнообразия, кроме Orlov's Z (DiversityStats)
+            diversity_ - меры лексического разнообразия, кроме неустойчивых на окне
+                (WINDOW_UNSTABLE_DIVERSITY; DiversityStats)
             morph_ - доли частей речи и значений признаков (MorphStats), например
                 morph_pos_NOUN, morph_case_Gen: у частей речи и признаков с одним
                 значением (отрицание, краткая форма) - среди всех слов, у остальных -
@@ -187,7 +191,7 @@ def text_features(text: str, nlp: Language | None = None) -> dict[str, float]:
         features[f"readability_{key}"] = float(score)
     lowered = FixedWordsExtractor(tuple(word.lower() for word in words.words))
     for key, score in DiversityStats(text, words_extractor=lowered).get_stats().items():
-        if key != "orlov_z":
+        if key not in WINDOW_UNSTABLE_DIVERSITY:
             features[f"diversity_{key}"] = float(score)
     morph = MorphStats(text)
     n_words = len(morph.words)

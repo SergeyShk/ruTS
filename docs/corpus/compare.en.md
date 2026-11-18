@@ -54,7 +54,7 @@ Chekhov versus Tolstoy over the prose of the [`RussianLiterature`](../datasets/r
 
 Cohesion sets the corpora apart most: Tolstoy repeats nouns and content words in adjacent and following sentences more often, and Chekhov has several times more ellipses and exclamations per 1000 words. The overlaps in adjacent and in all pairs of sentences partly repeat the sentence length (the Spearman ρ of `cohesion_content_overlap_all` with `sents_mean` over the windows is 0.90 for Chekhov and 0.75 for Tolstoy), while the share of the lemmas repeated in the next two sentences (`cohesion_content_overlap_2_sent`) repeats it only weakly (0.23 and 0.30). Twenty works of Chekhov and one of Tolstoy are shorter than a window, so the windows come from 57 and 41 works.
 
-The p-values take the 1671 windows for independent (see the [warning](#statistics) below): 111 of the 147 features have a corrected p-value below 0.01, but only 21 show a large effect by Cliff's delta. The interval of the difference of the medians resamples whole works and is the safer guide: it excludes zero for 82 of those 111 features, and for the length of a sentence it spans −5.2 to −1.6 words, where the windows alone would give −4.1 to −2.8.
+The p-values take the 1671 windows for independent (see the [warning](#statistics) below): 109 of the 145 features have a corrected p-value below 0.01, but only 21 show a large effect by Cliff's delta. The interval of the difference of the medians resamples whole works and is the safer guide: it excludes zero for 80 of those 109 features, and for the length of a sentence it spans −5.2 to −1.6 words, where the windows alone would give −4.1 to −2.8.
 
 ## Parameters
 
@@ -80,13 +80,13 @@ Raises:
 text_features(text, nlp=None)
 ```
 
-Returns 147 features of a text prefixed by source, 192 with the pipeline `nlp`; an undefined feature is `nan`.
+Returns 145 features of a text prefixed by source, 190 with the pipeline `nlp`; an undefined feature is `nan`.
 
 | Prefix | Features | Source |
 | :----- | :------- | :----- |
 | `basic_` | shares of long, complex, simple, mono- and polysyllabic words, letters, spaces and punctuation marks; letters and syllables per word | [`BasicStats`](../stats/basic_stats.md) |
 | `readability_` | all readability formulas and the consensus grade | [`ReadabilityStats`](../stats/readability_stats.md) |
-| `diversity_` | lexical diversity measures, but for Orlov's Z, unstable on a window | [`DiversityStats`](../stats/diversity_stats.md) |
+| `diversity_` | lexical diversity measures, but for Orlov's Z, MA-MTLD and MTLD-W, unstable on a window | [`DiversityStats`](../stats/diversity_stats.md) |
 | `morph_` | shares of parts of speech and of single-valued features among the words (`morph_pos_NOUN`, `morph_polarity_Neg`) and shares of values within the other features (`morph_case_Gen`; one share for a two-valued feature, `morph_number_Plur`) | [`MorphStats`](../stats/morph_stats.md) by ruMorph |
 | `sents_` | mean sentence length in words, standard deviation, coefficient of variation, autocorrelation of adjacent lengths ([`sentence_rhythm`](#sentence_rhythm)) | [`sentence_lengths`](../visualizers/sentences.md) |
 | `punct_` | frequencies of punctuation marks by type per 1000 words and the share of the letter ё | [`punctuation_profile`](../stats/basic_stats.md#punctuation) |
