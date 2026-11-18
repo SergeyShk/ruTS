@@ -39,22 +39,22 @@ Chekhov versus Tolstoy over the prose of the [`RussianLiterature`](../datasets/r
 
     ```
                                             median_Чехов  median_Толстой  ci_low  ci_high  cohen_d  cliff_delta    auc  p_holm
-    cohesion_content_overlap_2_sent                0.067           0.109  -0.047   -0.035   -1.066       -0.836  0.082     0.0
-    cohesion_noun_overlap_2_sent                   0.081           0.141  -0.069   -0.049   -1.073       -0.757  0.122     0.0
-    cohesion_content_overlap_prop_all              0.015           0.026  -0.014   -0.009   -0.530       -0.751  0.125     0.0
-    cohesion_content_overlap_adjacent              0.188           0.340  -0.189   -0.125   -1.253       -0.717  0.142     0.0
+    cohesion_content_overlap_2_sent                0.067           0.109  -0.047   -0.035   -1.116       -0.838  0.081     0.0
+    cohesion_noun_overlap_2_sent                   0.081           0.141  -0.069   -0.049   -1.107       -0.758  0.121     0.0
+    cohesion_content_overlap_prop_all              0.015           0.027  -0.014   -0.009   -0.573       -0.753  0.124     0.0
+    cohesion_content_overlap_adjacent              0.188           0.340  -0.187   -0.126   -1.258       -0.719  0.141     0.0
     punct_ellipsis                                15.000           2.000   6.000   25.000    1.868        0.706  0.853     0.0
-    cohesion_content_overlap_all                   0.085           0.179  -0.121   -0.068   -1.082       -0.706  0.147     0.0
-    cohesion_noun_overlap_adjacent                 0.106           0.217  -0.138   -0.087   -1.049       -0.668  0.166     0.0
-    cohesion_noun_overlap_all                      0.044           0.095  -0.071   -0.035   -0.846       -0.659  0.171     0.0
+    cohesion_content_overlap_all                   0.087           0.179  -0.121   -0.068   -1.082       -0.706  0.147     0.0
+    cohesion_noun_overlap_adjacent                 0.106           0.218  -0.139   -0.086   -1.054       -0.671  0.164     0.0
+    cohesion_noun_overlap_all                      0.043           0.094  -0.072   -0.035   -0.846       -0.660  0.170     0.0
     punct_exclamation                             14.000           4.000   7.000   14.000    1.671        0.657  0.829     0.0
-    cohesion_content_overlap_prop_adjacent         0.038           0.060  -0.026   -0.018   -0.836       -0.641  0.179     0.0
+    cohesion_content_overlap_prop_adjacent         0.037           0.060  -0.026   -0.017   -0.880       -0.646  0.177     0.0
     {'n_Чехов': 249, 'n_Толстой': 1422, 'n_texts_Чехов': 57, 'n_texts_Толстой': 41}
     ```
 
-Cohesion sets the corpora apart most: Tolstoy repeats nouns and content words in adjacent and following sentences more often, and Chekhov has several times more ellipses and exclamations per 1000 words. The overlaps in adjacent and in all pairs of sentences partly repeat the sentence length (the Spearman ρ of `cohesion_content_overlap_all` with `sents_mean` over the windows is 0.90 for Chekhov and 0.75 for Tolstoy), while the share of the lemmas repeated in the next two sentences (`cohesion_content_overlap_2_sent`) repeats it only weakly (0.23 and 0.31). Twenty works of Chekhov and one of Tolstoy are shorter than a window, so the windows come from 57 and 41 works.
+Cohesion sets the corpora apart most: Tolstoy repeats nouns and content words in adjacent and following sentences more often, and Chekhov has several times more ellipses and exclamations per 1000 words. The overlaps in adjacent and in all pairs of sentences partly repeat the sentence length (the Spearman ρ of `cohesion_content_overlap_all` with `sents_mean` over the windows is 0.90 for Chekhov and 0.75 for Tolstoy), while the share of the lemmas repeated in the next two sentences (`cohesion_content_overlap_2_sent`) repeats it only weakly (0.23 and 0.30). Twenty works of Chekhov and one of Tolstoy are shorter than a window, so the windows come from 57 and 41 works.
 
-The p-values take the 1671 windows for independent (see the [warning](#statistics) below): 111 of the 147 features have a corrected p-value below 0.01, but only 21 show a large effect by Cliff's delta. The interval of the difference of the medians resamples whole works and is the safer guide: it excludes zero for 81 of those 111 features, and for the length of a sentence it spans −5.2 to −1.6 words, where the windows alone would give −4.1 to −2.8.
+The p-values take the 1671 windows for independent (see the [warning](#statistics) below): 111 of the 147 features have a corrected p-value below 0.01, but only 21 show a large effect by Cliff's delta. The interval of the difference of the medians resamples whole works and is the safer guide: it excludes zero for 82 of those 111 features, and for the length of a sentence it spans −5.2 to −1.6 words, where the windows alone would give −4.1 to −2.8.
 
 ## Parameters
 
@@ -149,11 +149,11 @@ Features of your own go to `features` as a function of a text, `text_features` w
 
     ```
                                         median_Чехов  median_Толстой  ci_low  ci_high  cohen_d  cliff_delta    auc  p_holm
-    syntax_converb_clauses_per_sent            0.101           0.207  -0.138   -0.086   -1.034       -0.608  0.196     0.0
-    syntax_participle_clauses_per_sent         0.040           0.117  -0.098   -0.056   -0.877       -0.586  0.207     0.0
-    syntax_nominal_chains_per_sent             0.075           0.164  -0.121   -0.062   -0.819       -0.579  0.210     0.0
+    syntax_converb_clauses_per_sent            0.102           0.207  -0.138   -0.086   -1.032       -0.606  0.197     0.0
+    syntax_participle_clauses_per_sent         0.041           0.118  -0.098   -0.055   -0.874       -0.584  0.208     0.0
+    syntax_nominal_chains_per_sent             0.075           0.164  -0.122   -0.062   -0.817       -0.577  0.211     0.0
     syntax_tree_depth                          3.023           3.634  -0.906   -0.403   -1.011       -0.541  0.230     0.0
-    syntax_mean_clause_len                     4.975           5.814  -1.258   -0.468   -0.886       -0.533  0.233     0.0
+    syntax_mean_clause_len                     4.975           5.814  -1.250   -0.468   -0.883       -0.533  0.233     0.0
     ```
 
 ## Comparison of feature tables { #compare_features }
