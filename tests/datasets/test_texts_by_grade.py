@@ -24,7 +24,7 @@ from ruts.datasets import (
 from ruts.datasets.sov_chrest_lit import SovChLit
 from ruts.datasets.texts_by_grade import GRADES, TextsByGrade
 from ruts.exceptions import DownloadError, ParameterError
-from ruts.readability_stats import level_features
+from ruts.readability_stats import level_features, level_norms
 
 BUNDLED_ARCHIVE = (
     Path(__file__).parents[2] / "ruts" / "datasets" / "data" / texts_by_grade_module.ARCHIVE
@@ -351,3 +351,21 @@ def test_level_norms_follow_datasets(dataset, first_grade_reader):
             [str(len(stages[low])), *(f"{low_}-{high}" for low_, high in norms.values())]
             for low, norms in LEVEL_NORMS.items()
         ], page
+
+
+def test_senior_norm_texts_by_consensus(dataset):
+    """Сводный класс текстов норм 10-11-го класса на странице совпадает с вычисленным"""
+    grades = [
+        ReadabilityStats(record["text"]).consensus_grade
+        for record in dataset
+        if 10 <= record["grade"] <= 11 and BasicStats(record["text"]).n_words >= 100
+    ]
+    in_stage = sum(1 for grade in grades if level_norms(grade) == LEVEL_NORMS[10])
+    expected = (f"{median(grades):.1f}", str(in_stage), str(len(grades)))
+    patterns = {
+        "readability_stats.md": r"медиана (\S+), к 10-11-му он относит (\d+) из (\d+)",
+        "readability_stats.en.md": r"a median of (\S+) and puts (\d+) of (\d+) at grades 10-11",
+    }
+    for page, pattern in patterns.items():
+        text = (DOCS / "stats" / page).read_text(encoding="utf-8")
+        assert re.search(pattern, text).groups() == expected, page
