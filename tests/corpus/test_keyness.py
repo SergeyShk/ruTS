@@ -201,8 +201,9 @@ def test_keyness_freq_dict_no_parsing(pronoun_dict, monkeypatch):
 
 
 def test_keyness_freq_dict_abbreviations(tmp_path):
-    """Сокращение сравнивается со своей статьей, а без нее отбрасывается: словарь не раскрывает
-    «т.» и «г.», и первый разбор не приписывает их «то» и «год»"""
+    """Сокращение сравнивается со своей статьей, а без нее отбрасывается, если ruMorph раскрывает
+    его в другое слово: словарь не раскрывает «т.» и «г.». «ВКП» не раскрывается и остается
+    словом вне словаря; правило одно для словоформ и лемм («г» у pymorphy3)"""
     rows = [
         ("год", "s", 3000.0),
         ("кот", "s", 40.0),
@@ -212,8 +213,15 @@ def test_keyness_freq_dict_abbreviations(tmp_path):
     lines = ["Lemma\tPoS\tFreq(ipm)\tR\tD\tDoc"]
     lines += [f"{lemma}\t{pos}\t{ipm}\t90\t90\t1000" for lemma, pos, ipm in rows]
     tmp_path.joinpath(FILENAME).write_text("\n".join(lines) + "\n", encoding="utf-8")
-    found = keyness(["т", "т", "г", "СССР", "кот", "кот"], FreqDict(data_dir=tmp_path))
-    assert {keyword.word: keyword.freq_target for keyword in found} == {"ссср": 1, "кот": 2}
+    freq_dict = FreqDict(data_dir=tmp_path)
+    target = ["т", "т", "г", "СССР", "ВКП", "кот", "кот"]
+    for lemmatize in (True, False):
+        found = keyness(target, freq_dict, lemmatize=lemmatize)
+        assert {keyword.word: keyword.freq_target for keyword in found} == {
+            "ссср": 1,
+            "вкп": 1,
+            "кот": 2,
+        }
 
 
 def test_unreachable_lemmas_of_any_analysis():

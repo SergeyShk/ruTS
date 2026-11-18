@@ -56,9 +56,9 @@ def keyness(
         С эталоном FreqDict слова цели приводятся к леммам словаря, как в LexicalStats,
         числа и латиница отбрасываются, частота в эталоне - ipm, умноженная на объем
         корпуса словаря (92 млн); слово вне словаря получает его наименьшую частоту
-        (min_ipm) и бывает только положительным ключевым словом. Сокращение словоформ
-        сравнивается со своей статьей (ссср, млн), а без нее отбрасывается (т., г.).
-        Статья, которой нет в цели и к которой не приводится
+        (min_ipm) и бывает только положительным ключевым словом. Сокращение сравнивается
+        со своей статьей (ссср, млн), а без нее отбрасывается, если ruMorph раскрывает
+        его в другое слово (т., г.). Статья, которой нет в цели и к которой не приводится
         ни одна форма ее лексем ruMorph, отрицательным ключевым словом не бывает
 
     Ссылки:
@@ -99,7 +99,7 @@ def keyness(
             f"Частотный словарь хранит слова: N-граммам нужны слова обоих корпусов, а не n={n}"
         )
     key = _dictionary_key(reference.entries, lemmatize)
-    frequency = _frequency_reference(reference, key, lemmatize)
+    frequency = _frequency_reference(reference, key)
     if positive:
         return anyts.corpus.keyness(target, frequency, measure, min_freq, positive, top_n)
     found = anyts.corpus.keyness(target, frequency, measure, min_freq, positive)
@@ -113,26 +113,21 @@ def _dictionary_key(entries: Mapping[str, Entry], lemmatize: bool) -> Callable[[
 
     @cache
     def key(word: str) -> str:
-        if not lemmatize:
-            return dictionary_lemma(word, word, entries)
-        if _is_abbreviation(word):
+        analysis = parse_word(word)
+        if _abbreviated(analysis):
             return normalize_yo(word)
-        return dictionary_lemma(word, parse_word(word).lemma, entries)
+        return dictionary_lemma(word, analysis.lemma if lemmatize else word, entries)
 
     return key
 
 
-def _frequency_reference(
-    freq_dict: FreqDict, key: Callable[[str], str], lemmatize: bool
-) -> FrequencyReference:
+def _frequency_reference(freq_dict: FreqDict, key: Callable[[str], str]) -> FrequencyReference:
     """Эталон частотного словаря, как его описывает докстринг keyness"""
     size = float(CORPUS_SIZE)
     entries = freq_dict.entries
 
     def keep(word: str) -> bool:
-        return _is_dictionary_word(word) and (
-            not lemmatize or key(word) in entries or not _is_abbreviation(word)
-        )
+        return _is_dictionary_word(word) and (key(word) in entries or not _is_expansion(word))
 
     return FrequencyReference(
         {lemma: ipm * size / 1e6 for lemma, ipm in freq_dict.word_ipm.items()},
@@ -205,9 +200,10 @@ def _abbreviated(analysis: rumorph.Analysis) -> bool:
     return analysis.feats.get("Abbr") == "Yes"
 
 
-def _is_abbreviation(word: str) -> bool:
-    """Является ли словоформа сокращением по первому разбору"""
-    return _abbreviated(parse_word(word))
+def _is_expansion(word: str) -> bool:
+    """Раскрывает ли первый разбор сокращение в другое слово (т. - то), а не оставляет (вкп)"""
+    analysis = parse_word(word)
+    return _abbreviated(analysis) and normalize_yo(analysis.lemma) != normalize_yo(word)
 
 
 @lru_cache(maxsize=131072)
