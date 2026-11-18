@@ -2198,7 +2198,7 @@
 <h1 id="_1">Русская классическая литература<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h1>
 <div class="signature highlight"><pre><span></span><code><span class="n">RussianLiterature</span><span class="p">(</span><span class="n">data_dir</span><span class="o">=</span><span class="n">DEFAULT_DATASET_DIR</span><span class="p">)</span>
 </code></pre></div>
-<p>Собрание русской классической литературы <a href="https://github.com/d0rj/RusLit">RusLit</a> (на Kaggle - <a href="https://www.kaggle.com/datasets/d0rj3228/russian-literature">russian-literature</a>): 373 произведения 12 авторов XIX - начала XX века, 39 млн символов, три жанра:</p>
+<p>Собрание русской классической литературы <a href="https://github.com/d0rj/RusLit">RusLit</a> (на Kaggle - <a href="https://www.kaggle.com/datasets/d0rj3228/russian-literature">russian-literature</a>): 373 произведения 12 авторов XIX - начала XX века, 38 млн символов, четыре жанра:</p>
 <table>
 <thead>
 <tr>
@@ -2212,14 +2212,14 @@
 <tr>
 <td style="text-align: left;">Проза</td>
 <td style="text-align: left;"><code>prose</code></td>
-<td style="text-align: left;">Чехов (77), Толстой (42), Достоевский (33), Горький (33), Брюсов (30), Гоголь (16), Герцен (11), Пушкин (10), Тургенев (10), Блок (4), Лермонтов (3)</td>
-<td style="text-align: left;">269</td>
+<td style="text-align: left;">Чехов (75), Толстой (42), Достоевский (33), Горький (31), Брюсов (30), Гоголь (15), Герцен (11), Пушкин (10), Тургенев (10), Блок (4), Лермонтов (3)</td>
+<td style="text-align: left;">264</td>
 </tr>
 <tr>
 <td style="text-align: left;">Поэзия</td>
 <td style="text-align: left;"><code>poems</code></td>
-<td style="text-align: left;">Пушкин (35), Лермонтов (18), Некрасов (15), Блок (10)</td>
-<td style="text-align: left;">78</td>
+<td style="text-align: left;">Пушкин (30), Лермонтов (18), Некрасов (15), Блок (10)</td>
+<td style="text-align: left;">73</td>
 </tr>
 <tr>
 <td style="text-align: left;">Публицистика</td>
@@ -2227,9 +2227,15 @@
 <td style="text-align: left;">Толстой</td>
 <td style="text-align: left;">26</td>
 </tr>
+<tr>
+<td style="text-align: left;">Драма</td>
+<td style="text-align: left;"><code>drama</code></td>
+<td style="text-align: left;">Пушкин (5), Чехов (2), Горький (2), Гоголь (1)</td>
+<td style="text-align: left;">10</td>
+</tr>
 </tbody>
 </table>
-<p>Тексты в общественном достоянии (на Kaggle указана лицензия PDDL), собраны с сайтов LitLib, Wikisource и Ilibrary. Год написания (<code>1825</code> или <code>1824-1825</code>) есть у всех произведений, кроме 27. Авторы в записях - русские имена вместо названий папок (<code>Chekhov</code> → «Антон Чехов»). Собрание подходит для атрибуции авторства и сравнения жанров.</p>
+<p>Тексты в общественном достоянии (на Kaggle указана лицензия PDDL), собраны с сайтов LitLib, Wikisource и Ilibrary. Год написания (<code>1825</code> или <code>1824-1825</code>) есть у всех произведений, кроме 27. Авторы в записях - русские имена вместо названий папок (<code>Chekhov</code> → «Антон Чехов»). Пьесы собрания лежат в папках прозы и поэзии, набор относит их к драме. Из текстов убраны примечания и сноски, в том числе авторские, комментарии и статьи изданий, варианты, оглавления и переводы, а из трех файлов - предисловие публикатора и повторы других произведений. Собрание подходит для атрибуции авторства и сравнения жанров.</p>
 <p>Архив репозитория (20 МБ) загружается по закрепленному коммиту, тексты читаются по одному.</p>
 <p>Исключения:</p>
 <ul>
@@ -2287,7 +2293,7 @@
 <tr>
 <td style="text-align: left;"><code>genres</code></td>
 <td style="text-align: left;"><code>tuple[str]</code></td>
-<td style="text-align: left;">Кортеж жанров: <code>prose</code>, <code>poems</code>, <code>publicism</code></td>
+<td style="text-align: left;">Кортеж жанров: <code>prose</code>, <code>poems</code>, <code>publicism</code>, <code>drama</code></td>
 </tr>
 <tr>
 <td style="text-align: left;"><code>authors</code></td>
@@ -2338,7 +2344,7 @@
 <td style="text-align: left;"><code>genre</code></td>
 <td style="text-align: left;"><code>str</code></td>
 <td style="text-align: left;"><code>None</code></td>
-<td style="text-align: left;">Жанр: <code>prose</code>, <code>poems</code> или <code>publicism</code></td>
+<td style="text-align: left;">Жанр: <code>prose</code>, <code>poems</code>, <code>publicism</code> или <code>drama</code></td>
 </tr>
 <tr>
 <td style="text-align: left;"><code>author</code></td>
@@ -2397,7 +2403,7 @@
 <p class="admonition-title">Имя автора в тексте</p>
 <p>Большинство файлов источника начинается с имени автора и названия («Александр Пушкин» и «19 ОКТЯБРЯ», «Валерий Брюсов. Бемоль»), для атрибуции авторства это утечка признака. Однозначные заголовки срезаются, так очищены 288 из 373 текстов. У 8 текстов фамилия автора остается в первых 200 символах - в заголовках других форм («Антон Павлович Чехов. Палата No 6») и посвящениях («Посвящается графине М. Н. Толстой»). Для строгой атрибуции проверяйте начало текстов или отбрасывайте первые строки.</p>
 </div>
-<p><code>get_records</code> с теми же параметрами извлекает записи (с заголовками) из набора данных. Поля записи: <code>genre</code> - жанр, <code>author</code> - автор, <code>title</code> - название, <code>year_from</code> и <code>year_to</code> - годы написания (<code>None</code> без даты), <code>text</code> - текст без заголовка с автором и названием, <code>file</code> - путь к файлу.</p>
+<p><code>get_records</code> с теми же параметрами извлекает записи (с заголовками) из набора данных. Поля записи: <code>genre</code> - жанр, <code>author</code> - автор, <code>title</code> - название, <code>year_from</code> и <code>year_to</code> - годы написания (<code>None</code> без даты), <code>text</code> - очищенный текст без заголовка с автором и названием, <code>file</code> - путь к файлу.</p>
 <div class="tabbed-set tabbed-alternate" data-tabs="3:2"><input checked="checked" id="__tabbed_3_1" name="__tabbed_3" type="radio" /><input id="__tabbed_3_2" name="__tabbed_3" type="radio" /><div class="tabbed-labels"><label for="__tabbed_3_1">Код</label><label for="__tabbed_3_2">Результат</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
