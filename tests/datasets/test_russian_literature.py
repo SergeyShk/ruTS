@@ -13,10 +13,12 @@ from ruts.datasets.russian_literature import (
     ARCHIVE,
     ARCHIVE_SHA256,
     AUTHORS,
+    DRAMA,
     GENRES,
     NAME,
     TEXT_COUNTS,
     WITHOUT_INFO,
+    clean_text,
     load_years,
     parse_years,
     read_text,
@@ -26,7 +28,7 @@ from ruts.exceptions import DatasetNotFoundError
 
 TEXTS = {
     "prose/Chekhov/Агафья.txt": "Антон Чехов\nАГАФЬЯ\nАгафья. Рассказ о деревне.",
-    "prose/Chekhov/Альбом.txt": "Альбом. Короткий рассказ.",
+    "prose/Chekhov/Альбом.txt": "Альбом. Короткий рассказ.[1]\n\nПримечания\n\n1\n\nСноска.",
     "poems/Pushkin/19 октября.txt": "Роняет лес багряный свой убор.",
     "poems/Pushkin/Борис Годунов.txt": "Драма в стихах о смутном времени.",
     "poems/Lermontov/Парус.txt": "Белеет парус одинокий.",
@@ -106,8 +108,11 @@ def test_text_counts():
         "prose": 269,
         "poems": 78,
         "publicism": 26,
+        "drama": 0,
     }
+    assert sum(len(titles) for titles in DRAMA.values()) == 9
     assert {name.split("/")[1] for name in TEXT_COUNTS} == set(AUTHORS)
+    assert set(DRAMA) <= set(AUTHORS)
     assert set(WITHOUT_INFO) <= set(TEXT_COUNTS)
 
 
@@ -141,9 +146,9 @@ def test_records(dataset):
         "Альбом",
         "Парус",
         "19 октября",
-        "Борис Годунов",
         "Руслан и Людмила",
         "Не могу молчать",
+        "Борис Годунов",
     ]
     assert records[0] == {
         "genre": "prose",
@@ -156,9 +161,14 @@ def test_records(dataset):
     }
     assert (records[1]["year_from"], records[1]["year_to"]) == (1885, 1885)
     assert (records[2]["year_from"], records[2]["year_to"]) == (None, None)
-    assert (records[4]["year_from"], records[4]["year_to"]) == (1824, 1825)
-    assert records[5]["text"] == "Поэма."
-    assert (records[6]["year_from"], records[6]["year_to"]) == (None, None)
+    assert records[1]["text"] == "Альбом. Короткий рассказ."
+    assert records[4]["text"] == "Поэма."
+    assert (records[5]["year_from"], records[5]["year_to"]) == (None, None)
+    assert (records[6]["genre"], records[6]["year_from"], records[6]["year_to"]) == (
+        "drama",
+        1824,
+        1825,
+    )
     assert list(dataset.get_records()) == records
 
 
@@ -177,8 +187,9 @@ def test_filters(dataset):
         "Роняет лес багряный свой убор."
     ]
     assert len(list(dataset.get_texts(max_len=10))) == 1
+    assert [r["title"] for r in dataset.get_records(genre="drama")] == ["Борис Годунов"]
     with pytest.raises(ValueError):
-        _ = list(dataset.get_texts(genre="drama"))
+        _ = list(dataset.get_texts(genre="comedy"))
     with pytest.raises(ValueError):
         _ = list(dataset.get_texts(year_from=1900, year_to=1800))
     with pytest.raises(ValueError):
@@ -220,6 +231,56 @@ def test_strip_header():
     )
     assert strip_header("Текст без заголовка", author, title) == "Текст без заголовка"
     assert strip_header("", author, title) == ""
+
+
+@pytest.mark.parametrize(
+    ("text", "expected"),
+    [
+        ("G&#234;nes, A &amp; B", "Gênes, A & B"),
+        ("Текст.\n\nПримечания\n\n1\n\nСноска.", "Текст."),
+        ("Текст.\n\n    Комментарии\nКомментарий.\n\nПримечания\nСноска.", "Текст."),
+        (
+            "Начало.\n  Примечания\n  (1) турнюр\n  (2) красавица\n\nЧАСТЬ ВТОРАЯ",
+            "Начало.\n\n\nЧАСТЬ ВТОРАЯ",
+        ),
+        (
+            'СОДЕРЖАНИЕ:\n\n  Вступление\n  "Ты в поля отошла"\n\nВСТУПЛЕНИЕ\n\nТы в поля отошла.',
+            "ВСТУПЛЕНИЕ\n\nТы в поля отошла.",
+        ),
+        ("Оглавление\nГлава первая\nГлава вторая", "Оглавление\nГлава первая\nГлава вторая"),
+        ('#01  Сфинкс\n#02  "Еще бледные зори"\nСфинкс', "Сфинкс"),
+        ("Сверка произведена по изданию,\nЛенинград, 1955 г.\n\nСтих.", "Стих."),
+        (
+            "-- Vous?\n   ----------\n   (1) -- Ты?\n\nДалее.\n----------\nТекст после черты.",
+            "-- Vous?\n\nДалее.\n----------\nТекст после черты.",
+        ),
+        (
+            "A la guerre! [На войне! (фр.)] Далее [Белкин], terrain {почве (франц.).-- Ред.}"
+            " и Elle? [Красива? -- фр] Да [щенки. (Прим. Л. Н. Толстого.)].",
+            "A la guerre! Далее [Белкин], terrain и Elle? Да.",
+        ),
+        (
+            "Разъехались.\n1\nмосковскую Венеру (франц.).\n2\nПредпочитаете камеристок.\n"
+            "Они свежее (франц.).\n\nII\n     1 серо-жемчужного цвета (франц.).\nДалее.",
+            "Разъехались.\n\nII\nДалее.",
+        ),
+        ("6 июня 1914\n\n\nEcce homo! (лат.).", "6 июня 1914\n\n\nEcce homo! (лат.)."),
+        (
+            "лакея[1] возбуждал, сан-фасон [1], что {311} все,<<8>> в court*[257]. уметам(10)",
+            "лакея возбуждал, сан-фасон, что все, в court. уметам",
+        ),
+        (
+            "19(31) октября, Аракчееву*, князь Р***, N*, 18** года",
+            "19(31) октября, Аракчееву, князь Р***, N*, 18** года",
+        ),
+        (
+            "Бирюк38. кунаком.6\nKrasnogorie!48 – 2x2, А.12 июля",
+            "Бирюк. кунаком.\nKrasnogorie! – 2x2, А.12 июля",
+        ),
+    ],
+)
+def test_clean_text(text, expected):
+    assert clean_text(text) == expected
 
 
 def test_helpers(tmp_path):
@@ -279,7 +340,6 @@ def test_download_extracts(tmp_path, monkeypatch):
     assert [record["title"] for record in dataset.get_records(genre="poems")] == [
         "Парус",
         "19 октября",
-        "Борис Годунов",
     ]
     assert len(list(dataset)) == len(TEXTS)
     monkeypatch.setattr(anyts.datasets, "download_file", lambda **kwargs: "")
