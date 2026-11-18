@@ -386,8 +386,7 @@ def analyze_sentence(sentence: str) -> tuple[tuple[str, rumorph.Analysis], ...]:
 
     Описание:
         Слова - как у WordsExtractor по умолчанию, без знаков препинания; разборы
-        выбирает контекстная модель ruMorph по всем токенам предложения, а токен
-        без ее разборов разбирается, как в parse_all
+        выбирает контекстная модель ruMorph по всем токенам предложения
 
     Аргументы:
         sentence (str): Текст одного предложения
@@ -410,7 +409,7 @@ def _analyze_sentence(sentence: str) -> tuple[tuple[str, rumorph.Analysis], ...]
     forms = [token for _, _, token in iter_tokens(strip_marks(sentence))]
     analyses = get_morph_analyzer().analyze_sentence(forms)
     return tuple(
-        (word_form(form), found[0] if found else parse_word(form))
+        (word_form(form), found[0])
         for form, found in zip(forms, analyses, strict=True)
         if not is_punctuation(form)
     )

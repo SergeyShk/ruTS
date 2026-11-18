@@ -6,7 +6,7 @@ The library can be installed with `pip` or from the project repository with `git
 
 *   `python` - 3.11 or newer
 *   [`anyts`](https://sergeyshk.github.io/anyTS/) - 0.5.3 or newer within 0.5, the language-independent core ruTS is built on
-*   [`rumorph`](https://github.com/SergeyShk/ruMorph) - 0.5 or newer within 0.5, the morphological analyzer
+*   [`rumorph`](https://github.com/SergeyShk/ruMorph) - 0.6 or newer within 0.6, the morphological analyzer
 *   [`anyseg`](https://github.com/SergeyShk/anySeg) - 0.3.1 or newer within 0.3, the segmenter into tokens and sentences
 *   `scipy`
 *   `spaCy` - 3.8.17 or newer

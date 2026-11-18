@@ -98,3 +98,13 @@ def test_format_kwic(capsys):
             format_kwic(lines, width=width)
     print_kwic(lines, width=10)
     assert capsys.readouterr().out == formatted + "\n"
+
+
+def test_kwic_by_lemma_after_abbreviation():
+    """Слово с точкой сокращения или знаком ударения не сбивает леммы в контексте после него"""
+    for text in (
+        "Пришел тов. Иванов с ножом из стали.",
+        "Отдал 5 руб. за нож из стали.",
+        "Ма\u0301ма купила нож из стали.",
+    ):
+        assert [line.keyword for line in kwic(text, "сталь", by_lemma=True)] == ["стали"], text
