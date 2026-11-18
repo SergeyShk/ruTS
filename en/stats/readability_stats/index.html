@@ -2738,7 +2738,7 @@
 
 
 <h1 id="readability-metrics">Readability metrics<a class="headerlink" href="#readability-metrics" title="Permanent link">&para;</a></h1>
-<div class="signature highlight"><pre><span></span><code><span class="n">ReadabilityStats</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">sents_extractor</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">words_extractor</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">preset</span><span class="o">=</span><span class="s1">'plainrussian'</span><span class="p">)</span>
+<div class="signature highlight"><pre><span></span><code><span class="n">ReadabilityStats</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">sents_extractor</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">words_extractor</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">preset</span><span class="o">=</span><span class="s1">'plainrussian'</span><span class="p">,</span> <span class="n">filter_nums</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
 </code></pre></div>
 <p>The <a href="https://en.wikipedia.org/wiki/Readability">readability</a> metrics of a text from its basic statistics: the mean sentence length in words, the mean word length in syllables or letters, the share of polysyllabic and of long words and the variability of word length. The data source is a text, a <code>Doc</code> object of <a href="https://github.com/explosion/spaCy">spaCy</a>, a <code>Document</code> of <a href="https://github.com/SergeyShk/anySeg">anySeg</a> or ready basic statistics, which are reused as they are; the extractors are passed on to the basic statistics of the other sources. The formulas count only the letters of the counted words, so a word extractor that drops words does not lengthen the mean word.</p>
 <p>The metrics are properties computed on each access, so a change of the <code>coefficients</code> of an object applies at once.</p>
@@ -2814,6 +2814,12 @@
 <td style="text-align: left;"><code>str</code></td>
 <td style="text-align: left;"><code>'plainrussian'</code></td>
 <td style="text-align: left;">Coefficient preset: <code>plainrussian</code>, <code>fiction</code> or <code>academic</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>filter_nums</code></td>
+<td style="text-align: left;"><code>bool</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Leave out the numbers among the words; <code>None</code> - the class attribute <code>filter_nums</code>, <code>True</code> in ruTS; not used for ready <code>BasicStats</code></td>
 </tr>
 </tbody>
 </table>
@@ -2914,7 +2920,7 @@
 <tr>
 <td style="text-align: left;">12-17</td>
 <td style="text-align: left;">17</td>
-<td style="text-align: left;">23.7</td>
+<td style="text-align: left;">23.9</td>
 <td style="text-align: left;">24.4</td>
 <td style="text-align: left;">15.9</td>
 </tr>
@@ -2927,7 +2933,7 @@
 </tr>
 </tbody>
 </table>
-<p>On school texts (labels 1-11) the test with the <code>fiction</code> preset is about four grades above the label (median deviation +3.7 against −1.0 for <code>plainrussian</code> and −0.1 for <code>academic</code>). For the grade of the reader use <code>plainrussian</code> or <code>academic</code>, and <code>fiction</code> to compare with works on Oborneva's coefficients. The consensus grade depends on the preset less: its median on <code>TextsByGrade</code> is 7.75 for <code>fiction</code> and 6.75 for <code>plainrussian</code>.</p>
+<p>On school texts (labels 1-11) the test with the <code>fiction</code> preset is about four grades above the label (median deviation +3.7 against −0.8 for <code>plainrussian</code> and −0.1 for <code>academic</code>). For the grade of the reader use <code>plainrussian</code> or <code>academic</code>, and <code>fiction</code> to compare with works on Oborneva's coefficients. The consensus grade depends on the preset less: its median on <code>TextsByGrade</code> is 7.75 for <code>fiction</code> and 6.75 for <code>plainrussian</code>.</p>
 <h2 id="metrics">Metrics<a class="headerlink" href="#metrics" title="Permanent link">&para;</a></h2>
 <p>A formula is computed by the function of its card on the counts of <code>bs</code>. The core formulas take their coefficients from <code>coefficients</code>, while the formulas of Solovyev, Ivanov and Solnyshkina, of Matskovsky and of Dale-Chall take those of their functions, and <code>coefficients</code> does not affect them. A formula gives <code>nan</code> when the number of words or of sentences it divides by is zero. The formulas of other languages with their original coefficients are computed by the <a href="../unadapted_readability_stats/"><code>UnadaptedReadabilityStats</code></a> class.</p>
 <table>

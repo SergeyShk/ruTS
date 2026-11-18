@@ -2738,7 +2738,7 @@
 
 
 <h1 id="_1">Метрики удобочитаемости<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h1>
-<div class="signature highlight"><pre><span></span><code><span class="n">ReadabilityStats</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">sents_extractor</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">words_extractor</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">preset</span><span class="o">=</span><span class="s1">'plainrussian'</span><span class="p">)</span>
+<div class="signature highlight"><pre><span></span><code><span class="n">ReadabilityStats</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">sents_extractor</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">words_extractor</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">preset</span><span class="o">=</span><span class="s1">'plainrussian'</span><span class="p">,</span> <span class="n">filter_nums</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
 </code></pre></div>
 <!-- core: stats/readability_stats.md:ReadabilityStats 7a36eb3 -->
 <p>Метрики <a href="https://ru.wikipedia.org/wiki/%D0%A3%D0%B4%D0%BE%D0%B1%D0%BE%D1%87%D0%B8%D1%82%D0%B0%D0%B5%D0%BC%D0%BE%D1%81%D1%82%D1%8C">удобочитаемости</a> текста по его базовым статистикам: средней длине предложения в словах, средней длине слова в слогах или буквах, доле сложных и длинных слов и вариативности длины слова. Источник данных - текст, объект <code>Doc</code> библиотеки <a href="https://github.com/explosion/spaCy">spaCy</a>, <code>Document</code> библиотеки <a href="https://github.com/SergeyShk/anySeg">anySeg</a> или готовые базовые статистики, которые берутся как есть; экстракторы передаются базовым статистикам остальных источников. Формулы считают только буквы учтенных слов, поэтому экстрактор слов, который отбрасывает слова, не удлиняет среднее слово.</p>
@@ -2815,6 +2815,12 @@
 <td style="text-align: left;"><code>str</code></td>
 <td style="text-align: left;"><code>'plainrussian'</code></td>
 <td style="text-align: left;">Пресет коэффициентов: <code>plainrussian</code>, <code>fiction</code> или <code>academic</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>filter_nums</code></td>
+<td style="text-align: left;"><code>bool</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Не считать числа словами; <code>None</code> - атрибут класса <code>filter_nums</code>, в ruTS <code>True</code>; не используется для готового <code>BasicStats</code></td>
 </tr>
 </tbody>
 </table>
@@ -2915,7 +2921,7 @@
 <tr>
 <td style="text-align: left;">12-17</td>
 <td style="text-align: left;">17</td>
-<td style="text-align: left;">23.7</td>
+<td style="text-align: left;">23.9</td>
 <td style="text-align: left;">24.4</td>
 <td style="text-align: left;">15.9</td>
 </tr>
@@ -2928,7 +2934,7 @@
 </tr>
 </tbody>
 </table>
-<p>На школьных текстах (метки 1-11) тест с пресетом <code>fiction</code> выше метки примерно на четыре класса (медиана отклонения +3.7 против −1.0 у <code>plainrussian</code> и −0.1 у <code>academic</code>). Для класса читателя подходят <code>plainrussian</code> и <code>academic</code>, а <code>fiction</code> - для сравнения с работами на коэффициентах Оборневой. Сводный класс зависит от пресета меньше: его медиана на <code>TextsByGrade</code> 7.75 у <code>fiction</code> и 6.75 у <code>plainrussian</code>.</p>
+<p>На школьных текстах (метки 1-11) тест с пресетом <code>fiction</code> выше метки примерно на четыре класса (медиана отклонения +3.7 против −0.8 у <code>plainrussian</code> и −0.1 у <code>academic</code>). Для класса читателя подходят <code>plainrussian</code> и <code>academic</code>, а <code>fiction</code> - для сравнения с работами на коэффициентах Оборневой. Сводный класс зависит от пресета меньше: его медиана на <code>TextsByGrade</code> 7.75 у <code>fiction</code> и 6.75 у <code>plainrussian</code>.</p>
 <h2 id="_3">Метрики<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h2>
 <p>Формулу считает функция из ее карточки по количествам <code>bs</code>. Формулы ядра берут коэффициенты из <code>coefficients</code>, а формулы Соловьёва, Иванова, Солнышкиной, Мацковского и Дейла-Чейла - из своих функций, и <code>coefficients</code> на них не действует. Формула дает <code>nan</code>, если количество слов или предложений, на которое она делит, равно нулю. Формулы других языков с исходными коэффициентами считает класс <a href="../unadapted_readability_stats/"><code>UnadaptedReadabilityStats</code></a>.</p>
 <table>

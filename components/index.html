@@ -2701,7 +2701,7 @@ True
 <h3 id="ReadabilityStatsComponent">Метрики удобочитаемости<a class="headerlink" href="#ReadabilityStatsComponent" title="Permanent link">&para;</a></h3>
 <div class="signature highlight"><pre><span></span><code><span class="n">ReadabilityStatsComponent</span><span class="p">(</span><span class="n">nlp</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">preset</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">basic</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
 </code></pre></div>
-<!-- core: components.md:ReadabilityStatsComponent 58263af -->
+<!-- core: components.md:ReadabilityStatsComponent cc3af3b -->
 <p><code>ReadabilityStatsComponent</code> кладет в расширение метрики удобочитаемости, посчитанные по документу или, с <code>basic</code>, по основным статистикам, которые положил в него другой компонент. Библиотека задает <code>basic_factory</code> - фабрику своего компонента основных статистик, которую называет ошибка, если в том расширении их нет.</p>
 <table>
 <thead>
@@ -2723,7 +2723,7 @@ True
 <td style="text-align: left;"><code>basic</code></td>
 <td style="text-align: left;"><code>str</code></td>
 <td style="text-align: left;"><code>None</code></td>
-<td style="text-align: left;">Расширение компонента основных статистик, которые берутся вместо повторного подсчета</td>
+<td style="text-align: left;">Расширение компонента основных статистик, которые берутся вместо повторного подсчета; их слова берутся как есть, вместе с числами</td>
 </tr>
 </tbody>
 </table>
@@ -2756,7 +2756,7 @@ True
 <h3 id="UnadaptedReadabilityStatsComponent">Формулы других языков<a class="headerlink" href="#UnadaptedReadabilityStatsComponent" title="Permanent link">&para;</a></h3>
 <div class="signature highlight"><pre><span></span><code><span class="n">UnadaptedReadabilityStatsComponent</span><span class="p">(</span><span class="n">nlp</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">basic</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
 </code></pre></div>
-<!-- core: components.md:UnadaptedReadabilityStatsComponent b7871a2 -->
+<!-- core: components.md:UnadaptedReadabilityStatsComponent 62f6947 -->
 <p><code>UnadaptedReadabilityStatsComponent</code> кладет в расширение формулы удобочитаемости других языков, посчитанные по документу или, с <code>basic</code>, по основным статистикам, которые положил в него другой компонент. Библиотека задает <code>basic_factory</code>, как для <code>ReadabilityStatsComponent</code>.</p>
 <table>
 <thead>
@@ -2772,7 +2772,7 @@ True
 <td style="text-align: left;"><code>basic</code></td>
 <td style="text-align: left;"><code>str</code></td>
 <td style="text-align: left;"><code>None</code></td>
-<td style="text-align: left;">Расширение компонента основных статистик, которые берутся вместо повторного подсчета</td>
+<td style="text-align: left;">Расширение компонента основных статистик, которые берутся вместо повторного подсчета; их слова берутся как есть, вместе с числами</td>
 </tr>
 </tbody>
 </table>

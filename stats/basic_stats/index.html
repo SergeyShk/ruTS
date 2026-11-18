@@ -2262,7 +2262,7 @@
 
 
 <h1 id="_1">Базовые статистики<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h1>
-<div class="signature highlight"><pre><span></span><code><span class="n">BasicStats</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">sents_extractor</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">words_extractor</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">normalize</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">complex_syl_factor</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">long_word_letter_factor</span><span class="o">=</span><span class="mi">6</span><span class="p">)</span>
+<div class="signature highlight"><pre><span></span><code><span class="n">BasicStats</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">sents_extractor</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">words_extractor</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">normalize</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">complex_syl_factor</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">long_word_letter_factor</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span> <span class="n">filter_nums</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 </code></pre></div>
 <!-- core: stats/basic_stats.md:BasicStats 259a268 -->
 <p>Базовые статистики текста: количество его предложений, слов, символов, слогов и знаков препинания и распределения его слов. Источник данных - текст, объект <code>Doc</code> библиотеки <a href="https://github.com/explosion/spaCy">spaCy</a> или <code>Document</code> библиотеки <a href="https://github.com/SergeyShk/anySeg">anySeg</a>. Буквы считаются по <code>str.isalpha</code>, поэтому цифры, дефисы и знаки внутри слова буквами не являются.</p>
@@ -2307,7 +2307,7 @@
 </div>
 </div>
 <h2 id="_2">Параметры<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h2>
-<!-- core: stats/basic_stats.md:BasicStats-parameters 2d8e54b -->
+<!-- core: stats/basic_stats.md:BasicStats-parameters 831bb3f -->
 <table>
 <thead>
 <tr>
@@ -2354,9 +2354,15 @@
 <td style="text-align: left;"><code>LONG_WORD_LETTER_FACTOR</code></td>
 <td style="text-align: left;">Минимальное количество букв в длинном слове</td>
 </tr>
+<tr>
+<td style="text-align: left;"><code>filter_nums</code></td>
+<td style="text-align: left;"><code>bool</code></td>
+<td style="text-align: left;"><code>False</code></td>
+<td style="text-align: left;">Не считать числа (<code>number_pattern</code>) словами</td>
+</tr>
 </tbody>
 </table>
-<p>Объект хранит <code>normalize</code>, <code>complex_syl_factor</code> и <code>long_word_letter_factor</code> под их именами.</p>
+<p>Объект хранит <code>normalize</code>, <code>complex_syl_factor</code>, <code>long_word_letter_factor</code> и <code>filter_nums</code> под их именами, а число отброшенных чисел - в <code>n_numbers</code>.</p>
 <p>В ruTS сложное слово - от четырех слогов, длинное - от шести букв: <code>COMPLEX_SYL_FACTOR = 4</code> и <code>LONG_WORD_LETTER_FACTOR = 6</code> из <code>ruts.constants</code>.</p>
 <h2 id="_3">Статистики<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h2>
 <!-- core: stats/basic_stats.md:BasicStats-attributes ba0510d -->
