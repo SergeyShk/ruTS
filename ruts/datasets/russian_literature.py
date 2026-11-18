@@ -1,3 +1,4 @@
+import html
 import re
 from collections.abc import Generator
 from itertools import islice
@@ -22,7 +23,7 @@ COMMIT = "4509680428729da225a73a22008133660f92bb7e"
 DOWNLOAD_URL = f"https://github.com/d0rj/RusLit/archive/{COMMIT}.zip"
 ARCHIVE = NAME + ".zip"
 ARCHIVE_SHA256 = "76cf8a91353c62b49dad7c282c5a6d42dcc5f8b0ab27f910ebdc8009579c8993"
-GENRES = ("prose", "poems", "publicism")
+GENRES = ("prose", "poems", "publicism", "drama")
 AUTHORS = {
     "Blok": "Александр Блок",
     "Bryusov": "Валерий Брюсов",
@@ -59,6 +60,62 @@ TEXT_COUNTS = {
 }
 # В собрании нет info.csv только у стихов Лермонтова
 WITHOUT_INFO = ("poems/Lermontov",)
+# Пьесы лежат в папках прозы и поэзии собрания
+DRAMA = {
+    "Chekhov": ("Вишнёвый сад", "Три сестры"),
+    "Gogol": ("Ревизор",),
+    "Gorky": ("Мещане", "На дне"),
+    "Pushkin": (
+        "Борис Годунов",
+        "Каменный гость",
+        "Моцарт и Сальери",
+        "Пир во время чумы",
+        "Скупой рыцарь",
+    ),
+}
+# Файлы собрания с чужим текстом: произведение идет после строки начала или до строки конца
+WORK_BOUNDS = {
+    ("Bryusov", "Декадент"): ("ДЕКАДЕНТ", None),
+    ("Gorky", "В людях"): ("В ЛЮДЯХ", None),
+    ("Pushkin", "Борис Годунов"): (None, "Конец"),
+}
+_LINE = r"^[^\S\n]*{}[^\S\n]*[.:]?[^\S\n]*$"
+APPARATUS = re.compile(
+    _LINE.format(
+        "(?:примечания(?: к повести)?|комментари[ий]|печатные варианты|другие редакции"
+        "|из ранних редакций|о романе|о сборнике)"
+    )
+    + r"|^[^\S\n]*(?:[—*][\s*]*)?впервые (?:опубликован|напечатан)",
+    re.I | re.M,
+)
+CONTENTS = re.compile(_LINE.format("(?:содержание|оглавление)"), re.I)
+CONTENTS_ENTRY = re.compile(r"^[^\S\n]*#\d+[^\S\n]")
+NOTE_LIST = re.compile(r"(?:\s*\(\d+\)[^\n]*)+")
+NOTE_BLOCK = re.compile(
+    r"^[^\S\n]*-{10,}[^\S\n]*\n(?=[^\S\n]*\(?\d+\)?[^\S\n])(?:[^\S\n]*\S[^\n]*\n?)*", re.M
+)
+SOURCE_NOTES = re.compile(r"^[^\S\n]*Сверка произведена[^\n]*(?:\n[^\S\n]*\S[^\n]*)*", re.M)
+INSERT = re.compile(r"\[[^\[\]]{1,1000}\]|\{[^{}]{1,1000}\}")
+_LANGUAGES = r"(?:фр|франц|лат|итал|ит|нем|англ|греч|дат)\b"
+_LANGUAGE_MARK = rf"\((?:от\.?\s*)?{_LANGUAGES}[^()]*\)"
+INSERT_MARK = re.compile(
+    rf"{_LANGUAGE_MARK}|[-–—]\s*{_LANGUAGES}\.?\s*[\]}}]$|\b(?:ред|прим|примеч)\.", re.I
+)
+# Примечание после главы: номер, затем до четырех непустых строк с пометой языка в конце
+NOTE_LINES = re.compile(
+    rf"^[^\S\n]*\d{{1,3}}(?:[^\S\n]+|[^\S\n]*\n(?:[^\S\n]*\n)*)(?:[^\S\n]*\S[^\n]*\n){{0,3}}?"
+    rf"[^\n]*?{_LANGUAGE_MARK}[.)]*(?:\s*--\s*Ред\.)?[^\S\n]*(?:\n|$)",
+    re.I | re.M,
+)
+# Выражения начинаются с символа сноски, а не с ретроспективной проверки: так в разы быстрее
+NOTE_MARKER = re.compile(
+    r"\[\d+\]|\*\[\d+\]|\{\d+\}|<<\d+>>|\((?<=[^\W\d_]\()\d{1,3}\)"
+    r"|\*(?<=[a-zа-яёàâçéèêëîïôûùü]\*)(?![*\w])"
+)
+NOTE_DIGITS = re.compile(
+    r"\d(?<=[^\W\d_]{2}\d)\d?(?!\w)|\d(?<=[^\W\d_][!?»]\d)\d?(?=\s)|\d(?<=[^\W\d_]\.\d)\d?$",
+    re.M,
+)
 DEFAULT_DATASET_DIR = DEFAULT_DATA_DIR.joinpath("texts")
 
 
@@ -67,10 +124,11 @@ class RussianLiterature(Dataset):
     Класс для работы с собранием русской классической литературы RusLit
 
     Описание:
-        373 произведения 12 авторов XIX - начала XX века (39 млн символов): проза
-        (269, от рассказов до романов), поэзия (78) и публицистика Толстого (26).
-        Год написания взят из файлов info.csv собрания, у 27 произведений его нет;
-        заголовок с именем автора и названием в начале текста срезается (strip_header)
+        373 произведения 12 авторов XIX - начала XX века (38 млн символов): проза
+        (264, от рассказов до романов), поэзия (73), публицистика Толстого (26)
+        и драма (10). Год написания взят из файлов info.csv собрания, у 27
+        произведений его нет; заголовок с именем автора и названием в начале текста
+        срезается (strip_header), аппарат издания удаляется (clean_text)
         Тексты в общественном достоянии (на Kaggle - лицензия PDDL), собраны с сайтов
         LitLib, Wikisource и Ilibrary. Подходит для атрибуции авторства и сравнения жанров
 
@@ -198,7 +256,7 @@ class RussianLiterature(Dataset):
         Получение текстов (без заголовков) из набора данных
 
         Аргументы:
-            genre (str): Жанр из GENRES - prose, poems или publicism
+            genre (str): Жанр из GENRES - prose, poems, publicism или drama
             author (str): Автор (подстрока русского имени без учета регистра и буквы ё)
             year_from (int): Наименьший год написания
             year_to (int): Наибольший год написания
@@ -228,7 +286,7 @@ class RussianLiterature(Dataset):
         Получение записей (с заголовками) из набора данных
 
         Аргументы:
-            genre (str): Жанр из GENRES - prose, poems или publicism
+            genre (str): Жанр из GENRES - prose, poems, publicism или drama
             author (str): Автор (подстрока русского имени без учета регистра и буквы ё)
             year_from (int): Наименьший год написания
             year_to (int): Наибольший год написания
@@ -267,15 +325,13 @@ class RussianLiterature(Dataset):
         """
         self.check_data()
         for genre in self.genres:
-            for author_dir in sorted(
-                path for path in self._dirpath.joinpath(genre).iterdir() if path.is_dir()
-            ):
+            for author_dir, filepaths in self.__genre_files(genre):
                 years = {
                     _title_key(title): value
                     for title, value in load_years(author_dir.joinpath("info.csv")).items()
                 }
                 author = self.authors.get(author_dir.name, author_dir.name)
-                for filepath in sorted(author_dir.glob("*.txt")):
+                for filepath in filepaths:
                     year_from, year_to = years.get(_title_key(filepath.stem), (None, None))
                     record = {
                         "genre": genre,
@@ -285,8 +341,35 @@ class RussianLiterature(Dataset):
                         "year_to": year_to,
                     }
                     if all(filter_(record) for filter_ in fields):
-                        text = strip_header(read_text(filepath), author, filepath.stem)
+                        text = trim_work(
+                            clean_text(read_text(filepath)),
+                            *WORK_BOUNDS.get((author_dir.name, filepath.stem), (None, None)),
+                        )
+                        text = strip_header(text, author, filepath.stem)
                         yield {**record, "text": text, "file": filepath}
+
+    def __genre_files(self, genre: str) -> Generator[tuple[Path, list[Path]], None, None]:
+        """
+        Папки авторов и файлы произведений жанра
+
+        Аргументы:
+            genre (str): Жанр из GENRES
+
+        Вывод:
+            generator[tuple[Path, list[Path]]]: Папка автора и файлы по алфавиту
+        """
+        for folder in ("prose", "poems") if genre == "drama" else (genre,):
+            for author_dir in sorted(
+                path for path in self._dirpath.joinpath(folder).iterdir() if path.is_dir()
+            ):
+                plays = DRAMA.get(author_dir.name, ())
+                filepaths = [
+                    path
+                    for path in sorted(author_dir.glob("*.txt"))
+                    if (path.stem in plays) == (genre == "drama")
+                ]
+                if filepaths:
+                    yield author_dir, filepaths
 
     def __filtered_iter(
         self, fields: Filters, lengths: Filters
@@ -443,6 +526,113 @@ def strip_header(text: str, author: str, title: str) -> str:
         while lines and not lines[0].strip():
             lines = lines[1:]
     return "\n".join(lines).strip()
+
+
+def clean_text(text: str) -> str:
+    """
+    Удаление аппарата издания из текста
+
+    Описание:
+        Удаляются примечания и сноски, в том числе авторские, комментарии и статьи
+        издания, варианты, оглавления и переводы; HTML-коды раскодируются
+
+    Аргументы:
+        text (str): Текст файла
+
+    Вывод:
+        str: Текст без аппарата издания
+    """
+    text = html.unescape(text)
+    while match := APPARATUS.search(text):
+        block = NOTE_LIST.match(text, match.end())
+        if not block:
+            text = text[: match.start()]
+            break
+        text = text[: match.start()] + text[block.end() :]
+    text = _strip_contents(text)
+    text = SOURCE_NOTES.sub("", text)
+    text = NOTE_BLOCK.sub("", text)
+    text = _remove(INSERT, text, INSERT_MARK.search)
+    text = NOTE_LINES.sub("", text)
+    return _remove(NOTE_DIGITS, _remove(NOTE_MARKER, text)).strip()
+
+
+def _remove(pattern: re.Pattern[str], text: str, condition: Any = None) -> str:
+    """
+    Удаление совпадений вместе с пробелами перед ними
+
+    Аргументы:
+        pattern (re.Pattern): Выражение
+        text (str): Текст
+        condition (callable): Предикат строки совпадения; все совпадения по умолчанию
+
+    Вывод:
+        str: Текст без совпадений
+    """
+    parts = []
+    last = 0
+    for match in pattern.finditer(text):
+        if condition is None or condition(match.group()):
+            parts.append(text[last : match.start()].rstrip(" \t\xa0"))
+            last = match.end()
+    parts.append(text[last:])
+    return "".join(parts)
+
+
+def trim_work(text: str, start: str | None = None, end: str | None = None) -> str:
+    """
+    Выделение произведения из файла с чужим текстом
+
+    Аргументы:
+        text (str): Текст файла
+        start (str): Строка перед началом произведения; без нее - текст с начала
+        end (str): Строка после конца произведения; без нее - текст до конца
+
+    Вывод:
+        str: Текст произведения
+    """
+    lines = text.split("\n")
+    keys = [line.strip() for line in lines]
+    first = keys.index(start) + 1 if start in keys else 0
+    last = keys.index(end, first) if end in keys[first:] else len(lines)
+    return "\n".join(lines[first:last]).strip()
+
+
+def _strip_contents(text: str) -> str:
+    """
+    Удаление оглавлений
+
+    Аргументы:
+        text (str): Текст
+
+    Вывод:
+        str: Текст без оглавлений
+    """
+    lines = text.split("\n")
+    kept = []
+    i = 0
+    while i < len(lines):
+        if CONTENTS.match(lines[i]):
+            first: list[str] = []
+            for j in range(i + 1, len(lines)):
+                key = _entry_key(lines[j])
+                if key in first:
+                    i = j
+                    break
+                if key and len(first) < 3:
+                    first.append(key)
+            else:
+                kept.append(lines[i])
+                i += 1
+            continue
+        if not CONTENTS_ENTRY.match(lines[i]):
+            kept.append(lines[i])
+        i += 1
+    return "\n".join(kept)
+
+
+def _entry_key(line: str) -> str:
+    return normalize_yo(re.sub(r"[\W\d_]", "", line).lower())
 
 
 def _title_key(value: str) -> str:

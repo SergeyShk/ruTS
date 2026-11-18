@@ -4,15 +4,16 @@
 RussianLiterature(data_dir=DEFAULT_DATASET_DIR)
 ```
 
-The [RusLit](https://github.com/d0rj/RusLit) collection of Russian classical literature (on Kaggle - [russian-literature](https://www.kaggle.com/datasets/d0rj3228/russian-literature)): 373 works by 12 authors of the 19th - early 20th century, 39 million characters, three genres:
+The [RusLit](https://github.com/d0rj/RusLit) collection of Russian classical literature (on Kaggle - [russian-literature](https://www.kaggle.com/datasets/d0rj3228/russian-literature)): 373 works by 12 authors of the 19th - early 20th century, 38 million characters, four genres:
 
 | Genre | Key | Authors | Works |
 | :---- | :-- | :------ | :---- |
-| Prose | `prose` | Chekhov (77), Tolstoy (42), Dostoevsky (33), Gorky (33), Bryusov (30), Gogol (16), Herzen (11), Pushkin (10), Turgenev (10), Blok (4), Lermontov (3) | 269 |
-| Poetry | `poems` | Pushkin (35), Lermontov (18), Nekrasov (15), Blok (10) | 78 |
+| Prose | `prose` | Chekhov (75), Tolstoy (42), Dostoevsky (33), Gorky (31), Bryusov (30), Gogol (15), Herzen (11), Pushkin (10), Turgenev (10), Blok (4), Lermontov (3) | 264 |
+| Poetry | `poems` | Pushkin (30), Lermontov (18), Nekrasov (15), Blok (10) | 73 |
 | Publicism | `publicism` | Tolstoy | 26 |
+| Drama | `drama` | Pushkin (5), Chekhov (2), Gorky (2), Gogol (1) | 10 |
 
-The texts are in the public domain (Kaggle states the PDDL license), collected from LitLib, Wikisource and Ilibrary. All works but 27 have a year of writing (`1825` or `1824-1825`). Records give authors by their Russian names instead of folder names (`Chekhov` → «Антон Чехов»). The collection suits authorship attribution and genre comparison.
+The texts are in the public domain (Kaggle states the PDDL license), collected from LitLib, Wikisource and Ilibrary. All works but 27 have a year of writing (`1825` or `1824-1825`). Records give authors by their Russian names instead of folder names (`Chekhov` → «Антон Чехов»). The plays of the collection lie in the folders of prose and poetry, the dataset assigns them to drama. The texts are freed of the notes and footnotes, the author's ones included, the commentaries and articles of the editions, the variants, the tables of contents and the translations, and three files of a publisher's preface and of repeated other works. The collection suits authorship attribution and genre comparison.
 
 The repository archive (20 MB) is downloaded at a pinned commit, texts are read one at a time.
 
@@ -50,7 +51,7 @@ Raises:
 
 | Attribute | Type | Description |
 | :-------- | :--- | :---------- |
-| `genres` | `tuple[str]` | Tuple of genres: `prose`, `poems`, `publicism` |
+| `genres` | `tuple[str]` | Tuple of genres: `prose`, `poems`, `publicism`, `drama` |
 | `authors` | `dict[str, str]` | Russian author names by folder name |
 | `info` | `dict[str, str]` | Name of the dataset and reference information about it |
 
@@ -70,7 +71,7 @@ An archive that cannot be downloaded or fails the checksum twice raises `Downloa
 
 | Parameter | Type | Default | Description |
 | :-------- | :--- | :------ | :---------- |
-| `genre` | `str` | `None` | Genre: `prose`, `poems` or `publicism` |
+| `genre` | `str` | `None` | Genre: `prose`, `poems`, `publicism` or `drama` |
 | `author` | `str` | `None` | Author (substring of the Russian name, ignoring case and ё) |
 | `year_from` | `int` | `None` | Earliest year of writing |
 | `year_to` | `int` | `None` | Latest year of writing |
@@ -97,7 +98,7 @@ Works without a year do not pass the year filters. An unknown genre, an `author`
 !!! warning "Author name in the text"
     Most files of the source begin with the author's name and the title («Александр Пушкин» and «19 ОКТЯБРЯ», «Валерий Брюсов. Бемоль»), which is a feature leak for authorship attribution. Unambiguous headers are stripped, which cleans 288 of 373 texts. In 8 texts the author's surname remains within the first 200 characters - in headers of other forms («Антон Павлович Чехов. Палата No 6») and dedications («Посвящается графине М. Н. Толстой»). For strict attribution check the beginnings of the texts or drop the first lines.
 
-`get_records` with the same parameters extracts records (with headers) from the dataset. Record fields: `genre` - genre, `author` - author, `title` - title, `year_from` and `year_to` - years of writing (`None` without a date), `text` - text without the author-and-title header, `file` - path to the file.
+`get_records` with the same parameters extracts records (with headers) from the dataset. Record fields: `genre` - genre, `author` - author, `title` - title, `year_from` and `year_to` - years of writing (`None` without a date), `text` - the cleaned text without the author-and-title header, `file` - path to the file.
 
 === "Code"
 

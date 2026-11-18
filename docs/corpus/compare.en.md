@@ -8,7 +8,7 @@ Compares two corpora of Russian texts by every feature of a text at once: which 
 
 The texts are cut into windows of `window` words by [`split_windows`](#split_windows), the features of every window come from [`text_features`](#text_features) or a function of one's own, and [`compare_features`](#compare_features) of the [anyTS](https://sergeyshk.github.io/anyTS/corpus/compare/) core compares the tables of the two corpora.
 
-Chekhov versus Tolstoy over the prose of the [`RussianLiterature`](../datasets/russianliterature.md) dataset: 77 and 42 works, 249 and 1422 windows of 1000 words, about a minute.
+Chekhov versus Tolstoy over the prose of the [`RussianLiterature`](../datasets/russianliterature.md) dataset: 75 and 42 works, 220 and 1339 windows of 1000 words, about a minute.
 
 === "Code"
 
@@ -39,22 +39,22 @@ Chekhov versus Tolstoy over the prose of the [`RussianLiterature`](../datasets/r
 
     ```
                                             median_Чехов  median_Толстой  ci_low  ci_high  cohen_d  cliff_delta    auc  p_holm
-    cohesion_content_overlap_2_sent                0.067           0.109  -0.047   -0.035   -1.116       -0.838  0.081     0.0
-    cohesion_noun_overlap_2_sent                   0.081           0.141  -0.069   -0.049   -1.107       -0.758  0.121     0.0
-    cohesion_content_overlap_prop_all              0.015           0.027  -0.014   -0.009   -0.573       -0.753  0.124     0.0
-    cohesion_content_overlap_adjacent              0.188           0.340  -0.187   -0.126   -1.258       -0.719  0.141     0.0
-    punct_ellipsis                                15.000           2.000   6.000   25.000    1.868        0.706  0.853     0.0
-    cohesion_content_overlap_all                   0.087           0.179  -0.121   -0.068   -1.082       -0.706  0.147     0.0
-    cohesion_noun_overlap_adjacent                 0.106           0.218  -0.139   -0.086   -1.054       -0.671  0.164     0.0
-    cohesion_noun_overlap_all                      0.043           0.094  -0.072   -0.035   -0.846       -0.660  0.170     0.0
-    punct_exclamation                             14.000           4.000   7.000   14.000    1.671        0.657  0.829     0.0
-    cohesion_content_overlap_prop_adjacent         0.037           0.060  -0.026   -0.017   -0.880       -0.646  0.177     0.0
-    {'n_Чехов': 249, 'n_Толстой': 1422, 'n_texts_Чехов': 57, 'n_texts_Толстой': 41}
+    cohesion_content_overlap_2_sent                0.067           0.111  -0.049   -0.036   -1.467       -0.835  0.082     0.0
+    cohesion_content_overlap_prop_all              0.015           0.027  -0.014   -0.009   -1.195       -0.791  0.105     0.0
+    cohesion_noun_overlap_2_sent                   0.082           0.143  -0.071   -0.047   -1.315       -0.755  0.123     0.0
+    cohesion_content_overlap_adjacent              0.201           0.345  -0.170   -0.113   -1.219       -0.717  0.141     0.0
+    cohesion_content_overlap_all                   0.096           0.181  -0.114   -0.060   -1.108       -0.710  0.145     0.0
+    punct_ellipsis                                12.000           2.000   4.000   21.000    2.040        0.704  0.852     0.0
+    cohesion_content_overlap_prop_adjacent         0.039           0.061  -0.026   -0.017   -1.029       -0.654  0.173     0.0
+    cohesion_noun_overlap_all                      0.048           0.097  -0.069   -0.032   -0.903       -0.648  0.176     0.0
+    cohesion_noun_overlap_adjacent                 0.114           0.217  -0.129   -0.079   -1.001       -0.647  0.176     0.0
+    cohesion_p_given                               0.312           0.368  -0.065   -0.034   -1.166       -0.638  0.181     0.0
+    {'n_Чехов': 220, 'n_Толстой': 1339, 'n_texts_Чехов': 55, 'n_texts_Толстой': 41}
     ```
 
-Cohesion sets the corpora apart most: Tolstoy repeats nouns and content words in adjacent and following sentences more often, and Chekhov has several times more ellipses and exclamations per 1000 words. The overlaps in adjacent and in all pairs of sentences partly repeat the sentence length (the Spearman ρ of `cohesion_content_overlap_all` with `sents_mean` over the windows is 0.90 for Chekhov and 0.75 for Tolstoy), while the share of the lemmas repeated in the next two sentences (`cohesion_content_overlap_2_sent`) repeats it only weakly (0.23 and 0.30). Twenty works of Chekhov and one of Tolstoy are shorter than a window, so the windows come from 57 and 41 works.
+Cohesion sets the corpora apart most: Tolstoy repeats nouns and content words in adjacent and following sentences more often, and Chekhov has several times more ellipses and exclamations per 1000 words. The overlaps in adjacent and in all pairs of sentences partly repeat the sentence length (the Spearman ρ of `cohesion_content_overlap_all` with `sents_mean` over the windows is 0.86 for Chekhov and 0.76 for Tolstoy), while the share of the lemmas repeated in the next two sentences (`cohesion_content_overlap_2_sent`) repeats it only weakly (0.19 and 0.31). Twenty works of Chekhov and one of Tolstoy are shorter than a window, so the windows come from 55 and 41 works.
 
-The p-values take the 1671 windows for independent (see the [warning](#statistics) below): 109 of the 145 features have a corrected p-value below 0.01, but only 25 show a large effect by Cliff's delta. The interval of the difference of the medians resamples whole works and is the safer guide: it excludes zero for 80 of those 109 features, and for the length of a sentence it spans −5.2 to −1.6 words, where the windows alone would give −4.1 to −2.8.
+The p-values take the 1559 windows for independent (see the [warning](#statistics) below): 107 of the 145 features have a corrected p-value below 0.01, but only 20 show a large effect by Cliff's delta. The interval of the difference of the medians resamples whole works and is the safer guide: it excludes zero for 79 of those 107 features, and for the length of a sentence it spans −4.6 to −1.1 words, where the windows alone would give −3.7 to −2.4.
 
 ## Parameters
 
@@ -149,11 +149,11 @@ Features of your own go to `features` as a function of a text, `text_features` w
 
     ```
                                         median_Чехов  median_Толстой  ci_low  ci_high  cohen_d  cliff_delta    auc  p_holm
-    syntax_converb_clauses_per_sent            0.102           0.207  -0.138   -0.086   -1.032       -0.606  0.197     0.0
-    syntax_participle_clauses_per_sent         0.041           0.118  -0.098   -0.055   -0.874       -0.584  0.208     0.0
-    syntax_nominal_chains_per_sent             0.075           0.164  -0.122   -0.062   -0.817       -0.577  0.211     0.0
-    syntax_tree_depth                          3.023           3.634  -0.906   -0.403   -1.011       -0.541  0.230     0.0
-    syntax_mean_clause_len                     4.975           5.814  -1.250   -0.468   -0.883       -0.533  0.233     0.0
+    syntax_converb_clauses_per_sent            0.111           0.217  -0.128   -0.092   -1.063       -0.633  0.184     0.0
+    syntax_participle_clauses_per_sent         0.049           0.119  -0.093   -0.052   -0.815       -0.546  0.227     0.0
+    syntax_nominal_chains_per_sent             0.087           0.164  -0.104   -0.053   -0.769       -0.531  0.235     0.0
+    syntax_tree_depth                          3.096           3.657  -0.771   -0.348   -0.913       -0.524  0.238     0.0
+    syntax_verb_phrases_per_t_unit             1.632           1.882  -0.349   -0.167   -0.818       -0.507  0.246     0.0
     ```
 
 ## Comparison of feature tables { #compare_features }
