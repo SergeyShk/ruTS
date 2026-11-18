@@ -28,7 +28,7 @@ from ruts.style_stats import (
     is_stopword,
     is_water_word,
 )
-from ruts.utils import parse_word
+from ruts.utils import get_document, parse_word
 
 text = "Тезаурусы - особый класс лексикографических ресурсов, для которых характерны следующие черты: полнота\
         значений словарного состава языка или какого-либо его сегмента; тематический, или идеографический способ\
@@ -489,3 +489,22 @@ def test_parenthetical_words():
     ss = StyleStats("Он, небось, устал. Она, кстати, пришла.")
     assert ss.markers()["parentheticals"] == ("небось", "кстати")
     assert is_parenthetical("небось") and is_water_word("небось") and is_stopword("небось")
+
+
+def test_flags_in_context(nlp, model_nlp):
+    """Стоп-слова, «вода» и вводные слова класса - по разбору в контексте предложения, у Doc
+    конвейера - по его разметке; функции решают по первому разбору слова"""
+    source = "Правда, он, наконец, пришёл. Это правда. Дом напротив школы. Напротив, всё хорошо."
+    ss = StyleStats(source)
+    assert ss.markers()["parentheticals"] == ("правда", "наконец", "напротив")
+    assert calc_parentheticals(list(ss.forms)) == pytest.approx(5 / 12 * 100)
+    assert ss.water == 50.0
+    flags = ss.doc_flags(get_document(source))
+    stopwords = [form for form, stop in zip(ss.forms, flags.stopword, strict=True) if stop]
+    assert stopwords == ["правда", "он", "наконец", "это", "напротив", "напротив", "всё"]
+    for doc in (nlp(source), model_nlp(source)):
+        assert ss.doc_flags(get_document(doc)) == flags
+    by_words = StyleStats(source, words_extractor=WordsExtractor())
+    assert by_words.water == pytest.approx(8 / 12 * 100)
+    assert list(by_words.nausea_words()) == ["пришёл", "Дом", "школы", "хорошо"]
+    assert ss.is_parenthetical("правда") and ss.is_stopword("правда")

@@ -25,7 +25,7 @@ The function `highlight` returns a `HighlightedText` object of ruTS with the lay
 | Officialese | `verbal_nouns` | Verbal nouns | [StyleStats](../stats/style_stats.md) |
 | | `compound_prepositions` | Compound prepositions from the `COMPOUND_PREPOSITIONS` list | [StyleStats](../stats/style_stats.md) |
 | | `cliches` | Clichés from the `OFFICIALESE_CLICHES` list or the `cliches` parameter | [StyleStats](../stats/style_stats.md) |
-| Style | `stopwords` | Water words by part of speech (`is_water_word`) or from the given list | [StyleStats](../stats/style_stats.md) |
+| Style | `stopwords` | Water words, as in the water content, or the words of the given list | [StyleStats](../stats/style_stats.md) |
 | | `parentheticals` | Parenthetical words and phrases | [StyleStats](../stats/style_stats.md) |
 | | `connectors` | Connectives by part of speech from the `Doc` annotation or ruMorph, the tooltip shows the class and type | [CohesionStats](../stats/cohesion_stats.md) |
 | Phonics | `alliteration` | Repeats of a consonant in adjacent words that are unlikely given Russian letter frequencies | [PhonStats](../stats/phon_stats.md) |
@@ -141,7 +141,7 @@ The parameters of the layers of ruTS:
 | :-------- | :--- | :------ | :---------- |
 | `long_sent_word_factor` | `int` | `20` | Minimum number of words in a long sentence |
 | `complex_syl_factor` | `int` | `4` | Minimum number of syllables in a complex word |
-| `stopwords` | `list[str]` / `set[str]` | `None` | List or set of water words; if not given, they are determined by part of speech with ruMorph |
+| `stopwords` | `list[str]` / `set[str]` | `None` | List or set of water words; if not given, they are determined by the ruMorph analysis |
 | `cliches` | `list[str]` / `set[str]` | `None` | List or set of clichés; if not given, `OFFICIALESE_CLICHES` is used |
 | `alliteration_threshold` | `float` | `0.001` | Probability threshold of a consonant repeat under an independent letter distribution, below which the repeat counts as alliteration |
 

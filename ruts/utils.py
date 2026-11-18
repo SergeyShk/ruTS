@@ -501,6 +501,29 @@ def analyze_words(words: Sequence[tuple[int, str]], text: str) -> list[rumorph.A
     return found
 
 
+def _document_analyses(document: Document) -> list[rumorph.Analysis]:
+    """Разборы ruMorph слов document_words: разметки документа (как word_analysis), иначе
+    в контексте (analyze_words), иначе первый"""
+    found = []
+    for token in document.tokens:
+        text = token.text
+        if anyts.utils.has_words(text):
+            first = token.words[0]
+            marked = (
+                _matching_analysis(first.form, first.lemma, first.upos or "", first.feats or "")
+                if first.lemma
+                else None
+            )
+            found.append((token.start, word_form(strip_marks(text)), marked))
+    in_context: Sequence[rumorph.Analysis | None] = [None] * len(found)
+    if any(marked is None for _, _, marked in found):
+        in_context = analyze_words([(start, form) for start, form, _ in found], document.text)
+    return [
+        marked or analysis or parse_word(form)
+        for (_, form, marked), analysis in zip(found, in_context, strict=True)
+    ]
+
+
 @_takes_word
 def word_analysis(word: TreeWord) -> rumorph.Analysis | None:
     """

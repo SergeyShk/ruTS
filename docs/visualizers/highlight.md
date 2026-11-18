@@ -32,7 +32,7 @@ highlight(source, layers=None, long_sent_word_factor=20, complex_syl_factor=4, s
 | Канцелярит | `verbal_nouns` | Отглагольные существительные | [StyleStats](../stats/style_stats.md) |
 | | `compound_prepositions` | Производные предлоги по списку `COMPOUND_PREPOSITIONS` | [StyleStats](../stats/style_stats.md) |
 | | `cliches` | Штампы по списку `OFFICIALESE_CLICHES` или параметру `cliches` | [StyleStats](../stats/style_stats.md) |
-| Стиль | `stopwords` | Слова «воды» по части речи (`is_water_word`) или переданному списку | [StyleStats](../stats/style_stats.md) |
+| Стиль | `stopwords` | Слова «воды», как в водности, или слова переданного списка | [StyleStats](../stats/style_stats.md) |
 | | `parentheticals` | Вводные слова и обороты | [StyleStats](../stats/style_stats.md) |
 | | `connectors` | Коннекторы по части речи из разметки `Doc` или ruMorph, в подсказке класс и тип | [CohesionStats](../stats/cohesion_stats.md) |
 | Фоника | `alliteration` | Повторы согласной в соседних словах, маловероятные при частотах букв русского языка | [PhonStats](../stats/phon_stats.md) |
@@ -152,7 +152,7 @@ highlight(source, layers=None, long_sent_word_factor=20, complex_syl_factor=4, s
 | :------- | :-- | :----------- | :------- |
 | `long_sent_word_factor` | `int` | `20` | Минимальное количество слов в длинном предложении |
 | `complex_syl_factor` | `int` | `4` | Минимальное количество слогов в сложном слове |
-| `stopwords` | `list[str]` / `set[str]` | `None` | Список или множество слов «воды»; если не задан, они определяются по части речи с помощью ruMorph |
+| `stopwords` | `list[str]` / `set[str]` | `None` | Список или множество слов «воды»; если не задан, они определяются по разбору ruMorph |
 | `cliches` | `list[str]` / `set[str]` | `None` | Список или множество штампов; если не задан, используется `OFFICIALESE_CLICHES` |
 | `alliteration_threshold` | `float` | `0.001` | Порог вероятности повтора согласной при независимом распределении букв, ниже которого повтор считается аллитерацией |
 

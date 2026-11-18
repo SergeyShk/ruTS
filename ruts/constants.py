@@ -456,6 +456,10 @@ _RU_CORE_MESSAGES: dict[str, str] = {
     "tokenizer_strings": "Токенизатор должен возвращать строки, а не {type}",
     "hook_document": "Крючок {hook} класса {cls} должен возвращать Document, а не {type}",
     "hook_words": "Крючок {hook} класса {cls} должен возвращать последовательность строк, а не {type}",
+    "hook_flags": (
+        "Крючок {hook} класса {cls} должен возвращать WordFlags из {size} булевых значений "
+        "в каждой проверке, а не {value}"
+    ),
     "hook_word_pairs": "Крючок {hook} класса {cls} должен возвращать пары объектов TreeWord, а не {type}",
     "hook_string": "Крючок {hook} класса {cls} должен возвращать строку, а не {type}",
     "hook_lexical_words": (
