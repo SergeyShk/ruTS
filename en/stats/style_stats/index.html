@@ -2606,7 +2606,7 @@
 </tr>
 </tbody>
 </table>
-<p>The bands of the cards are the norms of <a href="https://advego.com/text/seo/">Advego</a>, <a href="https://text.ru/seo">Text.ru</a>, pr-cy and megaindex, in Russian (<code>STYLE_NORMS</code>), which <a href="#methods"><code>describe</code></a> reads. They are guidelines of the services for website texts of several hundred words: on short texts nausea and spam are uninformative, and the norms do not apply to fiction. The spam score and the markers of the officialese have no norms, and <code>describe</code> gives <code>None</code> for them.</p>
+<p>The bands of the cards are the norms of <a href="https://advego.com/text/seo/">Advego</a> and <a href="https://text.ru/seo">Text.ru</a>, in Russian (<code>STYLE_NORMS</code>), which <a href="#methods"><code>describe</code></a> reads. They are guidelines of the services for website texts of several hundred words: on short texts nausea and spam are uninformative, and the norms do not apply to fiction. The spam score, the naturalness by Zipf's law and the markers of the officialese have no norms, and <code>describe</code> gives <code>None</code> for them.</p>
 <div class="metric-card">
 <h3 id="classic_nausea">Classic nausea<a class="headerlink" href="#classic_nausea" title="Permanent link">&para;</a></h3>
 <p class="metric-meta"><code>classic_nausea</code> · <a href="https://advego.com/text/seo/">Advego</a></p>
@@ -2855,7 +2855,7 @@
 </div>
 <div class="metric-card">
 <h3 id="zipf_naturalness">Naturalness by Zipf's law<a class="headerlink" href="#zipf_naturalness" title="Permanent link">&para;</a></h3>
-<p class="metric-meta"><code>zipf_naturalness</code> · pr-cy, megaindex</p>
+<p class="metric-meta"><code>zipf_naturalness</code></p>
 <div class="signature highlight"><pre><span></span><code><span class="n">calc_zipf_naturalness</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">top_n</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
 </code></pre></div>
 <p>The agreement of the frequencies of the most frequent words with the ideal distribution of <a href="https://en.wikipedia.org/wiki/Zipf's_law">Zipf's law</a>, <span class="arithmatex">\(f_r = f_1 / r\)</span>, where <span class="arithmatex">\(f_1\)</span> is the frequency of the most frequent word and <span class="arithmatex">\(r\)</span> the rank. The ranks run from 2 to <span class="arithmatex">\(R = \min(\textrm{top}_n, V, f_1)\)</span>, where <span class="arithmatex">\(V\)</span> is the number of lexemes. Negative values are cut to 0. Without ranks to compare - all the words hapaxes, one lexeme or <code>top_n</code> below 2 - the value is <code>nan</code>.</p>
@@ -2883,24 +2883,6 @@
 <td style="text-align: left;"><code>int</code></td>
 <td style="text-align: left;"><code>10</code></td>
 <td style="text-align: left;">Number of the most frequent words</td>
-</tr>
-</tbody>
-</table>
-<table>
-<thead>
-<tr>
-<th style="text-align: left;">Value</th>
-<th style="text-align: left;">Reading</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align: left;"><code>[0, 50)</code></td>
-<td style="text-align: left;">below the pr-cy and megaindex norm</td>
-</tr>
-<tr>
-<td style="text-align: left;"><code>[50, 100]</code></td>
-<td style="text-align: left;">the pr-cy and megaindex norm</td>
 </tr>
 </tbody>
 </table>

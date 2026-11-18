@@ -2610,7 +2610,7 @@
 </tr>
 </tbody>
 </table>
-<p>Полосы в карточках - нормы <a href="https://advego.com/text/seo/">Advego</a>, <a href="https://text.ru/seo">Text.ru</a>, pr-cy и megaindex (<code>STYLE_NORMS</code>), по которым читает метод <a href="#methods"><code>describe</code></a>. Это ориентиры сервисов для текстов сайтов в несколько сотен слов: на коротких текстах тошнота и заспамленность неинформативны, к художественной прозе нормы неприменимы. У заспамленности и маркеров канцелярита норм нет, и <code>describe</code> возвращает для них <code>None</code>.</p>
+<p>Полосы в карточках - нормы <a href="https://advego.com/text/seo/">Advego</a> и <a href="https://text.ru/seo">Text.ru</a> (<code>STYLE_NORMS</code>), по которым читает метод <a href="#methods"><code>describe</code></a>. Это ориентиры сервисов для текстов сайтов в несколько сотен слов: на коротких текстах тошнота и заспамленность неинформативны, к художественной прозе нормы неприменимы. У заспамленности, естественности по Ципфу и маркеров канцелярита норм нет, и <code>describe</code> возвращает для них <code>None</code>.</p>
 <div class="metric-card">
 <h3 id="classic_nausea">Классическая тошнота<a class="headerlink" href="#classic_nausea" title="Permanent link">&para;</a></h3>
 <p class="metric-meta"><code>classic_nausea</code> · <a href="https://advego.com/text/seo/">Advego</a></p>
@@ -2861,7 +2861,7 @@
 </div>
 <div class="metric-card">
 <h3 id="zipf_naturalness">Естественность по Ципфу<a class="headerlink" href="#zipf_naturalness" title="Permanent link">&para;</a></h3>
-<p class="metric-meta"><code>zipf_naturalness</code> · pr-cy, megaindex</p>
+<p class="metric-meta"><code>zipf_naturalness</code></p>
 <div class="signature highlight"><pre><span></span><code><span class="n">calc_zipf_naturalness</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">top_n</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
 </code></pre></div>
 <p>Согласие частот самых частых слов с идеальным распределением <a href="https://en.wikipedia.org/wiki/Zipf's_law">закона Ципфа</a> <span class="arithmatex">\(f_r = f_1 / r\)</span>, где <span class="arithmatex">\(f_1\)</span> - частота самого частого слова, <span class="arithmatex">\(r\)</span> - ранг. Ранги берутся от 2 до <span class="arithmatex">\(R = \min(\textrm{top}_n, V, f_1)\)</span>, где <span class="arithmatex">\(V\)</span> - количество лексем. Отрицательные значения обрезаются до 0. Без рангов для сравнения - все слова гапаксы, одна лексема или <code>top_n</code> меньше 2 - значение равно <code>nan</code>.</p>
@@ -2889,24 +2889,6 @@
 <td style="text-align: left;"><code>int</code></td>
 <td style="text-align: left;"><code>10</code></td>
 <td style="text-align: left;">Количество самых частых слов</td>
-</tr>
-</tbody>
-</table>
-<table>
-<thead>
-<tr>
-<th style="text-align: left;">Значение</th>
-<th style="text-align: left;">Прочтение</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align: left;"><code>[0; 50)</code></td>
-<td style="text-align: left;">ниже нормы pr-cy и megaindex</td>
-</tr>
-<tr>
-<td style="text-align: left;"><code>[50; 100]</code></td>
-<td style="text-align: left;">норма pr-cy и megaindex</td>
 </tr>
 </tbody>
 </table>

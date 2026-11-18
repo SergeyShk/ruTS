@@ -2801,13 +2801,13 @@
 <td style="text-align: left;"><code>sents_extractor</code></td>
 <td style="text-align: left;"><code>SentsExtractor</code></td>
 <td style="text-align: left;"><code>None</code></td>
-<td style="text-align: left;">Sentence extraction tool</td>
+<td style="text-align: left;">Sentence extraction tool, not used for ready <code>BasicStats</code></td>
 </tr>
 <tr>
 <td style="text-align: left;"><code>words_extractor</code></td>
 <td style="text-align: left;"><code>WordsExtractor</code></td>
 <td style="text-align: left;"><code>None</code></td>
-<td style="text-align: left;">Word extraction tool</td>
+<td style="text-align: left;">Word extraction tool, not used for ready <code>BasicStats</code></td>
 </tr>
 <tr>
 <td style="text-align: left;"><code>preset</code></td>
@@ -2819,11 +2819,11 @@
 <td style="text-align: left;"><code>filter_nums</code></td>
 <td style="text-align: left;"><code>bool</code></td>
 <td style="text-align: left;"><code>None</code></td>
-<td style="text-align: left;">Leave out the numbers among the words; <code>None</code> - the class attribute <code>filter_nums</code>, <code>True</code> in ruTS; not used for ready <code>BasicStats</code></td>
+<td style="text-align: left;">Leave out the numbers among the words; <code>None</code> - the class attribute <code>filter_nums</code>, <code>True</code> in ruTS, for ready <code>BasicStats</code> - as in them; a value that differs from theirs raises <code>ParameterError</code></td>
 </tr>
 </tbody>
 </table>
-<p>The object keeps the basic statistics of the text in <code>bs</code>, the name of the preset in <code>preset</code> (read-only) and the coefficients of the preset in <code>coefficients</code>, a copy that can be changed for one object. The basic statistics can be passed to an object of another preset: <code>ReadabilityStats(rs.bs, preset="fiction")</code>.</p>
+<p>The object keeps the basic statistics of the text in <code>bs</code>, the name of the preset in <code>preset</code> (read-only) and the coefficients of the preset in <code>coefficients</code>, a copy that can be changed for one object. The basic statistics can be passed to an object of another preset: <code>ReadabilityStats(rs.bs, preset="fiction")</code>. A ready <code>BasicStats(text)</code> counts the numbers as words; the grades of <code>ReadabilityStats(text)</code> come from <code>BasicStats(text, filter_nums=True)</code>.</p>
 <h2 id="presets">Coefficient presets<a class="headerlink" href="#presets" title="Permanent link">&para;</a></h2>
 <p>The presets differ in the coefficients of the Flesch-Kincaid test and the Flesch index; the coefficients of the Coleman-Liau, SMOG and ARI indices in all presets come from the plainrussian project, and the other formulas do not depend on the preset.</p>
 <table>

@@ -2305,9 +2305,9 @@
 </tbody>
 </table>
 <p>A corpus that is not a mapping of lists of strings raises <code>SourceTypeError</code>; an empty corpus, a text without units and no unit left after culling raise <code>SourceError</code>, and an <code>n_mfw</code> that is not an integer of at least one and a <code>culling</code> that is not a number within [0, 1] <code>ParameterError</code>.</p>
-<div class="signature highlight"><pre><span></span><code><span class="n">z_scores</span><span class="p">(</span><span class="n">table</span><span class="p">)</span>
+<div class="signature highlight"><pre><span></span><code><span class="n">z_scores</span><span class="p">(</span><span class="n">table</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">messages</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
 </code></pre></div>
-<p>Standardizes the columns of a table of frequencies with the sample standard deviation, like <code>scale()</code> of R; a column with the same frequency in every text gives zeros.</p>
+<p>Standardizes the columns of a table of frequencies with the sample standard deviation, like <code>scale()</code> of R; a column with the same frequency in every text gives zeros. A table that is not a <code>DataFrame</code> raises <code>SourceTypeError</code>.</p>
 <table>
 <thead>
 <tr>
@@ -2322,7 +2322,13 @@
 <td style="text-align: left;"><code>table</code></td>
 <td style="text-align: left;"><code>DataFrame</code></td>
 <td style="text-align: left;">-</td>
-<td style="text-align: left;">Table of relative frequencies</td>
+<td style="text-align: left;">Table of relative frequencies (<code>frequency_table</code>)</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>messages</code></td>
+<td style="text-align: left;"><code>dict[str, str]</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Messages of the errors by key, in place of those of the library</td>
 </tr>
 </tbody>
 </table>

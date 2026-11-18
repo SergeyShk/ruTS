@@ -2802,13 +2802,13 @@
 <td style="text-align: left;"><code>sents_extractor</code></td>
 <td style="text-align: left;"><code>SentsExtractor</code></td>
 <td style="text-align: left;"><code>None</code></td>
-<td style="text-align: left;">Инструмент для извлечения предложений</td>
+<td style="text-align: left;">Инструмент для извлечения предложений, не используется для готового <code>BasicStats</code></td>
 </tr>
 <tr>
 <td style="text-align: left;"><code>words_extractor</code></td>
 <td style="text-align: left;"><code>WordsExtractor</code></td>
 <td style="text-align: left;"><code>None</code></td>
-<td style="text-align: left;">Инструмент для извлечения слов</td>
+<td style="text-align: left;">Инструмент для извлечения слов, не используется для готового <code>BasicStats</code></td>
 </tr>
 <tr>
 <td style="text-align: left;"><code>preset</code></td>
@@ -2820,11 +2820,11 @@
 <td style="text-align: left;"><code>filter_nums</code></td>
 <td style="text-align: left;"><code>bool</code></td>
 <td style="text-align: left;"><code>None</code></td>
-<td style="text-align: left;">Не считать числа словами; <code>None</code> - атрибут класса <code>filter_nums</code>, в ruTS <code>True</code>; не используется для готового <code>BasicStats</code></td>
+<td style="text-align: left;">Не считать числа словами; <code>None</code> - атрибут класса <code>filter_nums</code>, в ruTS <code>True</code>, для готового <code>BasicStats</code> - как в нем, другое значение дает <code>ParameterError</code></td>
 </tr>
 </tbody>
 </table>
-<p>Объект хранит базовые статистики текста в <code>bs</code>, название пресета - в <code>preset</code> (только для чтения), коэффициенты пресета - в <code>coefficients</code>, копии, которую можно менять для отдельного объекта. Базовые статистики можно передать объекту другого пресета: <code>ReadabilityStats(rs.bs, preset="fiction")</code>.</p>
+<p>Объект хранит базовые статистики текста в <code>bs</code>, название пресета - в <code>preset</code> (только для чтения), коэффициенты пресета - в <code>coefficients</code>, копии, которую можно менять для отдельного объекта. Базовые статистики можно передать объекту другого пресета: <code>ReadabilityStats(rs.bs, preset="fiction")</code>. Готовый <code>BasicStats(text)</code> считает числа словами; оценки <code>ReadabilityStats(text)</code> дает <code>BasicStats(text, filter_nums=True)</code>.</p>
 <h2 id="presets">Пресеты коэффициентов<a class="headerlink" href="#presets" title="Permanent link">&para;</a></h2>
 <p>Пресеты различаются коэффициентами теста Флеша-Кинкайда и индекса Флеша; коэффициенты индексов Колман-Лиау, SMOG и ARI во всех пресетах - из проекта plainrussian, остальные формулы от пресета не зависят.</p>
 <table>

@@ -2307,10 +2307,10 @@
 </tbody>
 </table>
 <p>Корпус, который не словарь списков строк, дает <code>SourceTypeError</code>; пустой корпус, текст без единиц и отсев, после которого не остается ни одной единицы, - <code>SourceError</code>, а <code>n_mfw</code>, который не целое число не меньше единицы, и <code>culling</code>, который не число в пределах [0, 1], - <code>ParameterError</code>.</p>
-<!-- core: corpus/stylometry.md:z_scores d9b43d3 -->
-<div class="signature highlight"><pre><span></span><code><span class="n">z_scores</span><span class="p">(</span><span class="n">table</span><span class="p">)</span>
+<!-- core: corpus/stylometry.md:z_scores e85221e -->
+<div class="signature highlight"><pre><span></span><code><span class="n">z_scores</span><span class="p">(</span><span class="n">table</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">messages</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
 </code></pre></div>
-<p>Стандартизирует столбцы таблицы частот с выборочным стандартным отклонением, как <code>scale()</code> в R; столбец с одинаковой частотой во всех текстах дает нули.</p>
+<p>Стандартизирует столбцы таблицы частот с выборочным стандартным отклонением, как <code>scale()</code> в R; столбец с одинаковой частотой во всех текстах дает нули. Таблица не <code>DataFrame</code> дает <code>SourceTypeError</code>.</p>
 <table>
 <thead>
 <tr>
@@ -2325,7 +2325,13 @@
 <td style="text-align: left;"><code>table</code></td>
 <td style="text-align: left;"><code>DataFrame</code></td>
 <td style="text-align: left;">-</td>
-<td style="text-align: left;">Таблица относительных частот</td>
+<td style="text-align: left;">Таблица относительных частот (<code>frequency_table</code>)</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>messages</code></td>
+<td style="text-align: left;"><code>dict[str, str]</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Сообщения об ошибках по ключам вместо русских <code>CORE_MESSAGES</code></td>
 </tr>
 </tbody>
 </table>
