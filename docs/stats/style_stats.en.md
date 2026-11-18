@@ -165,16 +165,10 @@ Whether a word is "water": conjunctions, particles (and бы), pronominal nouns 
 
 ### Spam score { #spam }
 
-`spam` · [Text.ru](https://text.ru/seo)
+`spam`
 { .metric-meta }
 
 --8<-- "stats/style_stats.md:calc_spam"
-
-| Value | Reading |
-| :---- | :------ |
-| `[0, 30)` | natural text by Text.ru |
-| `[30, 60]` | SEO-optimized text by Text.ru |
-| `(60, 100]` | spammed text by Text.ru |
 
 </div>
 

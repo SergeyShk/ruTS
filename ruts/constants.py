@@ -652,11 +652,6 @@ STYLE_NORMS: dict[str, tuple[tuple[float, str], ...]] = {
         (15, "избыточная водность по Text.ru"),
         (0, "естественная водность по Text.ru"),
     ),
-    "spam": (
-        (nextafter(60, inf), "заспамленный текст по Text.ru"),
-        (30, "SEO-оптимизированный текст по Text.ru"),
-        (0, "естественный текст по Text.ru"),
-    ),
     "zipf_naturalness": (
         (50, "норма pr-cy и megaindex"),
         (0, "ниже нормы pr-cy и megaindex"),

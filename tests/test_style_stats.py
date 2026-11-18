@@ -288,10 +288,9 @@ def test_describe():
         "classic_nausea": "норма Advego",
         "academic_nausea": "выше нормы Advego",
         "water": "высокая водность по Text.ru",
-        "spam": "естественный текст по Text.ru",
         "zipf_naturalness": "ниже нормы pr-cy и megaindex",
     }
-    assert ss.describe("cliches") is None
+    assert ss.describe("cliches") is None and ss.describe("spam") is None
     hapaxes = StyleStats("мама мыла раму")
     assert isnan(hapaxes.zipf_naturalness)
     assert hapaxes.describe("zipf_naturalness") is None
@@ -314,8 +313,6 @@ def test_describe():
         ("academic_nausea", 5, "норма Advego"),
         ("water", 30, "избыточная водность по Text.ru"),
         ("water", 15, "избыточная водность по Text.ru"),
-        ("spam", 60, "SEO-оптимизированный текст по Text.ru"),
-        ("spam", 30, "SEO-оптимизированный текст по Text.ru"),
         ("zipf_naturalness", 50, "норма pr-cy и megaindex"),
     ],
 )

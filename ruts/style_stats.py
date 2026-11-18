@@ -84,8 +84,8 @@ class StyleStats(anyts.style_stats.StyleStats):
         'cliches': 0.0}
         >>> ss.keyword_density("когда", "нет а")
         {'когда': 20.0, 'нет а': 13.333333333333334}
-        >>> ss.describe("water"), ss.describe("spam")
-        ('высокая водность по Text.ru', 'естественный текст по Text.ru')
+        >>> ss.describe("water"), ss.describe("academic_nausea")
+        ('высокая водность по Text.ru', 'выше нормы Advego')
         >>> StyleStats("В целях повышения качества в кратчайшие сроки, как правило, проводится проверка").markers()
         {'verbal_nouns': ('повышения',),
         'compound_prepositions': ('в целях',),
