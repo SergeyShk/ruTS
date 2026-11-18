@@ -364,12 +364,12 @@ More in the [documentation](https://sergeyshk.github.io/ruTS/en/stats/morph_stat
 
 <br>
 
-The indicators of the [Advego](https://advego.com/text/seo/) and [Text.ru](https://text.ru/seo) services by the commonly accepted definitions (the formulas of the services are not published):
+SEO metrics by the commonly accepted definitions (the formulas of the services are not published):
 
 *   Classic and academic nausea, water content, spam score
 *   Naturalness by Zipf's law, keyword and phrase density
 *   Lexical officialese markers: verbal nouns, compound prepositions, parentheticals, clichés
-*   Reading of the metrics by the service norms
+*   Reading of the metrics by the norms of [Advego](https://advego.com/text/seo/), [Text.ru](https://text.ru/seo), pr-cy and megaindex
 
 ```python
 >>> from pprint import pprint
@@ -392,8 +392,8 @@ The indicators of the [Advego](https://advego.com/text/seo/) and [Text.ru](https
 >>> ss.keyword_density("когда", "нет а")
 {'когда': 20.0, 'нет а': 13.333333333333334}
 
->>> ss.describe("water"), ss.describe("spam")
-('высокая водность по Text.ru', 'естественный текст по Text.ru')
+>>> ss.describe("water"), ss.describe("academic_nausea")
+('высокая водность по Text.ru', 'выше нормы Advego')
 
 >>> ss = StyleStats("В целях повышения качества в кратчайшие сроки, как правило, проводится проверка")
 >>> ss.verbal_nouns, ss.compound_prepositions, ss.parentheticals, ss.cliches

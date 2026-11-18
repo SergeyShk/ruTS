@@ -47,7 +47,7 @@ The class extends the `StyleStats` of the [anyTS](https://sergeyshk.github.io/an
 
 --8<-- "stats/style_stats.md:StyleStats-metrics"
 
-The bands of the cards are the norms of [Advego](https://advego.com/text/seo/), [Text.ru](https://text.ru/seo), pr-cy and megaindex, in Russian (`STYLE_NORMS`), which [`describe`](#methods) reads. They are guidelines of the services for website texts of several hundred words: on short texts nausea and spam are uninformative, and the norms do not apply to fiction. The markers of the officialese have no norms, and `describe` gives `None` for them.
+The bands of the cards are the norms of [Advego](https://advego.com/text/seo/), [Text.ru](https://text.ru/seo), pr-cy and megaindex, in Russian (`STYLE_NORMS`), which [`describe`](#methods) reads. They are guidelines of the services for website texts of several hundred words: on short texts nausea and spam are uninformative, and the norms do not apply to fiction. The spam score and the markers of the officialese have no norms, and `describe` gives `None` for them.
 
 <div class="metric-card" markdown>
 
@@ -165,16 +165,10 @@ Whether a word is "water": conjunctions, particles (and бы), pronominal nouns 
 
 ### Spam score { #spam }
 
-`spam` · [Text.ru](https://text.ru/seo)
+`spam`
 { .metric-meta }
 
 --8<-- "stats/style_stats.md:calc_spam"
-
-| Value | Reading |
-| :---- | :------ |
-| `[0, 30)` | natural text by Text.ru |
-| `[30, 60]` | SEO-optimized text by Text.ru |
-| `(60, 100]` | spammed text by Text.ru |
 
 </div>
 
