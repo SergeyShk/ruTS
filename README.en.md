@@ -369,7 +369,7 @@ SEO metrics by the commonly accepted definitions (the formulas of the services a
 *   Classic and academic nausea, water content, spam score
 *   Naturalness by Zipf's law, keyword and phrase density
 *   Lexical officialese markers: verbal nouns, compound prepositions, parentheticals, clichés
-*   Reading of the metrics by the norms of [Advego](https://advego.com/text/seo/) and [Text.ru](https://text.ru/seo)
+*   Reading of the metrics by the norms of [Advego](https://advego.com/text/seo/), [Text.ru](https://text.ru/seo), pr-cy and megaindex
 
 ```python
 >>> from pprint import pprint
