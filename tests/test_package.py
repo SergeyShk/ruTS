@@ -472,6 +472,7 @@ def test_no_words_after_the_words_extractor(name):
         getattr(ruts, name)("В 2024 году.", words_extractor=extractor)
 
 
+@pytest.mark.core_sync
 def test_core_messages():
     """Русский словарь сообщений ядра полон: новый ключ ядра не выйдет по-английски"""
     from anyts.constants import MESSAGES

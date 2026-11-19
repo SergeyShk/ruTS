@@ -182,6 +182,7 @@ testpaths = ["tests", "ruts"]
 doctest_optionflags = ["NORMALIZE_WHITESPACE", "ELLIPSIS"]
 markers = [
     "network: тест ходит в сеть; отключается через -m 'not network'",
+    "core_sync: тест сверяет страницы или сообщения с выпущенным ядром; задание libraries anyTS его пропускает",
 ]
 
 [tool.coverage.run]
