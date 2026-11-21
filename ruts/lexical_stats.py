@@ -19,7 +19,13 @@ from .constants import CORE_MESSAGES, LEXICAL_STATS_DESC, RESOURCES_DIR
 from .datasets.freq2011 import Entry, FreqDict
 from .exceptions import SourceTypeError
 from .extractors import NUMBER_PATTERN
-from .utils import analyze_text, analyze_words, get_document, normalize_yo, parse_all
+from .utils import (
+    _analyze_document_words,
+    analyze_text,
+    get_document,
+    normalize_yo,
+    parse_all,
+)
 
 if TYPE_CHECKING:
     from anyseg import Document
@@ -109,6 +115,7 @@ class LexicalStats(anyts.lexical_stats.LexicalStats):
         band_coverage: Доли слов или лемм по частотным полосам
         get_stats: Получение вычисленных статистик лексической сложности текста
         to_dataframe: Получение статистик таблицей из одной строки
+        by_parts: Получение статистик каждого предложения, строки или абзаца
         describe: Прочтение статистики по шкале; шкал нет - None
         print_stats: Отображение вычисленных статистик с описанием на экран
 
@@ -159,9 +166,9 @@ class LexicalStats(anyts.lexical_stats.LexicalStats):
             if any(word.upos for word in all_words):
                 infos = [_token_info(word) for word in kept]
             else:
-                found = analyze_words(
+                found = _analyze_document_words(
                     [(word.start, text) for word, text in zip(all_words, texts, strict=True)],
-                    document.text,
+                    document,
                 )
                 infos = [
                     analysis_info(analysis) if analysis is not None else word_info(text)

@@ -532,11 +532,26 @@ def analyze_words(words: Sequence[tuple[int, str]], text: str) -> list[rumorph.A
     Вывод:
         list[Analysis|None]: Разбор каждого слова или None
     """
-    spans = list(iter_text_sents(text))
+    return _analyze_spans(words, text, [(start, stop) for start, stop, _ in iter_text_sents(text)])
+
+
+def _analyze_document_words(
+    words: Sequence[tuple[int, str]], document: Document
+) -> list[rumorph.Analysis | None]:
+    """Разборы analyze_words в контексте предложений документа: часть документа (by_parts)
+    разбирается, как в целом тексте, а не делится на предложения заново"""
+    spans = [(sentence.start, sentence.end) for sentence in document.sentences]
+    return _analyze_spans(words, document.text, spans)
+
+
+def _analyze_spans(
+    words: Sequence[tuple[int, str]], text: str, spans: Sequence[tuple[int, int]]
+) -> list[rumorph.Analysis | None]:
+    """Разборы analyze_words по предложениям текста с этими границами"""
     found: list[rumorph.Analysis | None] = [None] * len(words)
     first = 0
-    for (_, stop, _), pairs in zip(
-        spans, analyze_sents(tuple(sent for _, _, sent in spans)), strict=True
+    for (_, stop), pairs in zip(
+        spans, analyze_sents(tuple(text[start:stop] for start, stop in spans)), strict=True
     ):
         last = first
         while last < len(words) and words[last][0] < stop:
@@ -549,7 +564,7 @@ def analyze_words(words: Sequence[tuple[int, str]], text: str) -> list[rumorph.A
 
 def _document_analyses(document: Document) -> list[rumorph.Analysis]:
     """Разборы ruMorph слов document_words: разметки документа (как word_analysis), иначе
-    в контексте (analyze_words), иначе первый"""
+    в контексте его предложений (_analyze_document_words), иначе первый"""
     found = []
     for token in document.tokens:
         text = token.text
@@ -563,7 +578,7 @@ def _document_analyses(document: Document) -> list[rumorph.Analysis]:
             found.append((token.start, word_form(strip_marks(text)), marked))
     in_context: Sequence[rumorph.Analysis | None] = [None] * len(found)
     if any(marked is None for _, _, marked in found):
-        in_context = analyze_words([(start, form) for start, form, _ in found], document.text)
+        in_context = _analyze_document_words([(start, form) for start, form, _ in found], document)
     return [
         marked or analysis or parse_word(form)
         for (_, form, marked), analysis in zip(found, in_context, strict=True)

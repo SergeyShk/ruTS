@@ -62,11 +62,11 @@ from .extractors import SentsExtractor, WordsExtractor
 from .morph_stats import answer_particles
 from .utils import (
     BYTE_ORDER_MARK,
+    _analyze_document_words,
     _takes_word,
     _word_analysis,
     _word_cache,
     analyze_sents,
-    analyze_words,
     get_document,
     lemmatize,
     normalize_yo,
@@ -283,6 +283,7 @@ class CohesionStats(anyts.cohesion_stats.CohesionStats):
     Методы:
         get_stats: Получение вычисленных статистик связности текста
         to_dataframe: Получение статистик таблицей из одной строки
+        by_parts: Получение статистик каждой строки или абзаца
         describe: Прочтение статистики по шкале; шкал нет - None
         print_stats: Отображение вычисленных статистик связности текста с описанием на экран
 
@@ -347,7 +348,7 @@ class CohesionStats(anyts.cohesion_stats.CohesionStats):
                 # Слова без разметки - по разборам ruMorph в контексте предложений текста
                 found = [(word.start, _word_text(word)) for word in words]
                 particles = answer_particles([text for _, text in found], document.text)
-                in_context = analyze_words(found, document.text)
+                in_context = _analyze_document_words(found, document)
                 self._context = {
                     word.start: (analysis, particle)
                     for word, analysis, particle in zip(words, in_context, particles, strict=True)

@@ -808,7 +808,7 @@ $$
      'reading_time': 0.08333333333333333}
     ```
 
-Метод `to_dataframe` - из [интерфейса статистик](https://sergeyshk.github.io/anyTS/stats/stats/) ядра anyTS.
+Методы `to_dataframe` и [`by_parts`](basic_stats.md#by_parts) - из [интерфейса статистик](https://sergeyshk.github.io/anyTS/stats/stats/) ядра anyTS.
 
 ## Шкалы { #scales }
 

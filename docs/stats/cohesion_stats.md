@@ -406,7 +406,7 @@ load_connectors()
 
 ## Методы
 
-Методы `get_stats`, `to_dataframe`, `print_stats` и `describe` - из [интерфейса статистик](https://sergeyshk.github.io/anyTS/stats/stats/) ядра anyTS; `describe` для статистик `get_stats` возвращает `None`: шкал у статистик связности нет.
+Методы `get_stats`, `to_dataframe`, [`by_parts`](basic_stats.md#by_parts), `print_stats` и `describe` - из [интерфейса статистик](https://sergeyshk.github.io/anyTS/stats/stats/) ядра anyTS; `describe` для статистик `get_stats` возвращает `None`: шкал у статистик связности нет.
 
 === "Код"
 

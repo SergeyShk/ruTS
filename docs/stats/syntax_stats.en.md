@@ -622,7 +622,7 @@ The split predicates are pairs of a verb and a noun in the order of the words: a
 
 ## Methods
 
-The methods `get_stats`, `to_dataframe`, `print_stats` and `describe` are those of the [statistics interface](https://sergeyshk.github.io/anyTS/stats/stats/) of the anyTS core; `describe` gives `None` for the statistics of `get_stats`: the syntactic statistics have no scales.
+The methods `get_stats`, `to_dataframe`, [`by_parts`](basic_stats.md#by_parts), `print_stats` and `describe` are those of the [statistics interface](https://sergeyshk.github.io/anyTS/stats/stats/) of the anyTS core; `describe` gives `None` for the statistics of `get_stats`: the syntactic statistics have no scales.
 
 === "Code"
 

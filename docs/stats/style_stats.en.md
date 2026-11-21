@@ -302,7 +302,7 @@ The functions check their arguments: words, stop words, keywords and phrases tha
     {'целях': 1, 'повышения': 1}
     ```
 
-The other methods - `get_stats`, `to_dataframe`, `print_stats` and `describe` - are those of the [statistics interface](https://sergeyshk.github.io/anyTS/stats/stats/) of the anyTS core.
+The other methods - `get_stats`, `to_dataframe`, [`by_parts`](basic_stats.md#by_parts), `print_stats` and `describe` - are those of the [statistics interface](https://sergeyshk.github.io/anyTS/stats/stats/) of the anyTS core.
 
 === "Code"
 
