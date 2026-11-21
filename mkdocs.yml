@@ -12,6 +12,7 @@ nav:
       - О проекте: index.md
       - Установка: installation.md
       - Примеры: examples.md
+      - Командная строка: cli.md
       - Исключения и логирование: exceptions.md
       - Авторы: authors.md
     - Извлечение объектов:
@@ -113,6 +114,7 @@ plugins:
             О проекте: About
             Установка: Installation
             Примеры: Examples
+            Командная строка: Command line
             Исключения и логирование: Exceptions and logging
             Авторы: Authors
             Извлечение объектов: Extraction

@@ -132,6 +132,14 @@
 
     [:octicons-arrow-right-24: Визуализации](visualizers/zipf.md)
 
+-   :material-console:{ .lg .middle } __Командная строка__
+
+    ---
+
+    Статистики файлов таблицей, JSON или CSV, по частям текста и HTML-отчет командой `ruts`
+
+    [:octicons-arrow-right-24: Командная строка](cli.md)
+
 -   :material-pipe:{ .lg .middle } __Компоненты__
 
     ---

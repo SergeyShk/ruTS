@@ -151,7 +151,7 @@ class FreqDict(Dataset):
         if not self._filepath.is_file():
             msg = (
                 f"Словарь {NAME} не обнаружен\n"
-                "Загрузите его, выполнив команды:\n"
+                f"Загрузите его командой ruts download {NAME} или в Python:\n"
                 ">>> fd = FreqDict()\n"
                 ">>> fd.download()"
             )

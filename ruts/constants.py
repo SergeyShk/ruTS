@@ -5,7 +5,11 @@ from pathlib import Path
 from types import MappingProxyType
 from typing import TypedDict
 
-from anyts.constants import MESSAGES
+from anyts.constants import (
+    CLI_TEXTS as CORE_CLI_TEXTS,
+    MESSAGES,
+    REPORT_TEXTS as CORE_REPORT_TEXTS,
+)
 
 
 class MorphologyStatDesc(TypedDict):
@@ -611,6 +615,75 @@ _RU_CORE_MESSAGES: dict[str, str] = {
 }
 # Поверх MESSAGES: новый ключ патча ядра выйдет по-английски, а не сломает импорт
 CORE_MESSAGES: Mapping[str, str] = MappingProxyType({**MESSAGES, **_RU_CORE_MESSAGES})
+# Тексты команды ruts по ключам CLI_TEXTS ядра
+_RU_CLI_TEXTS: dict[str, str] = {
+    "description": "Статистики русских текстов",
+    "usage": "использование: ",
+    "commands": "команды",
+    "positionals": "позиционные аргументы",
+    "options": "параметры",
+    "help_option": "показать эту справку и выйти",
+    "stats_command": "Вывести статистики текстов",
+    "files": "Файлы текстов; без них или для - стандартный ввод",
+    "files_metavar": "файлы",
+    "stats_option": (
+        "Классы статистик через запятую: {names}; по умолчанию все, с --parts - те, "
+        "что считают такие части"
+    ),
+    "stats_option_default": (
+        "Классы статистик через запятую: {names}; по умолчанию {defaults}, с --parts - те "
+        "из них, что считают такие части"
+    ),
+    "stats_metavar": "СТАТИСТИКИ",
+    "parts_option": "Статистики каждого предложения, строки или абзаца",
+    "format_option": "Вывод: таблица, JSON или CSV",
+    "output_option": "Файл вывода; по умолчанию или для - стандартный вывод",
+    "output_metavar": "ВЫВОД",
+    "encoding_option": "Кодировка файлов; вывод - в UTF-8",
+    "encoding_metavar": "КОДИРОВКА",
+    "error": "{prog}: ошибка: {message}",
+    "unknown_stats": "неизвестные статистики {name}; доступны: {names}",
+    "unknown_encoding": "неизвестная кодировка {encoding}",
+    "no_parts": "{name} не считает части {parts}",
+    "parts_classes": "ни один класс не считает части {parts}",
+    "file_error": "{source}: {error}",
+    "decode_error": "{source}: {error}; укажите кодировку параметром -e",
+    "stats_error": "{source}, {name}: {error}",
+    "report_command": "Записать HTML-отчет о тексте",
+    "file": "Файл текста; без него или для - стандартный ввод",
+    "file_metavar": "файл",
+    "title_option": "Заголовок отчета",
+    "title_metavar": "ЗАГОЛОВОК",
+    "report_encoding_option": "Кодировка файла; отчет - в UTF-8",
+    "download_command": "Загрузить словари, которые нужны статистикам",
+    "datasets_option": "Словари: {names}; по умолчанию все",
+    "datasets_metavar": "словари",
+    "force_option": "Загрузить словарь, даже если он уже загружен",
+    "downloaded": "{name}: загружен",
+    "unknown_dataset": "неизвестный словарь {name}; доступны: {names}",
+}
+# Поверх CLI_TEXTS ядра, как CORE_MESSAGES
+CLI_TEXTS: Mapping[str, str] = MappingProxyType({**CORE_CLI_TEXTS, **_RU_CLI_TEXTS})
+# Заголовки и подписи HTML-отчета по ключам REPORT_TEXTS ядра
+_RU_REPORT_TEXTS: dict[str, str] = {
+    "lang": "ru",
+    "title": "Статистики текста",
+    "statistics": "Статистики",
+    "left_out": "Не посчитаны: {names}",
+    "statistic": "Статистика",
+    "value": "Значение",
+    "reading": "Прочтение",
+    "sentences": "Предложения",
+    "sentence": "Предложение",
+    "top_sentences": (
+        "{shown} предложений из {total} с наибольшим значением «{stat}», в порядке текста"
+    ),
+    "highlight": "Подсветка текста",
+    "plots": "Графики",
+    "sentence_lengths": "Длины предложений в словах",
+    "undefined": "-",
+}
+REPORT_TEXTS: Mapping[str, str] = MappingProxyType({**CORE_REPORT_TEXTS, **_RU_REPORT_TEXTS})
 # Соседи ответного «нет» (Нет, не пойду): знаки и слова перед ним, слова после
 ANSWER_PARTICLE_PREV_MARKS = frozenset('.!?…,:;—–-«„"(')
 ANSWER_PARTICLE_PREV = frozenset({"или", "если", "а", "да", "ну", "ах", "ох", "ой", "эх", "о"})
