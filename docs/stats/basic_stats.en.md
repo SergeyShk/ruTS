@@ -122,8 +122,6 @@ The `describe` method is that of the [statistics interface](https://sergeyshk.gi
 
 --8<-- "stats/stats.md:Stats-by_parts"
 
-In ruTS [`VerseStats`](verse_stats.md) counts only paragraphs, its stanzas: the sentences and the lines of a document cut the lines of a verse.
-
 === "Code"
 
     ``` python

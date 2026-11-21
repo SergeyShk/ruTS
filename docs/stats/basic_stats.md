@@ -171,8 +171,6 @@ BasicStats(source, sents_extractor=None, words_extractor=None, normalize=False, 
 
 Части класса - его `part_kinds`: `CohesionStats`, у которого связи идут между предложениями, считает строки (по умолчанию это его абзацы) и абзацы, а `DiversityStats`, который принимает слова, частей не считает. Другие части и класс без частей дают `ParameterError`; источник и часть дают ошибки класса.
 
-В ruTS [`VerseStats`](verse_stats.md) считает только абзацы - строфы: предложения и строки документа режут строки стиха.
-
 === "Код"
 
     ``` python

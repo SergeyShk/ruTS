@@ -33,6 +33,8 @@ from ..utils import (
 )
 
 check_keyness_params = with_core_messages(core_check_keyness_params)
+# ruMorph делит предложение на части по 256 слов: куски, кратные 256, разборов не меняют
+KEYS_CHUNK = 256 * 64
 UNREACHABLE_FILES = {
     True: RESOURCES_DIR / "freqrnc2011_unreachable_forms.txt",
     False: RESOURCES_DIR / "freqrnc2011_unreachable_lemmas.txt",
@@ -141,11 +143,16 @@ def _dictionary_keys(entries: Mapping[str, Entry]) -> Callable[[Sequence[str]], 
     """Статьи словаря для словоформ текста цели по разборам ruMorph в контексте"""
 
     def keys(words: Sequence[str]) -> list[str]:
-        analyses = get_morph_analyzer().analyze_sentence([strip_marks(word) for word in words])
-        return [
-            _entry(word, found[0], entries, True)
-            for word, found in zip(words, analyses, strict=True)
-        ]
+        analyzer = get_morph_analyzer()
+        found = []
+        for start in range(0, len(words), KEYS_CHUNK):
+            chunk = words[start : start + KEYS_CHUNK]
+            analyses = analyzer.analyze_sentence([strip_marks(word) for word in chunk])
+            found += [
+                _entry(word, options[0], entries, True)
+                for word, options in zip(chunk, analyses, strict=True)
+            ]
+        return found
 
     return keys
 
@@ -193,9 +200,9 @@ def _find_unreachable_entries(freq_dict: FreqDict, lemmatize: bool) -> list[str]
     Поиск статей частотного словаря, к которым не приводится ни одна форма их лексем
 
     Описание:
-        Медленный: результат хранится в ресурсах UNREACHABLE_FILES. Форма приводится
-        к статье первого разбора или любого другого, кроме сокращений (предлог «со» -
-        только «с»): разбор слова цели выбирается в контексте. Сравнительная степень
+        Медленный: результат хранится в ресурсах UNREACHABLE_FILES. Цель из лемм
+        дает лемма первого разбора формы или любого другого, кроме сокращений
+        (предлог «со» - только «с»). Сравнительная степень
         и краткие формы прилагательных на -щий не считаются (обязаннее, действующ);
         у слов вне словаря ruMorph (Михайлыч) формы угаданы
 
@@ -206,15 +213,15 @@ def _find_unreachable_entries(freq_dict: FreqDict, lemmatize: bool) -> list[str]
     Вывод:
         list[str]: Недостижимые статьи по алфавиту
     """
-    entries = freq_dict.entries
-    key = _dictionary_key(entries, lemmatize)
+    key = _dictionary_key(freq_dict.entries, lemmatize)
 
-    def keys(form: str) -> set[str]:
-        first, *others = parse_all(form)
-        analyses = [first, *(analysis for analysis in others if not _abbreviated(analysis))]
+    def targets(form: str) -> set[str]:
         if lemmatize:
-            return {_entry(form, analysis, entries, True) for analysis in analyses}
-        return {key(analysis.lemma) for analysis in analyses}
+            return {form}
+        analyses = parse_all(form)
+        return {analyses[0].lemma} | {
+            analysis.lemma for analysis in analyses if not _abbreviated(analysis)
+        }
 
     def counted(form: rumorph.Analysis, entry: str) -> bool:
         return form.feats.get("Degree") != "Cmp" and not (
@@ -229,10 +236,13 @@ def _find_unreachable_entries(freq_dict: FreqDict, lemmatize: bool) -> list[str]
             if counted(form, entry)
         }
         return any(
-            entry in keys(spelling) for form in forms for spelling in {form, normalize_yo(form)}
+            key(target) == entry
+            for form in forms
+            for spelling in {form, normalize_yo(form)}
+            for target in targets(spelling)
         )
 
-    return sorted(entry for entry in entries if not reachable(entry))
+    return sorted(entry for entry in freq_dict.entries if not reachable(entry))
 
 
 def _abbreviated(analysis: rumorph.Analysis) -> bool:

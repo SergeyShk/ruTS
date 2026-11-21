@@ -196,7 +196,7 @@ class VerseStats(Stats):
     stats_desc = VERSE_STATS_DESC
     stats_headers = ("Статистика", "Значение")
     messages = CORE_MESSAGES
-    # Предложения и строки документа режут строки стиха, строфа - абзац
+    # Предложения и строки документа не совпадают со строками стиха, строфа - абзац
     part_kinds = ("paragraphs",)
 
     def __init__(self, source: str | Doc | Document, stress_dict: StressDict | None = None):

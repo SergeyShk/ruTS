@@ -244,16 +244,15 @@ def test_keyness_freq_dict_abbreviations(tmp_path):
         }
 
 
-@pytest.mark.parametrize("lemmatize", [True, False])
-def test_unreachable_entries_of_any_analysis(lemmatize):
-    """Слово цели приводится к статье любого разбора (у словоформ разбор выбирает контекст):
-    «значит» и «трудно» достижимы, а «со» - нет, предлог приводится к «с», а сокращение «со»
-    не в счет"""
+def test_unreachable_lemmas_of_any_analysis():
+    """Цель из лемм дает лемму любого разбора: «значит» и «трудно» достижимы, а «со» - нет,
+    предлог приводится к «с», а сокращение «со» не в счет"""
     from ruts.corpus.keyness import _unreachable_entries
 
-    unreachable = _unreachable_entries(lemmatize)
+    unreachable = _unreachable_entries(lemmatize=False)
     assert "значит" not in unreachable and "трудно" not in unreachable
     assert {"со", "во"} <= unreachable
+    assert {"значит", "трудно", "со"} <= _unreachable_entries(lemmatize=True)
 
 
 @pytest.mark.network
