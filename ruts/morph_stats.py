@@ -28,11 +28,11 @@ from .constants import (
 from .exceptions import SourceTypeError
 from .utils import (
     BYTE_ORDER_MARK,
+    _analyze_document_words,
     _takes_word,
     _word_analysis,
     _word_cache,
     analyze_text,
-    analyze_words,
     get_document,
     lemmatize,
     parse_all,
@@ -134,6 +134,7 @@ class MorphStats(anyts.morph_stats.MorphStats):
         analyze: Слова источника с частью речи и признаками UD
         get_stats: Получение вычисленных морфологических статистик текста
         to_dataframe: Получение статистик таблицей из одной строки
+        by_parts: Получение статистик каждого предложения, строки или абзаца
         describe: Прочтение статистики по шкале; у морфологии шкал нет - None
         explain_text: Разбор текста по морфологическим статистикам
         print_stats: Отображение вычисленных морфологических статистик текста с описанием на экран
@@ -220,7 +221,7 @@ class MorphStats(anyts.morph_stats.MorphStats):
                 positions = [
                     (word.start, form) for word, form in zip(tree_words, words, strict=True)
                 ]
-                in_context = analyze_words(positions, document.text)
+                in_context = _analyze_document_words(positions, document)
                 features = _words_to_ud(forms, document.text, in_context)
                 chosen = [None if analysis is None else analysis.lemma for analysis in in_context]
         elif isinstance(source, str):

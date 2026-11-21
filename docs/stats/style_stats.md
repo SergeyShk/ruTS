@@ -368,7 +368,7 @@ calc_keyword_density(text, keywords)
     {'целях': 1, 'повышения': 1}
     ```
 
-Остальные методы - `get_stats`, `to_dataframe`, `print_stats` и `describe` - из [интерфейса статистик](https://sergeyshk.github.io/anyTS/stats/stats/) ядра anyTS.
+Остальные методы - `get_stats`, `to_dataframe`, [`by_parts`](basic_stats.md#by_parts), `print_stats` и `describe` - из [интерфейса статистик](https://sergeyshk.github.io/anyTS/stats/stats/) ядра anyTS.
 
 === "Код"
 

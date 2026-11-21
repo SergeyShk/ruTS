@@ -118,6 +118,34 @@ The normalized statistics `p_*` are not in the table.
 
 The `describe` method is that of the [statistics interface](https://sergeyshk.github.io/anyTS/stats/stats/) of the anyTS core; the basic statistics have no scales, and it gives `None` for the statistics of `get_stats`.
 
+## Parts of a text { #by_parts }
+
+--8<-- "stats/stats.md:Stats-by_parts"
+
+=== "Code"
+
+    ``` python
+    from ruts import BasicStats
+
+    text = "Кот спит на окне. Пёс громко лает во дворе.\n\nПтица поёт."
+    BasicStats.by_parts(text)[["start", "end", "n_words", "n_syllables"]]
+    BasicStats.by_parts(text, "paragraphs")[["start", "end", "n_sents", "n_words"]]
+    ```
+
+=== "Result"
+
+    ```
+              start  end  n_words  n_syllables
+    sentence
+    0             0   17        4            5
+    1            18   43        5            8
+    2            45   56        2            4
+               start  end  n_sents  n_words
+    paragraph
+    0              0   43        2        9
+    1             45   56        1        2
+    ```
+
 ## Punctuation marks { #count_punctuations }
 
 --8<-- "stats/basic_stats.md:count_punctuations"

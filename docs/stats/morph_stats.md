@@ -253,8 +253,8 @@ MorphStats(source, words_extractor=None)
      ('получили', {'pos': 'VERB', 'tense': 'Past', 'number': 'Plur'}))
     ```
 
-<!-- core: stats/stats.md:Stats-to_dataframe fb70c9b -->
-`to_dataframe()` возвращает плоские статистики, `get_stats(flat=True)`, таблицей `DataFrame` библиотеки [pandas](https://pandas.pydata.org/) из одной строки со столбцом на каждый ключ. Статистика-справочник дает столбцы только для ключей, которые есть у текста, поэтому в таблицах нескольких текстов, объединенных `pandas.concat`, количество, которого у текста нет, - `NaN`. Нулями можно заполнять только такие столбцы: в остальных `NaN` - неопределенное значение.
+<!-- core: stats/stats.md:Stats-to_dataframe 735e73d -->
+`to_dataframe()` возвращает плоские статистики, `get_stats(flat=True)`, таблицей `DataFrame` библиотеки [pandas](https://pandas.pydata.org/) из одной строки со столбцом на каждый ключ. Статистика-справочник дает столбцы только для ключей, которые есть у текста; таблицу нескольких текстов, с 0 для количества, которого у текста нет, дает [`stats_dataframe`](https://sergeyshk.github.io/anyTS/stats/stats/#stats_dataframe).
 
 === "Код"
 
@@ -298,7 +298,7 @@ MorphStats(source, words_extractor=None)
     Возвратные формы (-ся, -сь) среди форм глагола |   0.00
     ```
 
-Метод `describe` [интерфейса статистик](https://sergeyshk.github.io/anyTS/stats/stats/) ядра anyTS для статистик `get_stats` возвращает `None`: шкал у морфологических статистик нет.
+Методы [`by_parts`](basic_stats.md#by_parts) и `describe` - из [интерфейса статистик](https://sergeyshk.github.io/anyTS/stats/stats/) ядра anyTS; `describe` для статистик `get_stats` возвращает `None`: шкал у морфологических статистик нет.
 
 <!-- core: stats/morph_stats.md:MorphWord 7a841ee -->
 `MorphWord` - слово `analyze`: его текст `word`, часть речи `pos` (`None`, если она неизвестна) и признаки `features` - значения признаков Universal Dependencies по их названиям (`{"Case": "Nom"}`), значение из нескольких - через запятую.

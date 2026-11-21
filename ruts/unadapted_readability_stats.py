@@ -67,6 +67,7 @@ class UnadaptedReadabilityStats(anyts.unadapted_readability_stats.UnadaptedReada
     Методы:
         get_stats: Получение вычисленных формул
         to_dataframe: Получение формул таблицей из одной строки
+        by_parts: Получение формул каждого предложения, строки или абзаца
         describe: Прочтение формулы по шкале; шкал у этих формул нет - None
         print_stats: Отображение вычисленных формул с описанием на экран
 

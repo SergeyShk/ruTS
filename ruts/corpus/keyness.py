@@ -24,6 +24,7 @@ from ..exceptions import ParameterError
 from ..lexical_stats import DICTIONARY_WORD, dictionary_lemma
 from ..utils import (
     core_messages,
+    get_morph_analyzer,
     normalize_yo,
     parse_all,
     parse_word,
@@ -32,6 +33,8 @@ from ..utils import (
 )
 
 check_keyness_params = with_core_messages(core_check_keyness_params)
+# ruMorph делит предложение на части по 256 слов: куски, кратные 256, разборов не меняют
+KEYS_CHUNK = 256 * 64
 UNREACHABLE_FILES = {
     True: RESOURCES_DIR / "freqrnc2011_unreachable_forms.txt",
     False: RESOURCES_DIR / "freqrnc2011_unreachable_lemmas.txt",
@@ -63,7 +66,8 @@ def keyness(
         и Hardie, и мера score, по которой список сортируется. Меры значимости (G²,
         хи-квадрат, BIC, ELL) отрицательны, если слово чаще в эталоне. Нулевая частота
         при расчете %DIFF, Log Ratio и отношения шансов заменяется на 0.5 (Hardie 2014)
-        С эталоном FreqDict слова цели приводятся к леммам словаря, как в LexicalStats,
+        С эталоном FreqDict слова цели приводятся к леммам словаря, как в LexicalStats:
+        словоформы списка - по разбору в контексте своего текста, частоты - по слову;
         числа и латиница отбрасываются, частота в эталоне - ipm, умноженная на объем
         корпуса словаря (92 млн); слово вне словаря получает его наименьшую частоту
         (min_ipm) и бывает только положительным ключевым словом. Сокращение сравнивается
@@ -113,7 +117,8 @@ def keyness(
             f"Частотный словарь хранит слова: N-граммам нужны слова обоих корпусов, а не n={n}"
         )
     key = _dictionary_key(reference.entries, lemmatize)
-    frequency = _frequency_reference(reference, key)
+    keys = _dictionary_keys(reference.entries) if lemmatize else None
+    frequency = _frequency_reference(reference, key, keys)
     if positive:
         return anyts.corpus.keyness(
             target, frequency, measure, min_freq, positive, top_n, messages=messages
@@ -129,15 +134,43 @@ def _dictionary_key(entries: Mapping[str, Entry], lemmatize: bool) -> Callable[[
 
     @cache
     def key(word: str) -> str:
-        analysis = parse_word(word)
-        if _abbreviated(analysis):
-            return normalize_yo(word)
-        return dictionary_lemma(word, analysis.lemma if lemmatize else word, entries)
+        return _entry(word, parse_word(word), entries, lemmatize)
 
     return key
 
 
-def _frequency_reference(freq_dict: FreqDict, key: Callable[[str], str]) -> FrequencyReference:
+def _dictionary_keys(entries: Mapping[str, Entry]) -> Callable[[Sequence[str]], list[str]]:
+    """Статьи словаря для словоформ текста цели по разборам ruMorph в контексте"""
+
+    def keys(words: Sequence[str]) -> list[str]:
+        analyzer = get_morph_analyzer()
+        found = []
+        for start in range(0, len(words), KEYS_CHUNK):
+            chunk = words[start : start + KEYS_CHUNK]
+            analyses = analyzer.analyze_sentence([strip_marks(word) for word in chunk])
+            found += [
+                _entry(word, options[0], entries, True)
+                for word, options in zip(chunk, analyses, strict=True)
+            ]
+        return found
+
+    return keys
+
+
+def _entry(
+    word: str, analysis: rumorph.Analysis, entries: Mapping[str, Entry], lemmatize: bool
+) -> str:
+    """Статья словаря для слова цели с этим разбором: словоформы (lemmatize) или леммы"""
+    if _abbreviated(analysis):
+        return normalize_yo(word)
+    return dictionary_lemma(word, analysis.lemma if lemmatize else word, entries)
+
+
+def _frequency_reference(
+    freq_dict: FreqDict,
+    key: Callable[[str], str],
+    keys: Callable[[Sequence[str]], list[str]] | None,
+) -> FrequencyReference:
     """Эталон частотного словаря, как его описывает докстринг keyness"""
     size = float(CORPUS_SIZE)
     entries = freq_dict.entries
@@ -151,6 +184,7 @@ def _frequency_reference(freq_dict: FreqDict, key: Callable[[str], str]) -> Freq
         freq_dict.min_ipm * size / 1e6,
         key,
         keep,
+        keys,
     )
 
 

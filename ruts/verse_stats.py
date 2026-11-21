@@ -35,7 +35,7 @@ from .syllables import (
     _word_stress,
     word_stress as word_stress,
 )
-from .utils import MARKED, _check_text, take_marks
+from .utils import MARKED, _check_text, get_document, take_marks
 
 if TYPE_CHECKING:
     from anyseg import Document
@@ -181,6 +181,7 @@ class VerseStats(Stats):
     Методы:
         get_stats: Получение вычисленных статистик стиха
         to_dataframe: Получение статистик таблицей из одной строки
+        by_parts: Получение статистик каждой строфы
         print_stats: Отображение вычисленных статистик стиха с описанием на экран
         describe: Прочтение статистики по шкале; у стиха шкал нет - None
         accentuate: Получение текста с расставленными ударениями
@@ -195,6 +196,8 @@ class VerseStats(Stats):
     stats_desc = VERSE_STATS_DESC
     stats_headers = ("Статистика", "Значение")
     messages = CORE_MESSAGES
+    # Предложения и строки документа не совпадают со строками стиха, строфа - абзац
+    part_kinds = ("paragraphs",)
 
     def __init__(self, source: str | Doc | Document, stress_dict: StressDict | None = None):
         if is_doc(source) or is_document(source):
@@ -300,6 +303,10 @@ class VerseStats(Stats):
                 if word.result >= 0:
                     vowels[_vowel(word.text, word.result)] += 1
         self.c_stressed_vowels = dict(sorted(vowels.items(), key=lambda item: -item[1]))
+
+    def parse(self, source: str | Doc | Document) -> Document:
+        """Документ anySeg (ruts.utils.get_document)"""
+        return get_document(source)
 
     def accentuate(self) -> str:
         """

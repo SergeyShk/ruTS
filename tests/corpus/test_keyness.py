@@ -110,6 +110,26 @@ def test_keyness_freq_dict_lemmatize(homonym_dict):
     assert keyness(target, reference, lemmatize=False) == keyness(target, reference)
 
 
+def test_keyness_freq_dict_context(tmp_path):
+    """Словоформы приводятся к статьям по разбору в контексте своего текста: «стали» - «сталь»
+    после «из», «стать» после «мы»; частоты цели контекста не имеют - разбор по слову"""
+    rows = ["Lemma\tPoS\tFreq(ipm)\tR\tD\tDoc"]
+    rows += [
+        f"{lemma}\t{pos}\t50.0\t90\t90\t1000" for lemma, pos in [("сталь", "s"), ("стать", "v")]
+    ]
+    tmp_path.joinpath(FILENAME).write_text("\n".join(rows) + "\n", encoding="utf-8")
+    freq_dict = FreqDict(data_dir=tmp_path)
+
+    def found(target):
+        keywords = keyness(target, freq_dict)
+        return {keyword.word: keyword.freq_target for keyword in keywords if keyword.freq_target}
+
+    assert found(["Мост", "сделан", "из", "стали"])["сталь"] == 1
+    texts = [["Мост", "сделан", "из", "стали"], ["Мы", "стали", "друзьями"]]
+    assert {word: found(texts)[word] for word in ("сталь", "стать")} == {"сталь": 1, "стать": 1}
+    assert "сталь" not in found({"стали": 1})
+
+
 def test_keyness_freq_dict_negative(homonym_dict):
     negative = keyness({"гора": 10**7, "фелинолог": 1}, homonym_dict, positive=False)
     assert [keyword.word for keyword in negative] == ["горе", "кошка"]

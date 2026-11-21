@@ -681,7 +681,7 @@ In ruTS the method returns the reading times at the upper and the lower bound of
      'reading_time': 0.08333333333333333}
     ```
 
-The `to_dataframe` method is that of the [statistics interface](https://sergeyshk.github.io/anyTS/stats/stats/) of the anyTS core.
+The methods `to_dataframe` and [`by_parts`](basic_stats.md#by_parts) are those of the [statistics interface](https://sergeyshk.github.io/anyTS/stats/stats/) of the anyTS core.
 
 ## Scales { #scales }
 

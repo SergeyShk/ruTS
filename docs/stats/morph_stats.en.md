@@ -281,7 +281,7 @@ In ruTS the markers are the [shares of the verb forms](#markers).
     Возвратные формы (-ся, -сь) среди форм глагола |   0.00
     ```
 
-The `describe` method of the [statistics interface](https://sergeyshk.github.io/anyTS/stats/stats/) of the anyTS core gives `None` for the statistics of `get_stats`: the morphological statistics have no scales.
+The methods [`by_parts`](basic_stats.md#by_parts) and `describe` are those of the [statistics interface](https://sergeyshk.github.io/anyTS/stats/stats/) of the anyTS core; `describe` gives `None` for the statistics of `get_stats`: the morphological statistics have no scales.
 
 --8<-- "stats/morph_stats.md:MorphWord"
 

@@ -64,6 +64,10 @@ class TestSentsExtractor:
             "- второй пункт",
         )
 
+    def test_extract_closing_dash(self):
+        """Закрывающее тире реплики в конце строки - не предложение без слов"""
+        assert SentsExtractor().extract("Кто там? —\nНикого.") == ("Кто там?", "—\nНикого.")
+
     @pytest.mark.parametrize(
         "tokenizer, expected",
         [(None, 2), (re.compile(r"[;.]"), 3), (split_sentences, 2)],

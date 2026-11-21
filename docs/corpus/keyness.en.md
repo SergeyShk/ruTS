@@ -60,6 +60,7 @@ The frequency dictionary `FreqDict` passed as `reference` is turned into such a 
 | `size` | `CORPUS_SIZE` of `ruts.datasets.freq2011`, 92 million tokens of the modern subcorpus of the Russian National Corpus |
 | `missing` | the least frequency of the dictionary `FreqDict.min_ipm`, 0.4 ipm (about 37 occurrences) |
 | `key` | the lemma of the dictionary: the ruMorph lemma of a word form (with `lemmatize=False` and for an abbreviation the word itself) brought to the conventions of the dictionary, as in [`LexicalStats`](../stats/lexical_stats.md) |
+| `keys` | the lemmas of the dictionary of the word forms of a text, as of `key`, but by the ruMorph analysis in the context of the text: «из стали» - «сталь», «мы стали» - «стать»; none with `lemmatize=False` |
 | `keep` | words of Cyrillic letters; numbers, words with Latin letters and abbreviations that ruMorph expands into another word and that have no entry of their own in the dictionary («т.», «г.») are left out |
 
 A dictionary entry that no word form is reduced to is never a negative keyword: the dictionary keeps «во» and «со» as entries of their own, while [ruMorph](https://github.com/SergeyShk/ruMorph) reduces these word forms to «в» and «с».

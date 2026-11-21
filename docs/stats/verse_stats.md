@@ -257,7 +257,7 @@ rhyme_scheme(text, stress_dict=None)
     И лу́чше вы́думать не мо́г.
     ```
 
-Остальные методы - `get_stats`, `to_dataframe`, `print_stats` и `describe` - из [интерфейса статистик](https://sergeyshk.github.io/anyTS/stats/stats/) ядра anyTS; шкал у стиховедческих статистик нет, и `describe` возвращает для них `None`.
+Остальные методы - `get_stats`, `to_dataframe`, [`by_parts`](basic_stats.md#by_parts) (только по строфам), `print_stats` и `describe` - из [интерфейса статистик](https://sergeyshk.github.io/anyTS/stats/stats/) ядра anyTS; шкал у стиховедческих статистик нет, и `describe` возвращает для них `None`.
 
 === "Код"
 
