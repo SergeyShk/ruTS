@@ -27,7 +27,7 @@
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.8.0">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.8.1">
     
     
       
@@ -970,6 +970,17 @@
     <span class="md-ellipsis">
       
         Методы
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#by_parts" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Части текста
       
     </span>
   </a>
@@ -2209,6 +2220,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#by_parts" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Части текста
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#count_punctuations" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2496,8 +2518,8 @@
 <!-- core: stats/basic_stats.md:BasicStats-print_stats 129bbf6 -->
 <p><code>print_stats()</code> выводит таблицу со статистиками из <code>stats_desc</code>, их описаниями и заголовками из <code>stats_headers</code>.</p>
 <p>Нормализованных статистик <code>p_*</code> в таблице нет.</p>
-<!-- core: stats/stats.md:Stats-to_dataframe fb70c9b -->
-<p><code>to_dataframe()</code> возвращает плоские статистики, <code>get_stats(flat=True)</code>, таблицей <code>DataFrame</code> библиотеки <a href="https://pandas.pydata.org/">pandas</a> из одной строки со столбцом на каждый ключ. Статистика-справочник дает столбцы только для ключей, которые есть у текста, поэтому в таблицах нескольких текстов, объединенных <code>pandas.concat</code>, количество, которого у текста нет, - <code>NaN</code>. Нулями можно заполнять только такие столбцы: в остальных <code>NaN</code> - неопределенное значение.</p>
+<!-- core: stats/stats.md:Stats-to_dataframe 735e73d -->
+<p><code>to_dataframe()</code> возвращает плоские статистики, <code>get_stats(flat=True)</code>, таблицей <code>DataFrame</code> библиотеки <a href="https://pandas.pydata.org/">pandas</a> из одной строки со столбцом на каждый ключ. Статистика-справочник дает столбцы только для ключей, которые есть у текста; таблицу нескольких текстов, с 0 для количества, которого у текста нет, дает <a href="https://sergeyshk.github.io/anyTS/stats/stats/#stats_dataframe"><code>stats_dataframe</code></a>.</p>
 <div class="tabbed-set tabbed-alternate" data-tabs="2:2"><input checked="checked" id="__tabbed_2_1" name="__tabbed_2" type="radio" /><input id="__tabbed_2_2" name="__tabbed_2" type="radio" /><div class="tabbed-labels"><label for="__tabbed_2_1">Код</label><label for="__tabbed_2_2">Результат</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
@@ -2551,6 +2573,34 @@
 </div>
 </div>
 <p>Метод <code>describe</code> - из <a href="https://sergeyshk.github.io/anyTS/stats/stats/">интерфейса статистик</a> ядра anyTS; шкал у базовых статистик нет, и для статистик <code>get_stats</code> он возвращает <code>None</code>.</p>
+<h2 id="by_parts">Части текста<a class="headerlink" href="#by_parts" title="Permanent link">&para;</a></h2>
+<!-- core: stats/stats.md:Stats-by_parts e382a41 -->
+<p><code>by_parts(source, parts=None, **params)</code> - метод класса - возвращает статистики каждого предложения (<code>parts="sentences"</code>), строки (<code>"lines"</code>) или абзаца (<code>"paragraphs"</code>) источника данных, по умолчанию - первого вида из <code>part_kinds</code> класса, таблицей <code>DataFrame</code>: строка на каждую часть с ее номером в индексе, ее началом <code>start</code> и концом <code>end</code> в тексте документа и плоскими статистиками, объединенными <code>stats_dataframe</code>, количества - целыми числами. Строка - это предложения между переводами строки, абзац - между пустыми строками, так что в тексте с абзацем на каждой строке строк столько же, сколько абзацев, а абзац один; предложение, которое переходит через перевод строки, как в стихе, остается в одной строке. Источник разбирается один раз, методом <code>parts_document</code> класса, и класс с параметрами <code>params</code> считает документ каждой части (<a href="https://sergeyshk.github.io/anyTS/document/#document_part"><code>document_part</code></a>); классы удобочитаемости разбирают источник, как их <code>basic_stats_class</code>. Часть без слов, например строка звездочек, или часть, которую класс посчитать не может, например число одно на строке у класса без чисел среди слов, сохраняет свою строку без статистик, с количествами <code>NA</code>; источник, в котором класс не может посчитать ни одной части, например без слов, дает ошибку класса. Числа слов и предложений частей в сумме дают числа целого текста, а уникальные слова, доли и средние у каждой части свои; статистика, которая сравнивает предложения текста, например сходство соседних предложений, в части из одного предложения не определена.</p>
+<p>Части класса - его <code>part_kinds</code>: <code>CohesionStats</code>, у которого связи идут между предложениями, считает строки (по умолчанию это его абзацы) и абзацы, а <code>DiversityStats</code>, который принимает слова, частей не считает. Другие части и класс без частей дают <code>ParameterError</code>; источник и часть дают ошибки класса.</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="3:2"><input checked="checked" id="__tabbed_3_1" name="__tabbed_3" type="radio" /><input id="__tabbed_3_2" name="__tabbed_3" type="radio" /><div class="tabbed-labels"><label for="__tabbed_3_1">Код</label><label for="__tabbed_3_2">Результат</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">ruts</span><span class="w"> </span><span class="kn">import</span> <span class="n">BasicStats</span>
+
+<span class="n">text</span> <span class="o">=</span> <span class="s2">"Кот спит на окне. Пёс громко лает во дворе.</span><span class="se">\n\n</span><span class="s2">Птица поёт."</span>
+<span class="n">BasicStats</span><span class="o">.</span><span class="n">by_parts</span><span class="p">(</span><span class="n">text</span><span class="p">)[[</span><span class="s2">"start"</span><span class="p">,</span> <span class="s2">"end"</span><span class="p">,</span> <span class="s2">"n_words"</span><span class="p">,</span> <span class="s2">"n_syllables"</span><span class="p">]]</span>
+<span class="n">BasicStats</span><span class="o">.</span><span class="n">by_parts</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="s2">"paragraphs"</span><span class="p">)[[</span><span class="s2">"start"</span><span class="p">,</span> <span class="s2">"end"</span><span class="p">,</span> <span class="s2">"n_sents"</span><span class="p">,</span> <span class="s2">"n_words"</span><span class="p">]]</span>
+</code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code>          start  end  n_words  n_syllables
+sentence
+0             0   17        4            5
+1            18   43        5            8
+2            45   56        2            4
+           start  end  n_sents  n_words
+paragraph
+0              0   43        2        9
+1             45   56        1        2
+</code></pre></div>
+</div>
+</div>
+</div>
 <h2 id="count_punctuations">Знаки препинания<a class="headerlink" href="#count_punctuations" title="Permanent link">&para;</a></h2>
 <!-- core: stats/basic_stats.md:count_punctuations b982de2 -->
 <div class="signature highlight"><pre><span></span><code><span class="n">count_punctuations</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">marks</span><span class="o">=</span><span class="n">PUNCTUATION_MARKS</span><span class="p">,</span> <span class="n">dash_pattern</span><span class="o">=</span><span class="n">DASH_PATTERN</span><span class="p">)</span>
@@ -2588,7 +2638,7 @@
 </table>
 <p>Знак <code>marks</code>, который не один символ или имеет неизвестный тип, дает <code>ParameterError</code>; текст, который не строка, <code>marks</code>, которые не словарь, и <code>dash_pattern</code>, который не скомпилированное регулярное выражение, дают <code>SourceTypeError</code>.</p>
 <p>В ruTS <code>PUNCTUATION_MARKS</code> и <code>DASH_PATTERN</code> модуля <code>ruts.basic_stats</code> - знаки ядра с нижней кавычкой <code>„</code> в роли кавычки и шаблон тире, при котором висячий дефис перед <code>и</code>, <code>или</code>, <code>либо</code> или запятой остается дефисом (<code>двух- и трёхкомнатные</code>, <code>сорока-, пятидесятилетние</code>), а тире реплики, набранное дефисом, - тире (<code>- Ушли, - сказал он</code>).</p>
-<div class="tabbed-set tabbed-alternate" data-tabs="3:2"><input checked="checked" id="__tabbed_3_1" name="__tabbed_3" type="radio" /><input id="__tabbed_3_2" name="__tabbed_3" type="radio" /><div class="tabbed-labels"><label for="__tabbed_3_1">Код</label><label for="__tabbed_3_2">Результат</label></div>
+<div class="tabbed-set tabbed-alternate" data-tabs="4:2"><input checked="checked" id="__tabbed_4_1" name="__tabbed_4" type="radio" /><input id="__tabbed_4_2" name="__tabbed_4" type="radio" /><div class="tabbed-labels"><label for="__tabbed_4_1">Код</label><label for="__tabbed_4_2">Результат</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">ruts.basic_stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">count_punctuations</span>
@@ -2641,7 +2691,7 @@
 </table>
 <p>Союзы, которые не набор строк, дают <code>SourceTypeError</code>, а пустой союз - <code>ParameterError</code>.</p>
 <p>Без параметров получается <code>DASH_PATTERN</code> ядра (<code>anyts.basic_stats</code>), а <code>DASH_PATTERN</code> модуля <code>ruts.basic_stats</code> - <code>dash_pattern(("и", "или", "либо"), hanging_before_comma=True)</code>.</p>
-<div class="tabbed-set tabbed-alternate" data-tabs="4:2"><input checked="checked" id="__tabbed_4_1" name="__tabbed_4" type="radio" /><input id="__tabbed_4_2" name="__tabbed_4" type="radio" /><div class="tabbed-labels"><label for="__tabbed_4_1">Код</label><label for="__tabbed_4_2">Результат</label></div>
+<div class="tabbed-set tabbed-alternate" data-tabs="5:2"><input checked="checked" id="__tabbed_5_1" name="__tabbed_5" type="radio" /><input id="__tabbed_5_2" name="__tabbed_5" type="radio" /><div class="tabbed-labels"><label for="__tabbed_5_1">Код</label><label for="__tabbed_5_2">Результат</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">ruts.basic_stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">count_punctuations</span><span class="p">,</span> <span class="n">dash_pattern</span>
@@ -2689,7 +2739,7 @@
 </tbody>
 </table>
 <p>Профиль - редакторский и стилометрический признак: у Чехова многоточий и восклицаний в разы больше, чем у Толстого (см. <a href="../../corpus/compare/">сравнение корпусов</a>). Он зависит от оформления текста - кавычек, тире, буквы ё, - и его стоит смотреть отдельно от лингвистических признаков.</p>
-<div class="tabbed-set tabbed-alternate" data-tabs="5:2"><input checked="checked" id="__tabbed_5_1" name="__tabbed_5" type="radio" /><input id="__tabbed_5_2" name="__tabbed_5" type="radio" /><div class="tabbed-labels"><label for="__tabbed_5_1">Код</label><label for="__tabbed_5_2">Результат</label></div>
+<div class="tabbed-set tabbed-alternate" data-tabs="6:2"><input checked="checked" id="__tabbed_6_1" name="__tabbed_6" type="radio" /><input id="__tabbed_6_2" name="__tabbed_6" type="radio" /><div class="tabbed-labels"><label for="__tabbed_6_1">Код</label><label for="__tabbed_6_2">Результат</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">ruts.basic_stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">punctuation_profile</span>
@@ -2801,7 +2851,7 @@
       <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "navigation.top", "content.code.copy", "search.highlight", "search.suggest"], "search": "../../assets/javascripts/workers/search.a7633da7.min.js", "tags": null, "translations": {"clipboard.copied": "\u0421\u043a\u043e\u043f\u0438\u0440\u043e\u0432\u0430\u043d\u043e \u0432 \u0431\u0443\u0444\u0435\u0440", "clipboard.copy": "\u041a\u043e\u043f\u0438\u0440\u043e\u0432\u0430\u0442\u044c \u0432 \u0431\u0443\u0444\u0435\u0440", "search.result.more.one": "\u0415\u0449\u0451 1 \u043d\u0430 \u044d\u0442\u043e\u0439 \u0441\u0442\u0440\u0430\u043d\u0438\u0446\u0435", "search.result.more.other": "\u0415\u0449\u0451 # \u043d\u0430 \u044d\u0442\u043e\u0439 \u0441\u0442\u0440\u0430\u043d\u0438\u0446\u0435", "search.result.none": "\u0421\u043e\u0432\u043f\u0430\u0434\u0435\u043d\u0438\u0439 \u043d\u0435 \u043d\u0430\u0439\u0434\u0435\u043d\u043e", "search.result.one": "\u041d\u0430\u0439\u0434\u0435\u043d\u043e 1 \u0441\u043e\u0432\u043f\u0430\u0434\u0435\u043d\u0438\u0435", "search.result.other": "\u041d\u0430\u0439\u0434\u0435\u043d\u043e \u0441\u043e\u0432\u043f\u0430\u0434\u0435\u043d\u0438\u0439: #", "search.result.placeholder": "\u041d\u0430\u0447\u043d\u0438\u0442\u0435 \u043f\u0435\u0447\u0430\u0442\u0430\u0442\u044c \u0434\u043b\u044f \u043f\u043e\u0438\u0441\u043a\u0430", "search.result.term.missing": "\u041e\u0442\u0441\u0443\u0442\u0441\u0442\u0432\u0443\u0435\u0442", "select.version": "\u0412\u044b\u0431\u0435\u0440\u0438\u0442\u0435 \u0432\u0435\u0440\u0441\u0438\u044e"}, "version": null}</script>
     
     
-      <script src="../../assets/javascripts/bundle.c21346df.min.js"></script>
+      <script src="../../assets/javascripts/bundle.a5f9d56c.min.js"></script>
       
         <script src="../../js/config.js"></script>
       

@@ -27,7 +27,7 @@
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.8.0">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.8.1">
     
     
       
@@ -2418,7 +2418,7 @@
 </div>
 </div>
 <h2 id="_2">Параметры<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h2>
-<!-- core: corpus/keyness.md:keyness-parameters 927fc84 -->
+<!-- core: corpus/keyness.md:keyness-parameters d21f10e -->
 <table>
 <thead>
 <tr>
@@ -2479,7 +2479,7 @@
 </tr>
 </tbody>
 </table>
-<p>Параметры и целевой корпус проверяет <code>check_keyness_params</code>; <code>n</code> больше 1 при частотах или <code>FrequencyReference</code> дает <code>ParameterError</code>. Эталон, который не список строк, не список таких списков, не справочник частот и не <code>FrequencyReference</code>, дает <code>SourceTypeError</code>, а отрицательная, <code>nan</code> или бесконечная частота справочника и корпус без слов или короче <code>n</code> слов - <code>SourceError</code>.</p>
+<p>Параметры и целевой корпус проверяет <code>check_keyness_params</code>; <code>n</code> больше 1 при частотах или <code>FrequencyReference</code> дает <code>ParameterError</code>. Эталон, который не список строк, не список таких списков, не справочник частот и не <code>FrequencyReference</code>, дает <code>SourceTypeError</code>, как и корпус, у которого пробел есть в большинстве слов или в большинстве слов одного из его текстов: такие слова - тексты, например предложения текста, среди которых есть предложение из одного слова, а не их слова; словосочетание из нескольких слов среди слов проходит. Отрицательная, <code>nan</code> или бесконечная частота справочника и корпус без слов или короче <code>n</code> слов дают <code>SourceError</code>.</p>
 <p><code>reference</code> может быть и <code>FreqDict</code>, и еще один параметр говорит, из чего при нем целевой корпус:</p>
 <table>
 <thead>
@@ -2500,13 +2500,13 @@
 </tbody>
 </table>
 <p>Незагруженный частотный словарь дает <code>DatasetNotFoundError</code>, а <code>n</code> больше 1 при нем - <code>ParameterError</code>.</p>
-<!-- core: corpus/keyness.md:check_keyness_params 5873366 -->
+<!-- core: corpus/keyness.md:check_keyness_params f41ebfd -->
 <div class="signature highlight"><pre><span></span><code><span class="n">check_keyness_params</span><span class="p">(</span><span class="n">measure</span><span class="o">=</span><span class="s1">'log_likelihood'</span><span class="p">,</span> <span class="n">min_freq</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">top_n</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">positive</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">messages</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
 </code></pre></div>
-<p>Проверяет параметры <code>keyness</code> до чтения частотного словаря: дает <code>ParameterError</code>, если мера не из <code>KEYNESS_MEASURES</code>, минимальная частота не целое число, количество ключевых слов не <code>None</code> и не целое число не меньше единицы, длина N-грамм <code>n</code> не целое число не меньше единицы или <code>positive</code> не <code>bool</code>. С <code>target</code> дает также <code>SourceTypeError</code>, если целевой корпус не список строк, не список таких списков и не справочник строк с целыми частотами, и <code>SourceError</code> для отрицательной, <code>nan</code> или бесконечной частоты.</p>
+<p>Проверяет параметры <code>keyness</code> до чтения частотного словаря: дает <code>ParameterError</code>, если мера не из <code>KEYNESS_MEASURES</code>, минимальная частота не целое число, количество ключевых слов не <code>None</code> и не целое число не меньше единицы, длина N-грамм <code>n</code> не целое число не меньше единицы или <code>positive</code> не <code>bool</code>. С <code>target</code> дает также <code>SourceTypeError</code>, если целевой корпус не список строк, не список таких списков и не справочник строк с целыми частотами или если пробел есть в большинстве его слов или слов одного из его текстов, и <code>SourceError</code> для отрицательной, <code>nan</code> или бесконечной частоты.</p>
 <h2 id="_3">Эталон по частотам<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h2>
-<!-- core: corpus/keyness.md:FrequencyReference 02046dc -->
-<div class="signature highlight"><pre><span></span><code><span class="n">FrequencyReference</span><span class="p">(</span><span class="n">counts</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">missing</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">keep</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+<!-- core: corpus/keyness.md:FrequencyReference 2825cbb -->
+<div class="signature highlight"><pre><span></span><code><span class="n">FrequencyReference</span><span class="p">(</span><span class="n">counts</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">missing</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">keep</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">keys</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
 </code></pre></div>
 <p>Эталонный корпус, описанный одними частотами, - например, частотный словарь, построенный по корпусу, слишком большому, чтобы передать его словами:</p>
 <table>
@@ -2549,9 +2549,15 @@
 <td style="text-align: left;"><code>None</code></td>
 <td style="text-align: left;">Учитывается ли слово целевого корпуса; <code>None</code> - каждое слово</td>
 </tr>
+<tr>
+<td style="text-align: left;"><code>keys</code></td>
+<td style="text-align: left;"><code>Callable</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Ключи слов текста целевого корпуса по его словам в их порядке, например их леммы в контексте; <code>None</code> - ключи <code>key</code></td>
+</tr>
 </tbody>
 </table>
-<p>Учитываются только слова целевого корпуса, которые пропускает <code>keep</code>, - под своим <code>key</code>, и в частотах, и в объеме. Частота ключа, которого нет в <code>counts</code>, - <code>missing</code>, например наименьшая частота словаря: это верхняя граница, поэтому такое слово может быть положительным ключевым словом, но никогда - отрицательным. Отрицательные ключевые слова берутся только из ключей <code>counts</code>, которые пропускает <code>keep</code>. Частота проверяется при чтении, так что большой словарь не перебирается ради положительных ключевых слов: частота, которая не число, дает <code>SourceTypeError</code>, а отрицательная, <code>nan</code> или бесконечная - <code>SourceError</code>. <code>size</code> или <code>missing</code>, который не конечное число или отрицателен, дает <code>ParameterError</code>, а <code>key</code> или <code>keep</code>, который нельзя вызвать, - <code>SourceTypeError</code>.</p>
+<p>Учитываются только слова целевого корпуса, которые пропускает <code>keep</code>, - под своим ключом, и в частотах, и в объеме. Ключи списка слов дает <code>keys</code>, если он задан: он получает слова каждого текста по порядку и возвращает ключ каждого, так что лемматизатор в контексте различает омонимы там, где <code>key</code>, который видит слово отдельно, берет один разбор для всех его употреблений. Цель из слов каждого предложения отдельным текстом дает <code>keys</code> границы предложений, которые читает лемматизатор в контексте; частоты слов те же, ведь <code>FrequencyReference</code> считает отдельные слова. <code>key</code> дает ключи цели, заданной частотами, и слов без <code>keys</code>. Частота ключа, которого нет в <code>counts</code>, - <code>missing</code>, например наименьшая частота словаря: это верхняя граница, поэтому такое слово может быть положительным ключевым словом, но никогда - отрицательным. Отрицательные ключевые слова берутся только из ключей <code>counts</code>, которые пропускает <code>keep</code>. Частота проверяется при чтении, так что большой словарь не перебирается ради положительных ключевых слов: частота, которая не число, дает <code>SourceTypeError</code>, а отрицательная, <code>nan</code> или бесконечная - <code>SourceError</code>. <code>size</code> или <code>missing</code>, который не конечное число или отрицателен, дает <code>ParameterError</code>, а <code>key</code>, <code>keep</code> или <code>keys</code>, который нельзя вызвать, - <code>SourceTypeError</code>, как и ключи, которые не строка для каждого слова текста.</p>
 <p>Частотный словарь <code>FreqDict</code>, переданный как <code>reference</code>, превращается в такой эталон:</p>
 <table>
 <thead>
@@ -2576,6 +2582,10 @@
 <tr>
 <td style="text-align: left;"><code>key</code></td>
 <td style="text-align: left;">лемма словаря: лемма словоформы по ruMorph (с <code>lemmatize=False</code> и у сокращений - само слово), приведенная к соглашениям словаря, как в <a href="../../stats/lexical_stats/"><code>LexicalStats</code></a></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>keys</code></td>
+<td style="text-align: left;">леммы словаря словоформ текста, как у <code>key</code>, но по разбору ruMorph в контексте текста: «из стали» - «сталь», «мы стали» - «стать»; с <code>lemmatize=False</code> его нет</td>
 </tr>
 <tr>
 <td style="text-align: left;"><code>keep</code></td>
@@ -2940,7 +2950,7 @@ G^2 = 2 \left(a \ln \frac{a}{E_1} + b \ln \frac{b}{E_2}\right), \quad E_1 = \fra
       <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "navigation.top", "content.code.copy", "search.highlight", "search.suggest"], "search": "../../assets/javascripts/workers/search.a7633da7.min.js", "tags": null, "translations": {"clipboard.copied": "\u0421\u043a\u043e\u043f\u0438\u0440\u043e\u0432\u0430\u043d\u043e \u0432 \u0431\u0443\u0444\u0435\u0440", "clipboard.copy": "\u041a\u043e\u043f\u0438\u0440\u043e\u0432\u0430\u0442\u044c \u0432 \u0431\u0443\u0444\u0435\u0440", "search.result.more.one": "\u0415\u0449\u0451 1 \u043d\u0430 \u044d\u0442\u043e\u0439 \u0441\u0442\u0440\u0430\u043d\u0438\u0446\u0435", "search.result.more.other": "\u0415\u0449\u0451 # \u043d\u0430 \u044d\u0442\u043e\u0439 \u0441\u0442\u0440\u0430\u043d\u0438\u0446\u0435", "search.result.none": "\u0421\u043e\u0432\u043f\u0430\u0434\u0435\u043d\u0438\u0439 \u043d\u0435 \u043d\u0430\u0439\u0434\u0435\u043d\u043e", "search.result.one": "\u041d\u0430\u0439\u0434\u0435\u043d\u043e 1 \u0441\u043e\u0432\u043f\u0430\u0434\u0435\u043d\u0438\u0435", "search.result.other": "\u041d\u0430\u0439\u0434\u0435\u043d\u043e \u0441\u043e\u0432\u043f\u0430\u0434\u0435\u043d\u0438\u0439: #", "search.result.placeholder": "\u041d\u0430\u0447\u043d\u0438\u0442\u0435 \u043f\u0435\u0447\u0430\u0442\u0430\u0442\u044c \u0434\u043b\u044f \u043f\u043e\u0438\u0441\u043a\u0430", "search.result.term.missing": "\u041e\u0442\u0441\u0443\u0442\u0441\u0442\u0432\u0443\u0435\u0442", "select.version": "\u0412\u044b\u0431\u0435\u0440\u0438\u0442\u0435 \u0432\u0435\u0440\u0441\u0438\u044e"}, "version": null}</script>
     
     
-      <script src="../../assets/javascripts/bundle.c21346df.min.js"></script>
+      <script src="../../assets/javascripts/bundle.a5f9d56c.min.js"></script>
       
         <script src="../../js/config.js"></script>
       

@@ -27,7 +27,7 @@
       
       
       <link rel="icon" href="../../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.8.0">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.8.1">
     
     
       
@@ -970,6 +970,17 @@
     <span class="md-ellipsis">
       
         Methods
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#by_parts" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Parts of a text
       
     </span>
   </a>
@@ -2209,6 +2220,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#by_parts" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Parts of a text
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#count_punctuations" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2490,7 +2512,7 @@
 <p><code>get_stats(*, flat=False)</code> returns a dictionary with the distributions <code>c_letters</code> and <code>c_syllables</code>, the statistics of <code>stats_desc</code>, the distribution <code>c_punctuations</code> and, with <code>normalize=True</code>, the normalized counts, as a copy: editing it does not change the object. With <code>flat=True</code> the distributions give a key for every value the text has, such as <code>c_letters_3</code> and <code>c_punctuations_comma</code>.</p>
 <p><code>print_stats()</code> prints a table with the statistics of <code>stats_desc</code>, their descriptions and the headers from <code>stats_headers</code>.</p>
 <p>The normalized statistics <code>p_*</code> are not in the table.</p>
-<p><code>to_dataframe()</code> returns the flat statistics, <code>get_stats(flat=True)</code>, as a one-row <code>DataFrame</code> of <a href="https://pandas.pydata.org/">pandas</a> with a column for every key. A dictionary statistic gives columns only for the keys the text has, so in frames of several texts joined with <code>pandas.concat</code> a count a text lacks is <code>NaN</code>. Only these columns may be filled with 0: elsewhere <code>NaN</code> is an undefined value.</p>
+<p><code>to_dataframe()</code> returns the flat statistics, <code>get_stats(flat=True)</code>, as a one-row <code>DataFrame</code> of <a href="https://pandas.pydata.org/">pandas</a> with a column for every key. A dictionary statistic gives columns only for the keys the text has; the table of several texts, with 0 for a count a text lacks, is that of <a href="https://sergeyshk.github.io/anyTS/stats/stats/#stats_dataframe"><code>stats_dataframe</code></a>.</p>
 <div class="tabbed-set tabbed-alternate" data-tabs="2:2"><input checked="checked" id="__tabbed_2_1" name="__tabbed_2" type="radio" /><input id="__tabbed_2_2" name="__tabbed_2" type="radio" /><div class="tabbed-labels"><label for="__tabbed_2_1">Code</label><label for="__tabbed_2_2">Result</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
@@ -2544,6 +2566,33 @@
 </div>
 </div>
 <p>The <code>describe</code> method is that of the <a href="https://sergeyshk.github.io/anyTS/stats/stats/">statistics interface</a> of the anyTS core; the basic statistics have no scales, and it gives <code>None</code> for the statistics of <code>get_stats</code>.</p>
+<h2 id="by_parts">Parts of a text<a class="headerlink" href="#by_parts" title="Permanent link">&para;</a></h2>
+<p><code>by_parts(source, parts=None, **params)</code>, a class method, returns the statistics of every sentence (<code>parts="sentences"</code>), line (<code>"lines"</code>) or paragraph (<code>"paragraphs"</code>) of a data source, the first of the <code>part_kinds</code> of the class by default, as a <code>DataFrame</code>: a row per part, indexed by its number, with its <code>start</code> and <code>end</code> in the text of the document and its flat statistics, joined by <code>stats_dataframe</code>, the counts as integers. A line is the sentences between line breaks and a paragraph those between blank lines, so a text with a paragraph on every line has as many lines as paragraphs and one paragraph; a sentence that runs over a line break, as in a verse, stays in one line. The source is parsed once, by <code>parts_document</code> of the class, and the class with the parameters <code>params</code> counts the document of every part (<a href="https://sergeyshk.github.io/anyTS/document/#document_part"><code>document_part</code></a>); the classes of readability parse as their <code>basic_stats_class</code>. A part without words, such as a line of asterisks, or one the class cannot count, such as a number alone on a line for a class without numbers among its words, keeps its row without statistics, its counts <code>NA</code>; a source with no part the class can count, such as one without words, raises the error of the class. The numbers of the words and the sentences of the parts add up to those of the whole text, while the unique words, the shares and the means are those of every part, and a statistic that compares the sentences of a text, as the similarity of adjacent sentences, is undefined in a part of one sentence.</p>
+<p>The parts of a class are its <code>part_kinds</code>: <code>CohesionStats</code>, whose links run between sentences, counts lines, its paragraphs by default, and paragraphs, and <code>DiversityStats</code>, which takes words, no parts. Other parts and a class without parts raise <code>ParameterError</code>; the source and a part raise the errors of the class.</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="3:2"><input checked="checked" id="__tabbed_3_1" name="__tabbed_3" type="radio" /><input id="__tabbed_3_2" name="__tabbed_3" type="radio" /><div class="tabbed-labels"><label for="__tabbed_3_1">Code</label><label for="__tabbed_3_2">Result</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">ruts</span><span class="w"> </span><span class="kn">import</span> <span class="n">BasicStats</span>
+
+<span class="n">text</span> <span class="o">=</span> <span class="s2">"Кот спит на окне. Пёс громко лает во дворе.</span><span class="se">\n\n</span><span class="s2">Птица поёт."</span>
+<span class="n">BasicStats</span><span class="o">.</span><span class="n">by_parts</span><span class="p">(</span><span class="n">text</span><span class="p">)[[</span><span class="s2">"start"</span><span class="p">,</span> <span class="s2">"end"</span><span class="p">,</span> <span class="s2">"n_words"</span><span class="p">,</span> <span class="s2">"n_syllables"</span><span class="p">]]</span>
+<span class="n">BasicStats</span><span class="o">.</span><span class="n">by_parts</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="s2">"paragraphs"</span><span class="p">)[[</span><span class="s2">"start"</span><span class="p">,</span> <span class="s2">"end"</span><span class="p">,</span> <span class="s2">"n_sents"</span><span class="p">,</span> <span class="s2">"n_words"</span><span class="p">]]</span>
+</code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code>          start  end  n_words  n_syllables
+sentence
+0             0   17        4            5
+1            18   43        5            8
+2            45   56        2            4
+           start  end  n_sents  n_words
+paragraph
+0              0   43        2        9
+1             45   56        1        2
+</code></pre></div>
+</div>
+</div>
+</div>
 <h2 id="count_punctuations">Punctuation marks<a class="headerlink" href="#count_punctuations" title="Permanent link">&para;</a></h2>
 <div class="signature highlight"><pre><span></span><code><span class="n">count_punctuations</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">marks</span><span class="o">=</span><span class="n">PUNCTUATION_MARKS</span><span class="p">,</span> <span class="n">dash_pattern</span><span class="o">=</span><span class="n">DASH_PATTERN</span><span class="p">)</span>
 </code></pre></div>
@@ -2580,7 +2629,7 @@
 </table>
 <p>A mark of <code>marks</code> that is not a single character or has an unknown type raises <code>ParameterError</code>; a text that is not a string, <code>marks</code> that are not a mapping and a <code>dash_pattern</code> that is not a compiled regular expression raise <code>SourceTypeError</code>.</p>
 <p>In ruTS the <code>PUNCTUATION_MARKS</code> and <code>DASH_PATTERN</code> of <code>ruts.basic_stats</code> are the marks of the core with the low quotation mark <code>„</code> as a quotation mark and the pattern of dashes by which a hanging hyphen before <code>и</code>, <code>или</code>, <code>либо</code> or a comma stays a hyphen (<code>двух- и трёхкомнатные</code>, <code>сорока-, пятидесятилетние</code>), while a dialogue dash typed with a hyphen is a dash (<code>- Ушли, - сказал он</code>).</p>
-<div class="tabbed-set tabbed-alternate" data-tabs="3:2"><input checked="checked" id="__tabbed_3_1" name="__tabbed_3" type="radio" /><input id="__tabbed_3_2" name="__tabbed_3" type="radio" /><div class="tabbed-labels"><label for="__tabbed_3_1">Code</label><label for="__tabbed_3_2">Result</label></div>
+<div class="tabbed-set tabbed-alternate" data-tabs="4:2"><input checked="checked" id="__tabbed_4_1" name="__tabbed_4" type="radio" /><input id="__tabbed_4_2" name="__tabbed_4" type="radio" /><div class="tabbed-labels"><label for="__tabbed_4_1">Code</label><label for="__tabbed_4_2">Result</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">ruts.basic_stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">count_punctuations</span>
@@ -2632,7 +2681,7 @@
 </table>
 <p>Conjunctions that are not a collection of strings raise <code>SourceTypeError</code>, and an empty conjunction <code>ParameterError</code>.</p>
 <p>Without the parameters the pattern is the <code>DASH_PATTERN</code> of the core (<code>anyts.basic_stats</code>), while the <code>DASH_PATTERN</code> of <code>ruts.basic_stats</code> is <code>dash_pattern(("и", "или", "либо"), hanging_before_comma=True)</code>.</p>
-<div class="tabbed-set tabbed-alternate" data-tabs="4:2"><input checked="checked" id="__tabbed_4_1" name="__tabbed_4" type="radio" /><input id="__tabbed_4_2" name="__tabbed_4" type="radio" /><div class="tabbed-labels"><label for="__tabbed_4_1">Code</label><label for="__tabbed_4_2">Result</label></div>
+<div class="tabbed-set tabbed-alternate" data-tabs="5:2"><input checked="checked" id="__tabbed_5_1" name="__tabbed_5" type="radio" /><input id="__tabbed_5_2" name="__tabbed_5" type="radio" /><div class="tabbed-labels"><label for="__tabbed_5_1">Code</label><label for="__tabbed_5_2">Result</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">ruts.basic_stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">count_punctuations</span><span class="p">,</span> <span class="n">dash_pattern</span>
@@ -2680,7 +2729,7 @@
 </tbody>
 </table>
 <p>The profile is an editorial and stylometric feature: Chekhov has several times more ellipses and exclamations than Tolstoy (see <a href="../../corpus/compare/">corpus comparison</a>). It depends on text formatting - quotation marks, dashes, the letter ё - and is best read separately from linguistic features.</p>
-<div class="tabbed-set tabbed-alternate" data-tabs="5:2"><input checked="checked" id="__tabbed_5_1" name="__tabbed_5" type="radio" /><input id="__tabbed_5_2" name="__tabbed_5" type="radio" /><div class="tabbed-labels"><label for="__tabbed_5_1">Code</label><label for="__tabbed_5_2">Result</label></div>
+<div class="tabbed-set tabbed-alternate" data-tabs="6:2"><input checked="checked" id="__tabbed_6_1" name="__tabbed_6" type="radio" /><input id="__tabbed_6_2" name="__tabbed_6" type="radio" /><div class="tabbed-labels"><label for="__tabbed_6_1">Code</label><label for="__tabbed_6_2">Result</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">ruts.basic_stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">punctuation_profile</span>
@@ -2792,7 +2841,7 @@
       <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.tabs", "navigation.top", "content.code.copy", "search.highlight", "search.suggest"], "search": "../../../assets/javascripts/workers/search.a7633da7.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="../../../assets/javascripts/bundle.c21346df.min.js"></script>
+      <script src="../../../assets/javascripts/bundle.a5f9d56c.min.js"></script>
       
         <script src="../../../js/config.js"></script>
       

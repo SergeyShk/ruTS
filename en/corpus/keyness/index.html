@@ -27,7 +27,7 @@
       
       
       <link rel="icon" href="../../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.8.0">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.8.1">
     
     
       
@@ -2477,7 +2477,7 @@
 </tr>
 </tbody>
 </table>
-<p>The parameters and the target corpus are checked by <code>check_keyness_params</code>; an <code>n</code> above 1 with frequencies or a <code>FrequencyReference</code> raises <code>ParameterError</code>. A reference that is not a list of strings, a list of such lists, a counter or a <code>FrequencyReference</code> raises <code>SourceTypeError</code>, and a negative, <code>nan</code> or infinite frequency of a counter and a corpus without words, or shorter than <code>n</code> words, raise <code>SourceError</code>.</p>
+<p>The parameters and the target corpus are checked by <code>check_keyness_params</code>; an <code>n</code> above 1 with frequencies or a <code>FrequencyReference</code> raises <code>ParameterError</code>. A reference that is not a list of strings, a list of such lists, a counter or a <code>FrequencyReference</code> raises <code>SourceTypeError</code>, and so does a corpus most of whose words, or of the words of one of its texts, hold a space: such words are texts, as the sentences of a text with a sentence of one word among them, not their words, while a phrase of several words among them passes. A negative, <code>nan</code> or infinite frequency of a counter and a corpus without words, or shorter than <code>n</code> words, raise <code>SourceError</code>.</p>
 <p><code>reference</code> may also be <code>FreqDict</code>, and one more parameter tells what the target corpus is against it:</p>
 <table>
 <thead>
@@ -2500,9 +2500,9 @@
 <p>A frequency dictionary that is not downloaded raises <code>DatasetNotFoundError</code>, and an <code>n</code> above 1 with it <code>ParameterError</code>.</p>
 <div class="signature highlight"><pre><span></span><code><span class="n">check_keyness_params</span><span class="p">(</span><span class="n">measure</span><span class="o">=</span><span class="s1">'log_likelihood'</span><span class="p">,</span> <span class="n">min_freq</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">top_n</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">positive</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">messages</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
 </code></pre></div>
-<p>Checks the parameters of <code>keyness</code> before a frequency dictionary is read: it raises <code>ParameterError</code> unless the measure is one of <code>KEYNESS_MEASURES</code>, the minimum frequency is an integer, the number of keywords is <code>None</code> or an integer of at least one, the length of the n-grams <code>n</code> is an integer of at least one and <code>positive</code> is a <code>bool</code>. With <code>target</code> it also raises <code>SourceTypeError</code> unless the target corpus is a list of strings, a list of such lists or a mapping of strings to whole frequencies, and <code>SourceError</code> for a negative, nan or infinite frequency.</p>
+<p>Checks the parameters of <code>keyness</code> before a frequency dictionary is read: it raises <code>ParameterError</code> unless the measure is one of <code>KEYNESS_MEASURES</code>, the minimum frequency is an integer, the number of keywords is <code>None</code> or an integer of at least one, the length of the n-grams <code>n</code> is an integer of at least one and <code>positive</code> is a <code>bool</code>. With <code>target</code> it also raises <code>SourceTypeError</code> unless the target corpus is a list of strings, a list of such lists or a mapping of strings to whole frequencies, or if most of its words or of the words of one of its texts hold a space, and <code>SourceError</code> for a negative, nan or infinite frequency.</p>
 <h2 id="reference-by-frequencies">Reference by frequencies<a class="headerlink" href="#reference-by-frequencies" title="Permanent link">&para;</a></h2>
-<div class="signature highlight"><pre><span></span><code><span class="n">FrequencyReference</span><span class="p">(</span><span class="n">counts</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">missing</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">keep</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+<div class="signature highlight"><pre><span></span><code><span class="n">FrequencyReference</span><span class="p">(</span><span class="n">counts</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">missing</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">keep</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">keys</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
 </code></pre></div>
 <p>A reference corpus described by its frequencies alone, such as a frequency dictionary built from a corpus too large to pass as words:</p>
 <table>
@@ -2545,9 +2545,15 @@
 <td style="text-align: left;"><code>None</code></td>
 <td style="text-align: left;">Whether a word of the target corpus is counted; <code>None</code> - every word</td>
 </tr>
+<tr>
+<td style="text-align: left;"><code>keys</code></td>
+<td style="text-align: left;"><code>Callable</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Keys of the words of a text of the target corpus, given its words in their order, such as their lemmas in context; <code>None</code> - those of <code>key</code></td>
+</tr>
 </tbody>
 </table>
-<p>Only the words of the target that <code>keep</code> passes are counted, under their <code>key</code>, in the frequencies and in the size alike. A key missing from <code>counts</code> has the frequency <code>missing</code>, such as the least frequency of a dictionary: an upper bound, so its word may be a positive keyword but never a negative one. Negative keywords come only from the keys of <code>counts</code> that <code>keep</code> passes. A frequency is checked as it is read, so a large dictionary is not gone through for positive keywords: one that is not a number raises <code>SourceTypeError</code>, and a negative, <code>nan</code> or infinite one <code>SourceError</code>. A <code>size</code> or a <code>missing</code> that is not a finite number or is negative raises <code>ParameterError</code>, and a <code>key</code> or a <code>keep</code> that cannot be called <code>SourceTypeError</code>.</p>
+<p>Only the words of the target that <code>keep</code> passes are counted, under their key, in the frequencies and in the size alike. The keys of a list of words come from <code>keys</code> when it is given: it gets the words of every text in their order and returns a key for each, so a lemmatizer in context tells the homonyms apart where <code>key</code>, which sees a word alone, takes one analysis for all its occurrences. A target of the words of every sentence as a text of its own gives <code>keys</code> the bounds of the sentences, which a lemmatizer in context reads; the frequencies of words are the same, since a <code>FrequencyReference</code> counts single words. <code>key</code> keys a target given by its frequencies and the words without <code>keys</code>. A key missing from <code>counts</code> has the frequency <code>missing</code>, such as the least frequency of a dictionary: an upper bound, so its word may be a positive keyword but never a negative one. Negative keywords come only from the keys of <code>counts</code> that <code>keep</code> passes. A frequency is checked as it is read, so a large dictionary is not gone through for positive keywords: one that is not a number raises <code>SourceTypeError</code>, and a negative, <code>nan</code> or infinite one <code>SourceError</code>. A <code>size</code> or a <code>missing</code> that is not a finite number or is negative raises <code>ParameterError</code>, and a <code>key</code>, a <code>keep</code> or a <code>keys</code> that cannot be called <code>SourceTypeError</code>, as do keys that are not a string for every word of a text.</p>
 <p>The frequency dictionary <code>FreqDict</code> passed as <code>reference</code> is turned into such a reference:</p>
 <table>
 <thead>
@@ -2572,6 +2578,10 @@
 <tr>
 <td style="text-align: left;"><code>key</code></td>
 <td style="text-align: left;">the lemma of the dictionary: the ruMorph lemma of a word form (with <code>lemmatize=False</code> and for an abbreviation the word itself) brought to the conventions of the dictionary, as in <a href="../../stats/lexical_stats/"><code>LexicalStats</code></a></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>keys</code></td>
+<td style="text-align: left;">the lemmas of the dictionary of the word forms of a text, as of <code>key</code>, but by the ruMorph analysis in the context of the text: «из стали» - «сталь», «мы стали» - «стать»; none with <code>lemmatize=False</code></td>
 </tr>
 <tr>
 <td style="text-align: left;"><code>keep</code></td>
@@ -2926,7 +2936,7 @@ G^2 = 2 \left(a \ln \frac{a}{E_1} + b \ln \frac{b}{E_2}\right), \quad E_1 = \fra
       <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.tabs", "navigation.top", "content.code.copy", "search.highlight", "search.suggest"], "search": "../../../assets/javascripts/workers/search.a7633da7.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="../../../assets/javascripts/bundle.c21346df.min.js"></script>
+      <script src="../../../assets/javascripts/bundle.a5f9d56c.min.js"></script>
       
         <script src="../../../js/config.js"></script>
       
