@@ -93,7 +93,9 @@ class Report(anyts.report.Report):
 
     stats_classes: ClassVar[Mapping[str, type[Stats]]] = STATS_CLASSES
     titles: ClassVar[Mapping[str, str]] = STATS_TITLES
+    # Первый столбец отбирает трудные предложения: символы ближе к оценкам читателей, чем слова
     sentence_columns: ClassVar[Sequence[tuple[str, str]]] = (
+        ("basic", "n_chars"),
         ("basic", "n_words"),
         ("basic", "n_syllables"),
         ("readability", "flesch_reading_easy"),

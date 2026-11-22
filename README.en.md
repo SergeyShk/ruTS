@@ -193,7 +193,7 @@ More in the [documentation](https://sergeyshk.github.io/ruTS/en/stats/basic_stat
 
 Twelve formulas, from Flesch-Kincaid, SMOG and LIX to the Matskovsky and Tuldava formulas (the full list is in the `print_stats` output below). The [formulas of other languages](https://sergeyshk.github.io/ruTS/en/stats/unadapted_readability_stats/) (`UnadaptedReadabilityStats`) - FORCAST, Wiener Sachtextformel, Gulpease and others - use their original coefficients, without a calibration for Russian: they suit comparing texts, not a grade of the Russian school.
 
-On top of the formulas come a consensus grade, the reader's age, the scales of the Flesch index, LIX and RIX, reading time and the school [stage norms](https://sergeyshk.github.io/ruTS/en/stats/readability_stats/#level_norms).
+On top of the formulas come a consensus grade, the reader's age, the scales of the Flesch index, LIX and RIX, reading time and the school [stage norms](https://sergeyshk.github.io/ruTS/en/stats/readability_stats/#level_norms) for literary and educational texts.
 
 Coefficients of the adapted formulas are selected by the [preset](https://sergeyshk.github.io/ruTS/en/stats/readability_stats/#presets) `preset`: `plainrussian` (the default, the [Plain Russian Language](https://github.com/infoculture/plainrussian) project), `fiction` (Oborneva, fiction) and `academic` (Solovyev, Ivanov, Solnyshkina, textbooks).
 

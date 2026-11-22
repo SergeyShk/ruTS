@@ -16,6 +16,7 @@ from ruts.constants import (
     READABILITY_GRADE_STATS,
     READABILITY_PRESETS,
     READABILITY_STATS_DESC,
+    TEXTBOOK_LEVEL_NORMS,
 )
 from ruts.datasets import (
     sov_chrest_lit as sov_chrest_lit_module,
@@ -34,6 +35,16 @@ FORMULA_ROW = re.compile(
     r"^\| (?P<label>[^|]+?) \| (?P<rho>−?[\d.]+) \| (?P<mae>[\d.]+|-) \|$", re.MULTILINE
 )
 NORM_ROW = re.compile(r"^\|[^|]+\| \d+ \|(?: [\d.]+-[\d.]+ \|){4}$", re.MULTILINE)
+# Познавательные тексты SovChLit - не художественные, в нормы LEVEL_NORMS не входят
+NON_FICTION = frozenset(
+    {
+        "Как учился В. И. Ленин",
+        "Что сделано по заветам Ленина I",
+        "Советская Армия",
+        "Мохнатые санитары III",
+        "Великий садовод I",
+    }
+)
 PRESET_ROW = re.compile(
     r"^\| (?P<group>[^|]+?) \| (?P<n>\d+) \| (?P<plainrussian>[\d.]+) \| (?P<fiction>[\d.]+)"
     r" \| (?P<academic>[\d.]+) \|$",
@@ -322,12 +333,13 @@ def test_presets_table_follows_docs(presets, page):
 
 
 def test_level_norms_follow_datasets(dataset, first_grade_reader):
-    """LEVEL_NORMS - квартили признаков текстов от 100 слов с меткой школьной ступени"""
+    """LEVEL_NORMS - квартили признаков художественных текстов от 100 слов с меткой школьной
+    ступени; таблицы норм на страницах - LEVEL_NORMS и TEXTBOOK_LEVEL_NORMS"""
     digits = {"words_per_sent": 1, "letters_per_word": 2, "p_smog_complex_words": 3, "mtld": 0}
     texts = [*dataset, *first_grade_reader]
     stages: dict[int, list[dict[str, float]]] = {}
     for record in texts:
-        if BasicStats(record["text"]).n_words < 100:
+        if record.get("subject") in NON_FICTION or BasicStats(record["text"]).n_words < 100:
             continue
         for low, high, _, _ in GRADE_AGE_LEVELS:
             if low <= record["grade"] <= high <= 11:
@@ -347,10 +359,14 @@ def test_level_norms_follow_datasets(dataset, first_grade_reader):
     for page in ("readability_stats.md", "readability_stats.en.md"):
         text = (DOCS / "stats" / page).read_text(encoding="utf-8")
         rows = [row.strip("| ").split(" | ")[1:] for row in NORM_ROW.findall(text)]
-        assert rows == [
-            [str(len(stages[low])), *(f"{low_}-{high}" for low_, high in norms.values())]
-            for low, norms in LEVEL_NORMS.items()
-        ], page
+        fiction = [[str(len(stages[low])), *ranges(norms)] for low, norms in LEVEL_NORMS.items()]
+        assert rows[: len(fiction)] == fiction, page
+        textbook = [ranges(norms) for norms in TEXTBOOK_LEVEL_NORMS.values()]
+        assert [row[1:] for row in rows[len(fiction) :]] == textbook, page
+
+
+def ranges(norms):
+    return [f"{low}-{high}" for low, high in norms.values()]
 
 
 def test_senior_norm_texts_by_consensus(dataset):
