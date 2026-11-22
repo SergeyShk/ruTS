@@ -96,7 +96,7 @@ Try it without installing in the [demo on Hugging Face Spaces](https://huggingfa
 
     ---
 
-    Word frequency by the Lyashevskaya-Sharoff dictionary, frequency bands, surprisal, lexical density
+    Word frequency by the Lyashevskaya-Sharoff dictionary, frequency bands, surprisal, lexical density, shares of proper nouns and abbreviations
 
     [:octicons-arrow-right-24: Lexical sophistication statistics](stats/lexical_stats.md)
 

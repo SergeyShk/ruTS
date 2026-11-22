@@ -44,7 +44,7 @@ Try it without installing in the [demo on Hugging Face Spaces](https://huggingfa
 * **[Phonostatistics](https://sergeyshk.github.io/ruTS/en/stats/phon_stats/)** - sound classes, clusters, alliteration and assonance, syllables
 * **[Syntactic statistics](https://sergeyshk.github.io/ruTS/en/stats/syntax_stats/)** - dependency distances, tree depth, clauses, participial clauses, passive voice, genitive chains and other officialese markers over the spaCy parse
 * **[Cohesion statistics](https://sergeyshk.github.io/ruTS/en/stats/cohesion_stats/)** - word overlap between sentences, givenness, temporal cohesion, connectives
-* **[Lexical sophistication statistics](https://sergeyshk.github.io/ruTS/en/stats/lexical_stats/)** - word frequency by the Lyashevskaya-Sharoff dictionary, frequency bands, surprisal, lexical density
+* **[Lexical sophistication statistics](https://sergeyshk.github.io/ruTS/en/stats/lexical_stats/)** - word frequency by the Lyashevskaya-Sharoff dictionary, frequency bands, surprisal, lexical density, shares of proper nouns and abbreviations
 * **[Verse statistics](https://sergeyshk.github.io/ruTS/en/stats/verse_stats/)** - stresses by the Koziev dictionary, meter, stress profile, rhyme schemes, stanzas
 * **[Corpus measures](https://sergeyshk.github.io/ruTS/en/corpus/keyness/)** - keywords, collocations, word dispersion, KWIC concordance, stylometry, corpus comparison across all features with effect sizes
 * **[Datasets](https://sergeyshk.github.io/ruTS/en/datasets/sovchlit/)** - ready-to-use preprocessed corpora with filtering

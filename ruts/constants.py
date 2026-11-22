@@ -1367,6 +1367,8 @@ LEXICAL_STATS_DESC = {
     "p_top10000": "Доля слов из топ-10000",
     "p_beyond_top10000": "Доля слов вне топ-10000",
     "lexical_density": "Лексическая плотность",
+    "p_proper_nouns": "Доля имен собственных",
+    "p_abbreviations": "Доля аббревиатур",
 }
 COHESION_STATS_DESC = {
     "noun_overlap_adjacent": "Повтор существительных в соседних предложениях",

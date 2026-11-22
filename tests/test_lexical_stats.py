@@ -334,3 +334,14 @@ def test_doc_pipeline_as_string(nlp, freq_dict):
     )
     assert doc_ls.lemmas == text_ls.lemmas
     assert doc_ls.lexical_density == text_ls.lexical_density == pytest.approx(4 / 12)
+
+
+def test_proper_nouns_and_abbreviations(freq_dict, nlp):
+    """Доли имен собственных и аббревиатур - по разбору ruMorph в контексте, у Doc - по разметке"""
+    text = "Маша приехала в Москву из СССР в 1990 г. Петров помог."
+    stats = LexicalStats(text, freq_dict=freq_dict)
+    assert stats.n_words == 10
+    assert stats.p_proper_nouns == 0.4  # Маша, Москву, СССР, Петров
+    assert stats.p_abbreviations == 0.2  # СССР, г
+    doc = LexicalStats(nlp(text), freq_dict=freq_dict)
+    assert (doc.p_proper_nouns, doc.p_abbreviations) == (0.4, 0.2)

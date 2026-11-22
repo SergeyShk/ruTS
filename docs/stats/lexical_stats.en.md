@@ -10,7 +10,7 @@ In ruTS an extractor of another type raises `SourceTypeError` too, only a source
 
 The words of a text are compared with the frequencies of the language ([TAALES](https://doi.org/10.3758/s13428-017-0924-4)), not with each other as in the [lexical diversity metrics](diversity_stats.md).
 
-The class extends the `LexicalStats` of the [anyTS](https://sergeyshk.github.io/anyTS/stats/lexical_stats/) core with the Russian layer: the dictionary is the Lyashevskaya and Sharoff [`FreqDict`](../datasets/freq2011.md) (`freq_dict_class`), and the ranks of the lemmas and the size of the list (`rank`, `top_size`) come from the embedded list of the Sharoff lemmas ([`get_rank`](#bands)). The words of a string are extracted by the Russian [`WordsExtractor`](../extractors/words.md), and the words of a `Doc` and a `Document` without an extractor are those of their document (`ruts.utils.get_document`). Numbers (2020, 5.5, 3-й) are not words. The lemmas come from ruMorph: for a `Doc` and a `Document` with part-of-speech annotation by the part of speech of the word, for a string in the context of the sentence, for a `Doc` and a `Document` without annotation the same in the sentences whose words are those of the string, and for the other words and with a words extractor given by the first analysis. The keys of the words in the dictionary (`keys`, `dictionary_keys`) are the lemmas brought to its conventions by `dictionary_lemma`: должна - должен, денег - деньги, ночью - ночь. The `print_stats` table and the error messages are in Russian.
+The class extends the `LexicalStats` of the [anyTS](https://sergeyshk.github.io/anyTS/stats/lexical_stats/) core with the Russian layer: the dictionary is the Lyashevskaya and Sharoff [`FreqDict`](../datasets/freq2011.md) (`freq_dict_class`), and the ranks of the lemmas and the size of the list (`rank`, `top_size`) come from the embedded list of the Sharoff lemmas ([`get_rank`](#bands)). The words of a string are extracted by the Russian [`WordsExtractor`](../extractors/words.md), and the words of a `Doc` and a `Document` without an extractor are those of their document (`ruts.utils.get_document`). Numbers (2020, 5.5, 3-й) are not words. The lemmas, the proper nouns and the abbreviations come from ruMorph: for a `Doc` and a `Document` with part-of-speech annotation by the part of speech of the word, for a string in the context of the sentence, for a `Doc` and a `Document` without annotation the same in the sentences whose words are those of the string, and for the other words and with a words extractor given by the first analysis. The keys of the words in the dictionary (`keys`, `dictionary_keys`) are the lemmas brought to its conventions by `dictionary_lemma`: должна - должен, денег - деньги, ночью - ночь. The `print_stats` table and the error messages are in Russian.
 
 === "Code"
 
@@ -43,6 +43,8 @@ The class extends the `LexicalStats` of the [anyTS](https://sergeyshk.github.io/
     Доля слов из топ-10000                                  |   1.00
     Доля слов вне топ-10000                                 |   0.00
     Лексическая плотность                                   |   0.62
+    Доля имен собственных                                   |   0.00
+    Доля аббревиатур                                        |   0.00
     ```
 
 ## Parameters
