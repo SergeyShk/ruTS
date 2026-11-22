@@ -128,36 +128,45 @@ SOURCE_NOTES = re.compile(r"^[^\S\n]*Сверка произведена[^\n]*(?
 # Примечания к главе - до следующей главы
 CHAPTER_NOTES = re.compile(r"\nПримечания к главе [^\W\d_]+\n.*?(?=\nГлава [^\W\d_]+\n|\Z)", re.S)
 INSERT = re.compile(r"\[[^\[\]]{1,1000}\]|\{[^{}]+\}")
-_LANGUAGES = r"(?:фр|франц|лат|итал|ит|нем|англ|греч|дат|тюрк)\b"
+# Вставка со вложенной вставкой без пометы: «[Истое выражение [не так решительно] (фр.)]»
+NESTED_INSERT = re.compile(r"\[(?:[^\[\]]|\[[^\[\]]*\]){1,1000}\]")
+_LANGUAGE_NAMES = r"(?:фр|франц|лат|итал|ит|нем|англ|греч|дат|тюрк)"
+_LANGUAGES = rf"{_LANGUAGE_NAMES}\b"
 # Открывающая фигурная скобка - опечатка источника вместо круглой: «{от лат, conscriptio)»
 _LANGUAGE_MARK = rf"[({{](?:от\.?\s*)?{_LANGUAGES}[^()]*\)"
 LANGUAGE_MARK = re.compile(_LANGUAGE_MARK, re.I)
-# Вставка в фигурных скобках - всегда сноска, в квадратных - если есть помета
+# Вставка в фигурных скобках - всегда сноска, в квадратных - если есть помета: язык,
+# в том числе сокращение с точкой («(он фр. mordore)», «Пер. с англ.»), «Ред.» или «Прим.»
 INSERT_MARK = re.compile(
-    rf"^\{{|{_LANGUAGE_MARK}|[-–—]\s*{_LANGUAGES}\.?\)?\s*[\]}}]$|\b(?:ред|прим|примеч)\.",
+    rf"^\{{|{_LANGUAGE_MARK}|[-–—]\s*{_LANGUAGES}\.?\s*[\]}}]$|\b(?:ред|прим|примеч)\."
+    rf"|(?<![^\W\d_]){_LANGUAGE_NAMES}\.",
     re.I,
 )
 # Перевод в круглых или угловых скобках с пометой языка: «Brunnen (источник (нем.))»
 GLOSS = re.compile(
-    rf"\([^()\n]{{1,300}}{_LANGUAGE_MARK}\)|<[^<>]{{1,500}}{_LANGUAGE_MARK}>"
-    rf"|\([^()\n]{{1,300}}[-–—][^\S\n]*{_LANGUAGES}\.?\)",
+    rf"\([^()]{{1,300}}{_LANGUAGE_MARK}\)|<[^<>]{{1,500}}{_LANGUAGE_MARK}>"
+    rf"|\([^()]{{1,300}}[-–—][^\S\n]*{_LANGUAGES}\.?\)|<[^<>]{{1,500}}[-–—][^\S\n]*{_LANGUAGES}\.?>",
     re.I,
 )
-# Строка перевода после стихотворения или главы: «Venena - Яд (лат.).», «1) - Благочестие (лат.)»
+# Строка перевода после стихотворения или главы: «Venena - Яд (лат.).», «1) - Благочестие (лат.)»;
+# номер сноски источник иногда заменяет тире, а стих в переводе делит «//»
 TRANSLATION_LINE = re.compile(
-    rf"^[^\S\n]*(?:(?:\*+\d*|\d+\))[^\S\n]*[-–—][^\S\n]*|(?![-–—])\S[^\n]*?[^\S\n][-–—][^\S\n]+)"
+    r"^[^\S\n]*(?:(?:\*+\d*|\d+\))[^\S\n]*[-–—][^\S\n]*|[-–—'][^\S\n]*"
+    rf"|(?![-–—])\S[^\n]*?[^\S\n][-–—][^\S\n]+)(?:[^\n]*//\n)*"
     rf"[^\n]*?{_LANGUAGE_MARK}\.?(?:[^\S\n]+[-–—][^\n]*)?[^\S\n]*(?:\n|$)",
     re.I | re.M,
 )
-# Примечание после главы: номер, затем до четырех непустых строк с пометой языка или «Прим.»
+# Сноска со звездочкой в скобках - строка «[*] -- Моя жена!»
+STAR_NOTE = re.compile(r"\n[^\S\n]*\[\*\][^\S\n][^\n]*")
+# Примечание после главы: номер, затем до пяти непустых строк с пометой языка или «Прим.»
 NOTE_LINES = re.compile(
-    rf"^[^\S\n]*\d{{1,3}}(?:[^\S\n]+|[^\S\n]*\n(?:[^\S\n]*\n)*)(?:[^\S\n]*\S[^\n]*\n){{0,3}}?"
+    rf"^[^\S\n]*\d{{1,3}}(?:[^\S\n]+|[^\S\n]*\n(?:[^\S\n]*\n)*)(?:[^\S\n]*\S[^\n]*\n){{0,4}}?"
     rf"[^\n]*?(?:{_LANGUAGE_MARK}|\(прим(?:еч)?\.[^()]*\))[.)>]*(?:\s*--\s*Ред\.)?[^\S\n]*(?:\n|$)",
     re.I | re.M,
 )
 # Выражения начинаются с символа сноски, а не с ретроспективной проверки: так в разы быстрее
 NOTE_MARKER = re.compile(
-    r"\[\*?\d+\]|\*\[\d+\]|\{\d+\}|<<\d+>>|\((?<=[^\W\d_]\()\d{1,3}\)"
+    r"\[\*?\d+\]|\[\*\]|\*\[\d+\]|\{\d+\}|<<\d+>>|\((?<=[^\W\d_]\()\d{1,3}\)"
     r"|\*(?<=[a-zа-яёàâçéèêëîïôûùü]\*)(?![*\w])"
 )
 NOTE_DIGITS = re.compile(
@@ -611,7 +620,8 @@ def clean_text(text: str) -> str:
     text = CHAPTER_NOTES.sub("", text)
     text = NOTE_BLOCK.sub("", text)
     text = _until_stable(lambda text: _remove(INSERT, text, INSERT_MARK.search), text)
-    text = NOTE_LINES.sub("", text)
+    text = _remove(NESTED_INSERT, text, INSERT_MARK.search)
+    text = STAR_NOTE.sub("", NOTE_LINES.sub("", text))
     text = _remove_translation_lines(_remove(GLOSS, text))
     return _until_stable(
         lambda text: _remove(NOTE_DIGITS, _remove(NOTE_MARKER, text)), text
@@ -624,6 +634,8 @@ def _remove_translation_lines(text: str) -> str:
     last = 0
     for mark in LANGUAGE_MARK.finditer(text):
         start = text.rfind("\n", 0, mark.start()) + 1
+        while start > 1 and text.endswith("//", 0, start - 1):
+            start = text.rfind("\n", 0, start - 1) + 1
         if start >= last and (line := TRANSLATION_LINE.match(text, start)):
             parts.append(text[last:start])
             last = line.end()
