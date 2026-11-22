@@ -1,6 +1,6 @@
 [project]
 name = "ruts"
-version = "0.22.0.dev1"
+version = "0.22.0.dev2"
 description = "Russian Texts Statistics"
 readme = "README.md"
 requires-python = ">=3.11"
@@ -43,7 +43,7 @@ classifiers = [
 ]
 dependencies = [
     "anyseg>=0.4,<0.5",
-    "anyts>=0.6,<0.7",
+    "anyts>=0.6.2,<0.7",
     "graphviz>=0.20.3",
     "matplotlib>=3.8",
     "numpy>=1.26",
@@ -62,6 +62,9 @@ Issues = "https://github.com/SergeyShk/ruTS/issues"
 [build-system]
 requires = ["hatchling>=1.27"]
 build-backend = "hatchling.build"
+
+[project.scripts]
+ruts = "ruts.cli:main"
 
 [project.entry-points.spacy_factories]
 ruts_basic = "ruts.components:BasicStatsComponent"

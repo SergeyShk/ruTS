@@ -110,6 +110,13 @@ The recommended [pipeline](https://sergeyshk.github.io/ruTS/en/components/#load_
 0.8888888888888888
 ```
 
+The same statistics without Python - with the command `ruts` (a table, JSON or CSV, by parts of a text) and an HTML report in one page:
+
+```bash
+ruts stats -f json text.txt
+ruts report text.txt -o report.html
+```
+
 A walkthrough of one short story with every tool of the library is in the notebook [examples/01_text_walkthrough.ipynb](https://github.com/SergeyShk/ruTS/blob/master/examples/01_text_walkthrough.ipynb) (opens in [Colab](https://colab.research.google.com/github/SergeyShk/ruTS/blob/master/examples/01_text_walkthrough.ipynb)), the other notebooks are on the [examples](https://sergeyshk.github.io/ruTS/en/examples/) page.
 
 ## Features

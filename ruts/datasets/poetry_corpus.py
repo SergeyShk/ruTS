@@ -5,19 +5,12 @@ from itertools import islice
 from pathlib import Path
 from typing import Any
 
-from anyts.datasets import (
-    Filters,
-    check_limit,
-    download_file,
-    length_filters,
-    sha256,
-    to_path,
-)
+from anyts.datasets import Filters, sha256
 
-from ..constants import DEFAULT_DATA_DIR, USER_AGENT
+from ..constants import CORE_MESSAGES, DEFAULT_DATA_DIR, USER_AGENT
 from ..exceptions import DataFileError, DatasetNotFoundError, DownloadError, ParameterError
 from ..utils import normalize_yo
-from .dataset import Dataset, substring_filter
+from .dataset import Dataset, check_limit, download_file, length_filters, substring_filter, to_path
 
 NAME = "poetry_corpus"
 META = {
@@ -162,10 +155,7 @@ class PoetryCorpus(Dataset):
             )
             if sha256(self._filepath) != FILE_SHA256:
                 self._filepath.unlink(missing_ok=True)
-                raise DownloadError(
-                    f"Файл {self._filepath} не прошел проверку контрольной суммы и удален, "
-                    "повторите загрузку"
-                )
+                raise DownloadError(CORE_MESSAGES["checksum"].format(path=self._filepath))
         self.check_data()
 
     def get_texts(

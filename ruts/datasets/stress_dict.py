@@ -6,12 +6,12 @@ from pathlib import Path
 from typing import Any
 
 import numpy as np
-from anyts.datasets import check_limit, download_file, extract_archive, sha256, to_path
+from anyts.datasets import sha256
 
-from ..constants import DEFAULT_DATA_DIR, RU_VOWELS, USER_AGENT
+from ..constants import CORE_MESSAGES, DEFAULT_DATA_DIR, RU_VOWELS, USER_AGENT
 from ..exceptions import DatasetNotFoundError, DownloadError
 from ..utils import normalize_yo
-from .dataset import Dataset
+from .dataset import Dataset, check_limit, download_file, extract_archive, to_path
 
 NAME = "stress_dict"
 META = {
@@ -157,7 +157,7 @@ class StressDict(Dataset):
         if not self._filepath.is_file():
             msg = (
                 f"Словарь {NAME} не обнаружен\n"
-                "Загрузите его, выполнив команды:\n"
+                f"Загрузите его командой ruts download {NAME} или в Python:\n"
                 ">>> sd = StressDict()\n"
                 ">>> sd.download()"
             )
@@ -190,10 +190,7 @@ class StressDict(Dataset):
         if filepath or not self._filepath.is_file():
             if sha256(archive) != ARCHIVE_SHA256:
                 archive.unlink(missing_ok=True)
-                raise DownloadError(
-                    f"Файл {archive} не прошел проверку контрольной суммы и удален, "
-                    "повторите загрузку"
-                )
+                raise DownloadError(CORE_MESSAGES["checksum"].format(path=archive))
             extract_archive(archive, self.data_dir)
         self.check_data()
         load_index.cache_clear()

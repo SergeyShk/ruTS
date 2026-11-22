@@ -110,6 +110,13 @@ python -m spacy download ru_core_news_sm
 0.8888888888888888
 ```
 
+Те же статистики без Python - командой `ruts` (таблица, JSON или CSV, по частям текста) и HTML-отчетом одной страницей:
+
+```bash
+ruts stats -f json текст.txt
+ruts report текст.txt -o отчет.html
+```
+
 Разбор одного рассказа всеми инструментами библиотеки - в ноутбуке [examples/01_text_walkthrough.ipynb](https://github.com/SergeyShk/ruTS/blob/master/examples/01_text_walkthrough.ipynb) (открывается в [Colab](https://colab.research.google.com/github/SergeyShk/ruTS/blob/master/examples/01_text_walkthrough.ipynb)), остальные ноутбуки - на странице [примеров](https://sergeyshk.github.io/ruTS/examples/).
 
 ## Возможности

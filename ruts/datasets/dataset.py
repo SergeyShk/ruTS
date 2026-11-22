@@ -4,7 +4,15 @@ from pathlib import Path
 import anyts.datasets
 from anyts.datasets import Filter
 
-from ..utils import normalize_yo
+from ..constants import CORE_MESSAGES
+from ..utils import normalize_yo, with_core_messages
+
+check_limit = with_core_messages(anyts.datasets.check_limit)
+download_file = with_core_messages(anyts.datasets.download_file)
+extract_archive = with_core_messages(anyts.datasets.extract_archive)
+fetch_archive = with_core_messages(anyts.datasets.fetch_archive)
+length_filters = with_core_messages(anyts.datasets.length_filters)
+to_path = with_core_messages(anyts.datasets.to_path)
 
 
 class Dataset(anyts.datasets.Dataset):
@@ -41,7 +49,7 @@ def substring_filter(field: str, value: str) -> Filter:
     Исключения:
         ParameterError: Если подстрока не строка
     """
-    return anyts.datasets.substring_filter(field, value, normalize_yo)
+    return anyts.datasets.substring_filter(field, value, normalize_yo, messages=CORE_MESSAGES)
 
 
 def is_numbered(path: Path) -> bool:

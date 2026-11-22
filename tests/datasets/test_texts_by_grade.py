@@ -171,7 +171,7 @@ def test_download_replaces_broken_archive(tmp_path, monkeypatch):
     dataset._filepath.write_bytes(b"\x00" * 40)
     calls = []
 
-    def fake_download(url, dirpath, filename, force=False, user_agent=None):
+    def fake_download(url, dirpath, filename, force=False, user_agent=None, messages=None):
         calls.append(force)
         if not force and (Path(dirpath) / filename).is_file():
             return ""
@@ -186,7 +186,7 @@ def test_download_replaces_broken_archive(tmp_path, monkeypatch):
     other._filepath.parent.mkdir()
     other._filepath.write_bytes(b"\x00" * 40)
 
-    def broken_download(url, dirpath, filename, force=False, user_agent=None):
+    def broken_download(url, dirpath, filename, force=False, user_agent=None, messages=None):
         path = Path(dirpath) / filename
         if not force and path.is_file():
             return ""

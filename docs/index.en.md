@@ -132,6 +132,14 @@ Try it without installing in the [demo on Hugging Face Spaces](https://huggingfa
 
     [:octicons-arrow-right-24: Visualizations](visualizers/zipf.md)
 
+-   :material-console:{ .lg .middle } __Command line__
+
+    ---
+
+    Statistics of files as a table, JSON or CSV, by parts of a text, and an HTML report with the command `ruts`
+
+    [:octicons-arrow-right-24: Command line](cli.md)
+
 -   :material-pipe:{ .lg .middle } __Components__
 
     ---

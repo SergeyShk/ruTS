@@ -174,7 +174,7 @@ def make_archive(path: Path, content: bytes | None = None) -> Path:
 
 
 def test_download_corrupted(tmp_path, monkeypatch):
-    def fake_download(url, dirpath, filename, force, user_agent):
+    def fake_download(url, dirpath, filename, force, user_agent, messages=None):
         return str(make_archive(Path(dirpath), b"<html>not an archive</html>"))
 
     monkeypatch.setattr(stress_dict_module, "download_file", fake_download)
