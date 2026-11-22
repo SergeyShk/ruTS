@@ -1091,6 +1091,8 @@ PHON_STATS_DESC = {
     "consonant_vowel_ratio": "Отношение согласных к гласным",
     "p_heavy_clusters": "Доля кластеров из 3 и более согласных",
     "p_hiatus": "Зияний гласных на слово",
+    "p_junction_hiatus": "Доля стыков слов с зиянием",
+    "p_junction_clusters": "Доля стыков слов с 4 и более согласными",
     "cv_entropy": "Энтропия CV-шаблонов слов (бит)",
     "hardness": "Жёсткость",
     "alliteration": "Индекс аллитерации",

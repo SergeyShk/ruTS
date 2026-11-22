@@ -41,7 +41,7 @@ Try it without installing in the [demo on Hugging Face Spaces](https://huggingfa
 * **[Lexical diversity metrics](https://sergeyshk.github.io/ruTS/en/stats/diversity_stats/)** - TTR and its variations, MTLD, HD-D, Simpson's and Yule's indices, entropy, Zipf's and Heaps' laws
 * **[Morphological statistics](https://sergeyshk.github.io/ruTS/en/stats/morph_stats/)** - part of speech, case, mood, transitivity and other features in Universal Dependencies terms
 * **[SEO style metrics](https://sergeyshk.github.io/ruTS/en/stats/style_stats/)** - nausea, water content, spam score, naturalness by Zipf's law, keyword density, officialese markers
-* **[Phonostatistics](https://sergeyshk.github.io/ruTS/en/stats/phon_stats/)** - sound classes, clusters, alliteration and assonance, syllables
+* **[Phonostatistics](https://sergeyshk.github.io/ruTS/en/stats/phon_stats/)** - sound classes, clusters, hiatus and junctions of words, alliteration and assonance, syllables
 * **[Syntactic statistics](https://sergeyshk.github.io/ruTS/en/stats/syntax_stats/)** - dependency distances, tree depth, clauses, participial clauses, passive voice, genitive chains and other officialese markers over the spaCy parse
 * **[Cohesion statistics](https://sergeyshk.github.io/ruTS/en/stats/cohesion_stats/)** - word overlap between sentences, givenness, temporal cohesion, connectives
 * **[Lexical sophistication statistics](https://sergeyshk.github.io/ruTS/en/stats/lexical_stats/)** - word frequency by the Lyashevskaya-Sharoff dictionary, frequency bands, surprisal, lexical density, shares of proper nouns and abbreviations
@@ -424,7 +424,7 @@ More in the [documentation](https://sergeyshk.github.io/ruTS/en/stats/style_stat
 By letters, without devoicing or stress:
 
 *   Shares of vowels, sonorants, voiced and voiceless consonants, consonant-to-vowel ratio
-*   Consonant clusters and vowel hiatus
+*   Consonant clusters and vowel hiatus, at the junctions of words too
 *   Entropy of word CV patterns and "hardness"
 *   Alliteration and assonance indices relative to expected repetitions
 *   Syllables by the rising sonority rule: share of open syllables, mean syllable length
@@ -446,6 +446,8 @@ By letters, without devoicing or stress:
  'mean_syllable_len': 2.48,
  'p_heavy_clusters': 0.034482758620689655,
  'p_hiatus': 0.0,
+ 'p_junction_clusters': 0.0,
+ 'p_junction_hiatus': 0.0,
  'p_open_syllables': 0.76,
  'p_sonorants': 0.11290322580645161,
  'p_voiced': 0.1935483870967742,
