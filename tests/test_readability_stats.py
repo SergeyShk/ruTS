@@ -515,13 +515,13 @@ def test_level_norms_data():
     norms = level_norms(2)
     norms["words_per_sent"] = (1, 2)
     assert level_norms(2)["words_per_sent"] == LEVEL_NORMS["fiction"][1]["words_per_sent"]
-    assert LEVEL_NORMS["fiction"][1]["words_per_sent"] == (7.5, 10.3)
+    assert LEVEL_NORMS["fiction"][1]["words_per_sent"] == (7.4, 10.3)
 
 
 def test_describe_level_norm():
     below, within, above = LEVEL_NORM_BANDS
     assert describe_level_norm("words_per_sent", 6.0, 2) == below
-    assert describe_level_norm("words_per_sent", 7.5, 2) == within
+    assert describe_level_norm("words_per_sent", 7.4, 2) == within
     assert describe_level_norm("words_per_sent", 10.3, 2) == within
     assert describe_level_norm("words_per_sent", 11, 2) == above
     assert describe_level_norm("mtld", float("inf"), 10) == above

@@ -735,11 +735,11 @@ The default stages of ruTS are taken from the `GRADE_TEXT` table of the [Plain R
 
 ## Stage norms { #level_norms }
 
-The `ruts.constants.LEVEL_NORMS` table holds the norms of the features of the education stages - the usual ranges (quartiles) of the sentence length in words, the word length in letters, the share of words of five or more syllables and the lexical diversity MTLD of literary (`fiction`) and educational (`textbook`) texts. The literary norms come from texts of at least 100 words labeled with the stage in the [`SovChLit`](../datasets/sovchlit.md) (except five informational ones) and [`TextsByGrade`](../datasets/textsbygrade.md) datasets; school stages with at least 10 such texts have them:
+The `ruts.constants.LEVEL_NORMS` table holds the norms of the features of the education stages - the usual ranges (quartiles) of the sentence length in words, the word length in letters, the share of words of five or more syllables and the lexical diversity MTLD of literary (`fiction`) and educational (`textbook`) texts. The literary norms come from texts of at least 100 words labeled with the stage in the [`SovChLit`](../datasets/sovchlit.md) (except articles, popular science essays and memoirs) and [`TextsByGrade`](../datasets/textsbygrade.md) datasets; school stages with at least 10 such texts have them:
 
 | Stage | Texts | Words per sentence | Letters per word | Share of words of 5+ syllables | MTLD |
 | :---- | :---- | :----------------- | :--------------- | :----------------------------- | :--- |
-| grades 1-3 | 68 | 7.5-10.3 | 4.53-4.98 | 0.0-0.02 | 101-174 |
+| grades 1-3 | 65 | 7.4-10.3 | 4.54-4.98 | 0.0-0.019 | 104-172 |
 | grades 4-6 | 12 | 10.1-14.6 | 5.15-5.33 | 0.039-0.052 | 220-369 |
 | grades 10-11 | 18 | 15.0-18.4 | 5.11-5.57 | 0.035-0.065 | 276-513 |
 
@@ -752,7 +752,7 @@ The educational norms (`genre="textbook"`) come from windows of 500 words, at mo
 | grades 7-9 | 6 | 11.1-14.7 | 6.03-6.72 | 0.116-0.178 | 259-500 |
 | grades 10-11 | 12 | 13.9-16.1 | 6.31-6.82 | 0.138-0.19 | 301-556 |
 
-The literary norms of grades 1-3 come almost entirely from texts of grade 1 (65 of 68), so a text for grades 2-3 can come out above the norm, the sentence length above all. The consensus grade of the texts of the norms of grades 10-11 has a median of 7.5 and puts 2 of 18 at grades 10-11, so a text the consensus grade puts at grades 10-11 usually comes out above these norms in sentence or word length. The consensus grade overstates educational texts instead (a median of 6 for the windows of grades 1-3 and 14 for grades 10-11), so an educational text is checked against the educational norms and a literary one against the literary norms. The features of a text shorter than 100 words, MTLD above all, should not be compared with the norms.
+The literary norms of grades 1-3 come almost entirely from texts of grade 1 (62 of 65), so a text for grades 2-3 can come out above the norm, the sentence length above all. The consensus grade of the texts of the norms of grades 10-11 has a median of 7.5 and puts 2 of 18 at grades 10-11, so a text the consensus grade puts at grades 10-11 usually comes out above these norms in sentence or word length. The consensus grade overstates educational texts instead (a median of 6 for the windows of grades 1-3 and 14 for grades 10-11), so the grade for the educational norms is the one the text is meant for, not the consensus grade. The features of a text shorter than 100 words, MTLD above all, should not be compared with the norms.
 
 ### Features of a text { #level_features }
 
@@ -808,7 +808,7 @@ The reading of a feature of a text by the norms of the genre and of the stage a 
 === "Result"
 
     ```
-    ((7.5, 10.3), None)
+    ((7.4, 10.3), None)
     (11.1, 14.7)
     {'words_per_sent': 'выше нормы ступени',
      'letters_per_word': 'в норме ступени',

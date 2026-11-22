@@ -770,12 +770,9 @@ def level_norms(grade: float, genre: str = "fiction") -> dict[str, tuple[float, 
 
     Описание:
         Класс относится к ступени GRADE_AGE_LEVELS, как в grade_to_age. Нормы - квартили
-        q1-q3 признаков level_features у текстов жанра (LEVEL_NORMS):
-            fiction - художественные тексты от 100 слов с меткой ступени из наборов
-                SovChLit и TextsByGrade, ступени 1-3, 4-6 и 10-11-й класс; нормы
-                1-3-го класса сняты почти целиком с текстов 1-го класса (65 из 68)
-            textbook - окна по 500 слов учебников, ступени 1-11-го класса
-        Результат - копия, справочник LEVEL_NORMS он не меняет
+        q1-q3 признаков level_features у текстов жанра из LEVEL_NORMS: fiction -
+        художественные тексты, ступени 1-3, 4-6 и 10-11-й класс; textbook - учебные,
+        ступени 1-11-го класса. Результат - копия, справочник он не меняет
 
     Аргументы:
         grade (float): Класс читателя или сводный класс текста
@@ -791,7 +788,7 @@ def level_norms(grade: float, genre: str = "fiction") -> dict[str, tuple[float, 
     Пример использования:
         >>> from ruts.readability_stats import level_norms
         >>> level_norms(2)["words_per_sent"], level_norms(8)
-        ((7.5, 10.3), None)
+        ((7.4, 10.3), None)
         >>> level_norms(8, genre="textbook")["words_per_sent"]
         (11.1, 14.7)
     """

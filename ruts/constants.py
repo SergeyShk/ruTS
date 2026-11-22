@@ -163,10 +163,10 @@ READING_EASE_GRADES: tuple[tuple[float, float], ...] = (
 LEVEL_NORMS: dict[str, dict[int, dict[str, tuple[float, float]]]] = {
     "fiction": {
         1: {
-            "words_per_sent": (7.5, 10.3),
-            "letters_per_word": (4.53, 4.98),
-            "p_smog_complex_words": (0.0, 0.02),
-            "mtld": (101, 174),
+            "words_per_sent": (7.4, 10.3),
+            "letters_per_word": (4.54, 4.98),
+            "p_smog_complex_words": (0.0, 0.019),
+            "mtld": (104, 172),
         },
         4: {
             "words_per_sent": (10.1, 14.6),
