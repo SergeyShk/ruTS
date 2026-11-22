@@ -96,7 +96,7 @@
 
     ---
 
-    Частотность слов по словарю Ляшевской и Шарова, частотные полосы, сюрпризал, лексическая плотность
+    Частотность слов по словарю Ляшевской и Шарова, частотные полосы, сюрпризал, лексическая плотность, доли имен собственных и аббревиатур
 
     [:octicons-arrow-right-24: Статистики лексической сложности](stats/lexical_stats.md)
 
@@ -128,7 +128,7 @@
 
     ---
 
-    [Закон Ципфа](visualizers/zipf.md), [литературная дактилоскопия](visualizers/fingerprinting.md), [дерево слов](visualizers/word_tree.md), [подсветка текста](visualizers/highlight.md), [корпусные](visualizers/corpus.md) и [стилометрические](visualizers/stylometry.md) графики, [рост словаря и спектр частот](visualizers/vocabulary.md), [длины предложений](visualizers/sentences.md)
+    [Закон Ципфа](visualizers/zipf.md), [литературная дактилоскопия](visualizers/fingerprinting.md), [дерево слов](visualizers/word_tree.md), [подсветка текста](visualizers/highlight.md), [корпусные](visualizers/corpus.md) и [стилометрические](visualizers/stylometry.md) графики, [рост словаря и спектр частот](visualizers/vocabulary.md), [длины предложений](visualizers/sentences.md), [ритм строк](visualizers/verse.md) стиха
 
     [:octicons-arrow-right-24: Визуализации](visualizers/zipf.md)
 

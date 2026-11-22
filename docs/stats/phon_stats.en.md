@@ -29,21 +29,23 @@ The class extends the `PhonStats` of the [anyTS](https://sergeyshk.github.io/any
 === "Result"
 
     ```
-                  Статистика              | Значение
-    -------------------------------------------------
-    Доля гласных                          |   0.40
-    Доля сонорных согласных               |   0.11
-    Доля звонких шумных согласных         |   0.19
-    Доля глухих шумных согласных          |   0.29
-    Отношение согласных к гласным         |   1.48
-    Доля кластеров из 3 и более согласных |   0.03
-    Зияний гласных на слово               |   0.00
-    Энтропия CV-шаблонов слов (бит)       |   3.14
-    Жёсткость                             |   0.56
-    Индекс аллитерации                    |   1.09
-    Индекс ассонанса                      |   0.83
-    Доля открытых слогов                  |   0.76
-    Средняя длина слога (звуков)          |   2.48
+                   Статистика               | Значение
+    ---------------------------------------------------
+    Доля гласных                            |   0.40
+    Доля сонорных согласных                 |   0.11
+    Доля звонких шумных согласных           |   0.19
+    Доля глухих шумных согласных            |   0.29
+    Отношение согласных к гласным           |   1.48
+    Доля кластеров из 3 и более согласных   |   0.03
+    Зияний гласных на слово                 |   0.00
+    Доля стыков слов с зиянием              |   0.00
+    Доля стыков слов с 4 и более согласными |   0.00
+    Энтропия CV-шаблонов слов (бит)         |   3.14
+    Жёсткость                               |   0.56
+    Индекс аллитерации                      |   1.09
+    Индекс ассонанса                        |   0.83
+    Доля открытых слогов                    |   0.76
+    Средняя длина слога (звуков)            |   2.48
     ```
 
 ## Parameters
@@ -141,6 +143,19 @@ The number of the vowel hiatuses, two or more vowels in a row inside a word: а�
 | Parameter | Type | Default | Description |
 | :-------- | :--- | :------ | :---------- |
 | `text` | `list[str]` | - | List of words |
+
+</div>
+
+<div class="metric-card" markdown>
+
+### Junctions of words { #junctions }
+
+`p_junction_hiatus` · `p_junction_clusters`
+{ .metric-meta }
+
+--8<-- "stats/phon_stats.md:PhonStats-junctions"
+
+In ruTS the sounds are the letters: the iotated е, ё, ю, я at the start of the second word make no hiatus («и ёлка»), and ь and ъ at the edge of a word do not count. A junction hiatus is «и у», «на ограде», a heavy cluster «чувств страх», «текст встречи».
 
 </div>
 
@@ -284,6 +299,8 @@ The methods `get_stats`, `to_dataframe`, [`by_parts`](basic_stats.md#by_parts), 
      'consonant_vowel_ratio': 1.48,
      'p_heavy_clusters': 0.034482758620689655,
      'p_hiatus': 0.0,
+     'p_junction_hiatus': 0.0,
+     'p_junction_clusters': 0.0,
      'cv_entropy': 3.1395722619867223,
      'hardness': 0.5625,
      'alliteration': 1.0916179337231968,

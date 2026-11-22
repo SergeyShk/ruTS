@@ -100,16 +100,30 @@ def test_init_doc_model(nlp):
 
 
 def test_word_info():
-    assert word_info("кота") == WordInfo("кот", True, False, False, True, True, None, None)
-    assert word_info("он") == WordInfo("он", False, True, False, True, False, None, None)
-    assert word_info("этот") == WordInfo("этот", False, True, True, False, False, None, None)
-    assert word_info("это") == WordInfo("это", False, True, True, True, False, None, None)
-    assert word_info("столько") == WordInfo("столько", False, True, True, False, False, None, None)
-    assert word_info("читал") == WordInfo(
-        "читать", False, False, False, False, True, "Past", "Imp"
+    assert word_info("кота") == WordInfo(
+        "кот", True, False, False, True, True, None, None, False, False
     )
-    assert word_info("на") == WordInfo("на", False, False, False, False, False, None, None)
-    assert word_info("надо") == WordInfo("надо", False, False, False, False, False, None, None)
+    assert word_info("он") == WordInfo(
+        "он", False, True, False, True, False, None, None, False, False
+    )
+    assert word_info("этот") == WordInfo(
+        "этот", False, True, True, False, False, None, None, False, False
+    )
+    assert word_info("это") == WordInfo(
+        "это", False, True, True, True, False, None, None, False, False
+    )
+    assert word_info("столько") == WordInfo(
+        "столько", False, True, True, False, False, None, None, False, False
+    )
+    assert word_info("читал") == WordInfo(
+        "читать", False, False, False, False, True, "Past", "Imp", False, False
+    )
+    assert word_info("на") == WordInfo(
+        "на", False, False, False, False, False, None, None, False, False
+    )
+    assert word_info("надо") == WordInfo(
+        "надо", False, False, False, False, False, None, None, False, False
+    )
     assert word_info("прочитав").tense == "Past"
     assert word_info("нет").tense is None
 
@@ -120,12 +134,18 @@ def _tree_words(source):
 
 def test_token_info(nlp):
     words = _tree_words(nlp("Иван читает эту книгу."))
-    assert token_info(words[0]) == WordInfo("иван", True, False, False, True, True, None, None)
-    assert token_info(words[1]) == WordInfo(
-        "читать", False, False, False, False, True, "Pres", "Imp"
+    assert token_info(words[0]) == WordInfo(
+        "иван", True, False, False, True, True, None, None, True, False
     )
-    assert token_info(words[2]) == WordInfo("этот", False, True, True, False, False, None, None)
-    assert token_info(words[4]) == WordInfo(".", False, False, False, False, False, None, None)
+    assert token_info(words[1]) == WordInfo(
+        "читать", False, False, False, False, True, "Pres", "Imp", False, False
+    )
+    assert token_info(words[2]) == WordInfo(
+        "этот", False, True, True, False, False, None, None, False, False
+    )
+    assert token_info(words[4]) == WordInfo(
+        ".", False, False, False, False, False, None, None, False, False
+    )
 
 
 def test_init_doc_without_lemmatizer(nlp):

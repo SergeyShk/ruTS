@@ -89,7 +89,7 @@ CONNECTORS_FILE = RESOURCES_DIR / "connectors.tsv"
 
 class WordInfo(NamedTuple):
     """
-    Признаки слова, нужные для статистик связности
+    Признаки слова, нужные для статистик связности и лексической сложности
 
     Атрибуты:
         lemma (str): Лемма в нижнем регистре
@@ -101,6 +101,8 @@ class WordInfo(NamedTuple):
         content (bool): Знаменательное слово
         tense (str|None): Время глагольной формы
         aspect (str|None): Вид глагольной формы
+        proper (bool): Имя собственное
+        abbreviation (bool): Аббревиатура
     """
 
     lemma: str
@@ -111,6 +113,8 @@ class WordInfo(NamedTuple):
     content: bool
     tense: str | None
     aspect: str | None
+    proper: bool
+    abbreviation: bool
 
 
 class RussianConnectorMatcher(ConnectorMatcher):
@@ -681,6 +685,8 @@ def _word_info(
         and lemma not in PARENTHETICAL_WORDS,
         tense=tense,
         aspect=aspect,
+        proper=pos == "PROPN",
+        abbreviation=(feats or {}).get("Abbr") == "Yes",
     )
 
 

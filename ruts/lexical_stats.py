@@ -73,7 +73,9 @@ class LexicalStats(anyts.lexical_stats.LexicalStats):
         'p_top5000': 1.0,
         'p_top10000': 1.0,
         'p_beyond_top10000': 0.0,
-        'lexical_density': 0.625}
+        'lexical_density': 0.625,
+        'p_proper_nouns': 0.0,
+        'p_abbreviations': 0.0}
         >>> ls.band_coverage(unique=True)
         {1000: 0.7142857142857143, 2000: 0.8571428571428571, 5000: 1.0, 10000: 1.0}
 
@@ -110,6 +112,8 @@ class LexicalStats(anyts.lexical_stats.LexicalStats):
         p_top10000 (float): Доля слов с леммой из топ-10000
         p_beyond_top10000 (float): Доля слов с леммой вне топ-10000
         lexical_density (float): Доля знаменательных слов
+        p_proper_nouns (float): Доля имен собственных
+        p_abbreviations (float): Доля аббревиатур
 
     Методы:
         band_coverage: Доли слов или лемм по частотным полосам
@@ -148,8 +152,8 @@ class LexicalStats(anyts.lexical_stats.LexicalStats):
         return get_document(source)
 
     def analyze(self, source: str | Doc | Document) -> list[LexicalWord]:
-        """Слова без чисел с леммами ruMorph (у строки - в контексте предложения) и признаком
-        знаменательного слова"""
+        """Слова без чисел с леммами ruMorph (у строки - в контексте предложения) и признаками
+        знаменательного слова, имени собственного и аббревиатуры"""
         extractor = self._words_extractor
         infos: list[WordInfo]
         parsed = is_doc(source) or is_document(source)
@@ -186,7 +190,7 @@ class LexicalStats(anyts.lexical_stats.LexicalStats):
         else:
             raise source_type_error(self.messages, source)
         return [
-            LexicalWord(word, info.lemma, info.content)
+            LexicalWord(word, info.lemma, info.content, info.proper, info.abbreviation)
             for word, info in zip(words, infos, strict=True)
         ]
 

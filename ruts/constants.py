@@ -1091,6 +1091,8 @@ PHON_STATS_DESC = {
     "consonant_vowel_ratio": "Отношение согласных к гласным",
     "p_heavy_clusters": "Доля кластеров из 3 и более согласных",
     "p_hiatus": "Зияний гласных на слово",
+    "p_junction_hiatus": "Доля стыков слов с зиянием",
+    "p_junction_clusters": "Доля стыков слов с 4 и более согласными",
     "cv_entropy": "Энтропия CV-шаблонов слов (бит)",
     "hardness": "Жёсткость",
     "alliteration": "Индекс аллитерации",
@@ -1367,6 +1369,8 @@ LEXICAL_STATS_DESC = {
     "p_top10000": "Доля слов из топ-10000",
     "p_beyond_top10000": "Доля слов вне топ-10000",
     "lexical_density": "Лексическая плотность",
+    "p_proper_nouns": "Доля имен собственных",
+    "p_abbreviations": "Доля аббревиатур",
 }
 COHESION_STATS_DESC = {
     "noun_overlap_adjacent": "Повтор существительных в соседних предложениях",
@@ -1743,6 +1747,13 @@ VISUALIZER_LABELS = {
         "fit": "Ципф-Мандельброт: q={q:.2f}, s={s:.2f}",
     },
     "zipf_theory": {"theoretical": "Теоретический закон"},
+    "rhythm_plot": {
+        "title": "Ритм строк",
+        "xlabel": "Слог",
+        "ylabel": "Строка",
+        "stressed": "Ударный слог",
+        "unstressed": "Безударный слог",
+    },
     "heaps_plot": {
         "title": "Закон Хипса",
         "xlabel": "Длина текста, слов",
