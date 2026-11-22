@@ -371,6 +371,7 @@ RUSSIAN = {
         "mds_plot",
         "mendenhall_plot",
         "pca_plot",
+        "rhythm_plot",
         "rolling_delta_plot",
         "sentence_lengths",
         "sentence_lengths_plot",

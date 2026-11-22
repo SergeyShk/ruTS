@@ -128,7 +128,7 @@ Try it without installing in the [demo on Hugging Face Spaces](https://huggingfa
 
     ---
 
-    [Zipf's law](visualizers/zipf.md), [literature fingerprinting](visualizers/fingerprinting.md), [word tree](visualizers/word_tree.md), [text highlighting](visualizers/highlight.md), [corpus](visualizers/corpus.md) and [stylometric](visualizers/stylometry.md) plots, [vocabulary growth and frequency spectrum](visualizers/vocabulary.md), [sentence lengths](visualizers/sentences.md)
+    [Zipf's law](visualizers/zipf.md), [literature fingerprinting](visualizers/fingerprinting.md), [word tree](visualizers/word_tree.md), [text highlighting](visualizers/highlight.md), [corpus](visualizers/corpus.md) and [stylometric](visualizers/stylometry.md) plots, [vocabulary growth and frequency spectrum](visualizers/vocabulary.md), [sentence lengths](visualizers/sentences.md), the [rhythm of the lines](visualizers/verse.md) of a verse
 
     [:octicons-arrow-right-24: Visualizations](visualizers/zipf.md)
 

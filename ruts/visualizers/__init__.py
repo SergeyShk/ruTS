@@ -16,6 +16,7 @@ if TYPE_CHECKING:
         rolling_delta_plot,
         zeta_scatter_plot,
     )
+    from .verse import rhythm_plot
     from .vocabulary import frequency_spectrum_plot, heaps_plot
     from .word_tree import wordtree
     from .zipf import zipf, zipf_theory
@@ -31,6 +32,7 @@ _MODULES = {
     "fingerprinting": "fingerprinting",
     "frequency_spectrum_plot": "vocabulary",
     "heaps_plot": "vocabulary",
+    "rhythm_plot": "verse",
     "highlight": "highlight",
     "keyness_plot": "corpus",
     "mds_plot": "stylometry",
@@ -61,6 +63,7 @@ __all__ = [
     "mds_plot",
     "mendenhall_plot",
     "pca_plot",
+    "rhythm_plot",
     "rolling_delta_plot",
     "sentence_lengths",
     "sentence_lengths_plot",

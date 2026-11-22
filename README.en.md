@@ -706,7 +706,7 @@ Kinds of plots:
 *   [Text highlighting](https://sergeyshk.github.io/ruTS/en/visualizers/highlight/) by 15 layers in five groups: readability, syntax, officialese, style, phonics
 *   [Corpus plots](https://sergeyshk.github.io/ruTS/en/visualizers/corpus/): lexical dispersion, keyness chart, collocation network
 *   [Stylometry plots](https://sergeyshk.github.io/ruTS/en/visualizers/stylometry/): dendrogram and principal components by Delta, rolling Delta, Zeta markers, Mendenhall curves
-*   [Vocabulary growth and frequency spectrum](https://sergeyshk.github.io/ruTS/en/visualizers/vocabulary/), [sentence lengths](https://sergeyshk.github.io/ruTS/en/visualizers/sentences/) with a moving average
+*   [Vocabulary growth and frequency spectrum](https://sergeyshk.github.io/ruTS/en/visualizers/vocabulary/), [sentence lengths](https://sergeyshk.github.io/ruTS/en/visualizers/sentences/) with a moving average, the [rhythm of the lines](https://sergeyshk.github.io/ruTS/en/visualizers/verse/) of a verse
 
 Matplotlib plots accept `ax` and return `Axes`. Highlighting is rendered in Jupyter as HTML with a legend; six layers are on by default, `layers="all"` enables every layer, syntactic layers need a `Doc` with a dependency parse:
 

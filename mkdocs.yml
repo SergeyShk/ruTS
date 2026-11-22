@@ -56,6 +56,7 @@ nav:
         - Стилометрические графики: visualizers/stylometry.md
         - Рост словаря и спектр частот: visualizers/vocabulary.md
         - Длины предложений: visualizers/sentences.md
+        - Ритм строк: visualizers/verse.md
     - Компоненты:
         - Компоненты: components.md
 
@@ -158,6 +159,7 @@ plugins:
             Стилометрические графики: Stylometric plots
             Рост словаря и спектр частот: Vocabulary growth and frequency spectrum
             Длины предложений: Sentence lengths
+            Ритм строк: Rhythm of the lines
             Компоненты: Components
 
 extra:

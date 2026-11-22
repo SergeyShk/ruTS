@@ -1747,6 +1747,13 @@ VISUALIZER_LABELS = {
         "fit": "Ципф-Мандельброт: q={q:.2f}, s={s:.2f}",
     },
     "zipf_theory": {"theoretical": "Теоретический закон"},
+    "rhythm_plot": {
+        "title": "Ритм строк",
+        "xlabel": "Слог",
+        "ylabel": "Строка",
+        "stressed": "Ударный слог",
+        "unstressed": "Безударный слог",
+    },
     "heaps_plot": {
         "title": "Закон Хипса",
         "xlabel": "Длина текста, слов",

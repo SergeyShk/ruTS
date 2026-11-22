@@ -706,7 +706,7 @@ SEO-метрики по общепринятым определениям (фо�
 *   [Подсветка текста](https://sergeyshk.github.io/ruTS/visualizers/highlight/) по 15 слоям в пяти группах: читаемость, синтаксис, канцелярит, стиль, фоника
 *   [Корпусные графики](https://sergeyshk.github.io/ruTS/visualizers/corpus/): лексическая дисперсия, диаграмма ключевых слов, сеть коллокаций
 *   [Стилометрические графики](https://sergeyshk.github.io/ruTS/visualizers/stylometry/): дендрограмма и главные компоненты по дельте, скользящая дельта, маркеры Zeta, кривые Менденхолла
-*   [Рост словаря и спектр частот](https://sergeyshk.github.io/ruTS/visualizers/vocabulary/), [длины предложений](https://sergeyshk.github.io/ruTS/visualizers/sentences/) со скользящим средним
+*   [Рост словаря и спектр частот](https://sergeyshk.github.io/ruTS/visualizers/vocabulary/), [длины предложений](https://sergeyshk.github.io/ruTS/visualizers/sentences/) со скользящим средним, [ритм строк](https://sergeyshk.github.io/ruTS/visualizers/verse/) стиха
 
 Графики matplotlib принимают оси `ax` и возвращают `Axes`. Подсветка отображается в Jupyter как HTML с легендой; по умолчанию включены шесть слоёв, `layers="all"` включает все, синтаксическим слоям нужен `Doc` с разбором зависимостей:
 
