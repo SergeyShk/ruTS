@@ -36,7 +36,7 @@ The command has no syntactic statistics: `SyntaxStats` needs a `Doc` with a depe
 
 --8<-- "report.md:Report"
 
-In ruTS `Report` is in `ruts.report`: its classes are `STATS_CLASSES` of the same module, the classes of the command but `verse`; the columns of the sentences are the words, the syllables, the Flesch reading ease and the water; the highlighting is [`HighlightedText`](visualizers/highlight.md) with its default layers.
+In ruTS `Report` is in `ruts.report`: its classes are `STATS_CLASSES` of the same module, the classes of the command but `verse`; the columns of the sentences are the characters, the words, the syllables, the Flesch reading ease and the water; the highlighting is [`HighlightedText`](visualizers/highlight.md) with its default layers.
 
 === "Code"
 

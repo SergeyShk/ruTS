@@ -193,7 +193,7 @@ ruts report текст.txt -o отчет.html
 
 Двенадцать формул - от теста Флеша-Кинкайда, индекса SMOG и LIX до формул Мацковского и Тулдавы (полный список - в выводе `print_stats` ниже). [Формулы других языков](https://sergeyshk.github.io/ruTS/stats/unadapted_readability_stats/) (`UnadaptedReadabilityStats`) - FORCAST, Венские формулы, Gulpease и другие - считаются с исходными коэффициентами, без калибровки под русский язык: они годятся для сравнения текстов, но не для класса российской школы.
 
-Поверх формул - сводный класс, возраст читателя, шкалы индекса Флеша, LIX и RIX, время чтения и [нормы ступеней](https://sergeyshk.github.io/ruTS/stats/readability_stats/#level_norms) школы.
+Поверх формул - сводный класс, возраст читателя, шкалы индекса Флеша, LIX и RIX, время чтения и [нормы ступеней](https://sergeyshk.github.io/ruTS/stats/readability_stats/#level_norms) школы для художественных и учебных текстов.
 
 Коэффициенты адаптированных формул задаются [пресетом](https://sergeyshk.github.io/ruTS/stats/readability_stats/#presets) `preset`: `plainrussian` (по умолчанию, проект [Plain Russian Language](https://github.com/infoculture/plainrussian)), `fiction` (Оборнева, художественные тексты) и `academic` (Соловьёв, Иванов, Солнышкина, учебники).
 

@@ -735,15 +735,24 @@ The default stages of ruTS are taken from the `GRADE_TEXT` table of the [Plain R
 
 ## Stage norms { #level_norms }
 
-The `ruts.constants.LEVEL_NORMS` table holds the norms of the features of the education stages - the usual ranges (quartiles) of the sentence length in words, the word length in letters, the share of words of five or more syllables and the lexical diversity MTLD of literary texts of at least 100 words labeled with the stage in the [`SovChLit`](../datasets/sovchlit.md) and [`TextsByGrade`](../datasets/textsbygrade.md) datasets. School stages with at least 10 such texts have norms:
+The `ruts.constants.LEVEL_NORMS` table holds the norms of the features of the education stages - the usual ranges (quartiles) of the sentence length in words, the word length in letters, the share of words of five or more syllables and the lexical diversity MTLD of literary (`fiction`) and educational (`textbook`) texts. The literary norms come from texts of at least 100 words labeled with the stage in the [`SovChLit`](../datasets/sovchlit.md) (except articles, popular science essays and memoirs) and [`TextsByGrade`](../datasets/textsbygrade.md) datasets; school stages with at least 10 such texts have them:
 
 | Stage | Texts | Words per sentence | Letters per word | Share of words of 5+ syllables | MTLD |
 | :---- | :---- | :----------------- | :--------------- | :----------------------------- | :--- |
-| grades 1-3 | 73 | 7.6-10.3 | 4.54-5.01 | 0.0-0.021 | 104-178 |
+| grades 1-3 | 64 | 7.4-10.3 | 4.54-4.96 | 0.0-0.019 | 103-169 |
 | grades 4-6 | 12 | 10.1-14.6 | 5.15-5.33 | 0.039-0.052 | 220-369 |
 | grades 10-11 | 18 | 15.0-18.4 | 5.11-5.57 | 0.035-0.065 | 276-513 |
 
-The norms of grades 1-3 come almost entirely from texts of grade 1 (70 of 73), so a text for grades 2-3 can come out above the norm, the sentence length above all. The consensus grade of the texts of the norms of grades 10-11 has a median of 7.5 and puts 2 of 18 at grades 10-11, so a text the consensus grade puts at grades 10-11 usually comes out above these norms in sentence or word length. The features of a text shorter than 100 words, MTLD above all, should not be compared with the norms.
+The educational norms (`genre="textbook"`) come from windows of 500 words, at most 30 windows a textbook, of 38 textbooks of the natural world, ecology, computer science and technology of primary school, social studies of grades 5-11 and history of grades 10-11 ([Ivanov, 2022](https://doi.org/10.3389/frai.2022.1008411)):
+
+| Stage | Textbooks | Words per sentence | Letters per word | Share of words of 5+ syllables | MTLD |
+| :---- | :-------- | :----------------- | :--------------- | :----------------------------- | :--- |
+| grades 1-3 | 13 | 7.4-9.6 | 5.34-5.77 | 0.046-0.078 | 171-290 |
+| grades 4-6 | 7 | 8.6-11.4 | 5.49-6.04 | 0.063-0.108 | 197-349 |
+| grades 7-9 | 6 | 11.1-14.7 | 6.03-6.72 | 0.116-0.178 | 259-500 |
+| grades 10-11 | 12 | 13.9-16.1 | 6.31-6.82 | 0.138-0.19 | 301-556 |
+
+The literary norms of grades 1-3 come almost entirely from texts of grade 1 (61 of 64), so a text for grades 2-3 can come out above the norm, the sentence length above all. The consensus grade of the texts of the norms of grades 10-11 has a median of 7.5 and puts 2 of 18 at grades 10-11, so a text the consensus grade puts at grades 10-11 usually comes out above these norms in sentence or word length. The consensus grade overstates educational texts instead (a median of 6 for the windows of grades 1-3 and 14 for grades 10-11), so the grade for the educational norms is the one the text is meant for, not the consensus grade. The features of a text shorter than 100 words, MTLD above all, should not be compared with the norms.
 
 ### Features of a text { #level_features }
 
@@ -760,26 +769,28 @@ The features of a text that the stage norms cover - words per sentence, letters 
 ### Norms and the reading of a feature { #describe_level_norm }
 
 ``` {.python .signature}
-level_norms(grade)
+level_norms(grade, genre='fiction')
 ```
 
-The norms (quartiles) of the features of `level_features` of the education stage a grade belongs to (as in [`grade_to_age`](#grade_to_age)), or `None` for a stage without norms. A grade that is not a finite number raises `ParameterError`.
+The norms (quartiles) of the features of `level_features` of the genre and of the education stage a grade belongs to (as in [`grade_to_age`](#grade_to_age)), or `None` for a stage without norms. A grade that is not a finite number and an unknown genre raise `ParameterError`.
 
 | Parameter | Type | Default | Description |
 | :-------- | :--- | :------ | :---------- |
 | `grade` | `float` | - | Grade of the reader or consensus grade of a text |
+| `genre` | `str` | `'fiction'` | Genre of the norms: `fiction` - literary texts, `textbook` - educational ones |
 
 ``` {.python .signature}
-describe_level_norm(stat, value, grade)
+describe_level_norm(stat, value, grade, genre='fiction')
 ```
 
-The reading of a feature of a text by the norms of the stage a grade belongs to: «ниже нормы ступени» (below), «в норме ступени» (between the quartiles, inclusive) or «выше нормы ступени» (above), the bands of `ruts.constants.LEVEL_NORM_BANDS`. A stage without norms and an undefined value (nan) give `None`, an unknown feature raises `UnknownStatError`, and a value that is not a number and a grade that is not a finite number raise `ParameterError`.
+The reading of a feature of a text by the norms of the genre and of the stage a grade belongs to: «ниже нормы ступени» (below), «в норме ступени» (between the quartiles, inclusive) or «выше нормы ступени» (above), the bands of `ruts.constants.LEVEL_NORM_BANDS`. A stage without norms and an undefined value (nan) give `None`, an unknown feature raises `UnknownStatError`, and a value that is not a number, a grade that is not a finite number and an unknown genre raise `ParameterError`.
 
 | Parameter | Type | Default | Description |
 | :-------- | :--- | :------ | :---------- |
 | `stat` | `str` | - | Name of a feature of `ruts.constants.LEVEL_NORMS_DESC` |
 | `value` | `float` | - | Value of the feature |
 | `grade` | `float` | - | Grade of the reader or consensus grade of a text |
+| `genre` | `str` | `'fiction'` | Genre of the norms: `fiction` - literary texts, `textbook` - educational ones |
 
 === "Code"
 
@@ -788,7 +799,8 @@ The reading of a feature of a text by the norms of the stage a grade belongs to:
     from ruts.readability_stats import describe_level_norm, level_features, level_norms
 
     level_norms(2)["words_per_sent"], level_norms(8)
-    text = next(SovChLit().get_texts())
+    level_norms(8, genre="textbook")["words_per_sent"]
+    text = next(SovChLit().get_texts(author="В. Одоевский"))
     features = level_features(text)
     {stat: describe_level_norm(stat, value, 1) for stat, value in features.items()}
     ```
@@ -796,9 +808,10 @@ The reading of a feature of a text by the norms of the stage a grade belongs to:
 === "Result"
 
     ```
-    ((7.6, 10.3), None)
+    ((7.4, 10.3), None)
+    (11.1, 14.7)
     {'words_per_sent': 'выше нормы ступени',
-     'letters_per_word': 'выше нормы ступени',
-     'p_smog_complex_words': 'выше нормы ступени',
-     'mtld': 'в норме ступени'}
+     'letters_per_word': 'в норме ступени',
+     'p_smog_complex_words': 'в норме ступени',
+     'mtld': 'выше нормы ступени'}
     ```

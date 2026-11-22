@@ -489,31 +489,48 @@ def test_print_stats(capsys, rs):
 )
 def test_level_norms(grade, stage):
     """Нормы ступени, к которой класс относится по таблице grade_to_age"""
-    assert level_norms(grade) == (None if stage is None else LEVEL_NORMS[stage])
+    assert level_norms(grade) == (None if stage is None else LEVEL_NORMS["fiction"][stage])
+
+
+@pytest.mark.parametrize(
+    "grade, stage", [(0, 1), (3.4, 1), (3.5, 4), (7, 7), (9.4, 7), (9.5, 10), (11.5, None)]
+)
+def test_textbook_level_norms(grade, stage):
+    """У учебных текстов есть нормы и 7-9-го класса"""
+    expected = None if stage is None else LEVEL_NORMS["textbook"][stage]
+    assert level_norms(grade, genre="textbook") == level_norms(grade, "textbook") == expected
 
 
 def test_level_norms_data():
     """Нормы - квартили: нижний не выше верхнего, признаки - ключи LEVEL_NORMS_DESC"""
-    for norms in LEVEL_NORMS.values():
+    for norms in (norms for genre in LEVEL_NORMS.values() for norms in genre.values()):
         assert set(norms) == set(LEVEL_NORMS_DESC)
         assert all(low <= high for low, high in norms.values())
     for grade in (float("nan"), float("inf"), "3", True):
         with pytest.raises(ParameterError, match="Класс должен быть конечным числом"):
             level_norms(grade)
+    for genre in ("poetry", None):
+        with pytest.raises(ParameterError, match=r"Неизвестный жанр норм.+'fiction', 'textbook'"):
+            level_norms(2, genre)
     norms = level_norms(2)
     norms["words_per_sent"] = (1, 2)
-    assert level_norms(2)["words_per_sent"] == LEVEL_NORMS[1]["words_per_sent"] == (7.6, 10.3)
+    assert level_norms(2)["words_per_sent"] == LEVEL_NORMS["fiction"][1]["words_per_sent"]
+    assert LEVEL_NORMS["fiction"][1]["words_per_sent"] == (7.4, 10.3)
 
 
 def test_describe_level_norm():
     below, within, above = LEVEL_NORM_BANDS
     assert describe_level_norm("words_per_sent", 6.0, 2) == below
-    assert describe_level_norm("words_per_sent", 7.6, 2) == within
+    assert describe_level_norm("words_per_sent", 7.4, 2) == within
     assert describe_level_norm("words_per_sent", 10.3, 2) == within
     assert describe_level_norm("words_per_sent", 11, 2) == above
     assert describe_level_norm("mtld", float("inf"), 10) == above
     assert describe_level_norm("mtld", float("nan"), 10) is None
     assert describe_level_norm("words_per_sent", 12, 8) is None
+    assert describe_level_norm("words_per_sent", 12, 8, genre="textbook") == within
+    assert describe_level_norm("words_per_sent", 12, 5, "textbook") == above
+    with pytest.raises(ParameterError, match="Неизвестный жанр норм"):
+        describe_level_norm("words_per_sent", 12, 5, "poetry")
     for grade in (2, 8):
         with pytest.raises(UnknownStatError, match=r"^Неизвестная статистика: n_words"):
             describe_level_norm("n_words", 12, grade)
