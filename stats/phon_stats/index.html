@@ -1218,6 +1218,17 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#junctions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Стыки слов
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#cv_entropy" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2157,6 +2168,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../visualizers/verse/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Ритм строк
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -2354,6 +2393,17 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#junctions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Стыки слов
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#cv_entropy" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2492,21 +2542,23 @@
 </code></pre></div>
 </div>
 <div class="tabbed-block">
-<div class="highlight"><pre><span></span><code>              Статистика              | Значение
--------------------------------------------------
-Доля гласных                          |   0.40
-Доля сонорных согласных               |   0.11
-Доля звонких шумных согласных         |   0.19
-Доля глухих шумных согласных          |   0.29
-Отношение согласных к гласным         |   1.48
-Доля кластеров из 3 и более согласных |   0.03
-Зияний гласных на слово               |   0.00
-Энтропия CV-шаблонов слов (бит)       |   3.14
-Жёсткость                             |   0.56
-Индекс аллитерации                    |   1.09
-Индекс ассонанса                      |   0.83
-Доля открытых слогов                  |   0.76
-Средняя длина слога (звуков)          |   2.48
+<div class="highlight"><pre><span></span><code>               Статистика               | Значение
+---------------------------------------------------
+Доля гласных                            |   0.40
+Доля сонорных согласных                 |   0.11
+Доля звонких шумных согласных           |   0.19
+Доля глухих шумных согласных            |   0.29
+Отношение согласных к гласным           |   1.48
+Доля кластеров из 3 и более согласных   |   0.03
+Зияний гласных на слово                 |   0.00
+Доля стыков слов с зиянием              |   0.00
+Доля стыков слов с 4 и более согласными |   0.00
+Энтропия CV-шаблонов слов (бит)         |   3.14
+Жёсткость                               |   0.56
+Индекс аллитерации                      |   1.09
+Индекс ассонанса                        |   0.83
+Доля открытых слогов                    |   0.76
+Средняя длина слога (звуков)            |   2.48
 </code></pre></div>
 </div>
 </div>
@@ -2609,7 +2661,7 @@
 </div>
 </div>
 <h2 id="_4">Метрики<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h2>
-<!-- core: stats/phon_stats.md:PhonStats-metrics 83c97d6 -->
+<!-- core: stats/phon_stats.md:PhonStats-metrics e7c1f06 -->
 <p>Каждая метрика - атрибут объекта, который вычисляется при его создании, а <code>get_stats</code> дает их все.</p>
 <table>
 <thead>
@@ -2662,6 +2714,18 @@
 <td style="text-align: left;">Зияний <code>word_hiatus</code> на слово</td>
 <td style="text-align: left;">от 0, <code>nan</code> без звуков</td>
 <td style="text-align: left;">больше гласных подряд</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="#junctions"><code>p_junction_hiatus</code></a></td>
+<td style="text-align: left;">Доля стыков слов с гласными с обеих сторон</td>
+<td style="text-align: left;">0-1, <code>nan</code> без стыков</td>
+<td style="text-align: left;">чаще встречаются гласные на стыке слов</td>
+</tr>
+<tr>
+<td style="text-align: left;"><a href="#junctions"><code>p_junction_clusters</code></a></td>
+<td style="text-align: left;">Доля стыков слов с <code>JUNCTION_CLUSTER_LEN</code> (4) и более согласными подряд</td>
+<td style="text-align: left;">0-1, <code>nan</code> без стыков</td>
+<td style="text-align: left;">чаще встречаются согласные на стыке слов</td>
 </tr>
 <tr>
 <td style="text-align: left;"><a href="#cv_entropy"><code>cv_entropy</code></a></td>
@@ -2768,6 +2832,13 @@
 </tr>
 </tbody>
 </table>
+</div>
+<div class="metric-card">
+<h3 id="junctions">Стыки слов<a class="headerlink" href="#junctions" title="Permanent link">&para;</a></h3>
+<p class="metric-meta"><code>p_junction_hiatus</code> · <code>p_junction_clusters</code></p>
+<!-- core: stats/phon_stats.md:PhonStats-junctions f350508 -->
+<p>Стык - два слова предложения, между которыми только пробелы: знак, например запятая, перевод строки или конец предложения стыка не образуют, как и слово из одних согласных, кроме одиночной, например аббревиатура, читаемая по буквам. На стыке зияние, если последний звук классов первого слова и первый звук второго - гласные, причем второй не из <code>glides</code>, и тяжелый кластер, если согласные в конце первого слова и в начале второго, когда они есть у обоих слов, дают <code>JUNCTION_CLUSTER_LEN</code> (4) и больше. Доли - по всем стыкам текста, по звукам <code>transcribe</code>; с экстрактором слов стыки - те же, что у документа источника.</p>
+<p>В ruTS звуки - буквы: йотированные е, ё, ю, я в начале второго слова зияния не образуют («и ёлка»), ь и ъ на краю слова не считаются. Зияние на стыке - «и у», «на ограде», тяжелый кластер - «чувств страх», «текст встречи».</p>
 </div>
 <div class="metric-card">
 <h3 id="cv_entropy">Энтропия CV-шаблонов<a class="headerlink" href="#cv_entropy" title="Permanent link">&para;</a></h3>
@@ -2963,6 +3034,8 @@ P = 1 - \frac{\binom{N-K}{w} + K \binom{N-K}{w-1}}{\binom{N}{w}}
  'consonant_vowel_ratio': 1.48,
  'p_heavy_clusters': 0.034482758620689655,
  'p_hiatus': 0.0,
+ 'p_junction_hiatus': 0.0,
+ 'p_junction_clusters': 0.0,
  'cv_entropy': 3.1395722619867223,
  'hardness': 0.5625,
  'alliteration': 1.0916179337231968,

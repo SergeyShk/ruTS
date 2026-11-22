@@ -2113,6 +2113,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../visualizers/verse/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Rhythm of the lines
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -2348,7 +2376,7 @@
 <h1 id="lexical-sophistication-statistics">Lexical sophistication statistics<a class="headerlink" href="#lexical-sophistication-statistics" title="Permanent link">&para;</a></h1>
 <div class="signature highlight"><pre><span></span><code><span class="n">LexicalStats</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">words_extractor</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">freq_dict</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
 </code></pre></div>
-<p>Lexical sophistication in the manner of TAALES (Kyle, Crossley and Berger, 2018) - how rare the words of a text are: statistics by a frequency dictionary and its unigram model, the shares of the frequency bands of a list of the most frequent lemmas and the lexical density. The statistics by the dictionary are computed when first read, so the bands and the lexical density need no dictionary data. The data source is a text, a <code>Doc</code> object of <a href="https://github.com/explosion/spaCy">spaCy</a> or a <code>Document</code> of <a href="https://github.com/SergeyShk/anySeg">anySeg</a>, read through its <a href="https://sergeyshk.github.io/anyTS/document/">document</a>: by default its words of Universal Dependencies without numbers, with their lemmas and parts of speech.</p>
+<p>Lexical sophistication in the manner of TAALES (Kyle, Crossley and Berger, 2018) - how rare the words of a text are: statistics by a frequency dictionary and its unigram model, the shares of the frequency bands of a list of the most frequent lemmas, the lexical density and the shares of the proper nouns and of the abbreviations. The statistics by the dictionary are computed when first read, so the bands and the shares need no dictionary data. The data source is a text, a <code>Doc</code> object of <a href="https://github.com/explosion/spaCy">spaCy</a> or a <code>Document</code> of <a href="https://github.com/SergeyShk/anySeg">anySeg</a>, read through its <a href="https://sergeyshk.github.io/anyTS/document/">document</a>: by default its words of Universal Dependencies without numbers, with their lemmas, parts of speech and features.</p>
 <p>Raises:</p>
 <ul>
 <li><code>SourceTypeError</code> - a source that is neither a string, a <code>Doc</code> nor a <code>Document</code>, a <code>parse</code> that returns no <code>Document</code>, a dictionary of another class than that of the library or, without <code>freq_dict_class</code>, one without <code>lookup</code> and <code>ipm</code> or none at all; an <code>analyze</code> that does not give <code>LexicalWord</code> objects;</li>
@@ -2356,7 +2384,7 @@
 </ul>
 <p>In ruTS an extractor of another type raises <code>SourceTypeError</code> too, only a source without words raises <code>SourceError</code>, and the metrics by the dictionary without the dictionary downloaded raise <code>DatasetNotFoundError</code>.</p>
 <p>The words of a text are compared with the frequencies of the language (<a href="https://doi.org/10.3758/s13428-017-0924-4">TAALES</a>), not with each other as in the <a href="../diversity_stats/">lexical diversity metrics</a>.</p>
-<p>The class extends the <code>LexicalStats</code> of the <a href="https://sergeyshk.github.io/anyTS/stats/lexical_stats/">anyTS</a> core with the Russian layer: the dictionary is the Lyashevskaya and Sharoff <a href="../../datasets/freq2011/"><code>FreqDict</code></a> (<code>freq_dict_class</code>), and the ranks of the lemmas and the size of the list (<code>rank</code>, <code>top_size</code>) come from the embedded list of the Sharoff lemmas (<a href="#bands"><code>get_rank</code></a>). The words of a string are extracted by the Russian <a href="../../extractors/words/"><code>WordsExtractor</code></a>, and the words of a <code>Doc</code> and a <code>Document</code> without an extractor are those of their document (<code>ruts.utils.get_document</code>). Numbers (2020, 5.5, 3-й) are not words. The lemmas come from ruMorph: for a <code>Doc</code> and a <code>Document</code> with part-of-speech annotation by the part of speech of the word, for a string in the context of the sentence, for a <code>Doc</code> and a <code>Document</code> without annotation the same in the sentences whose words are those of the string, and for the other words and with a words extractor given by the first analysis. The keys of the words in the dictionary (<code>keys</code>, <code>dictionary_keys</code>) are the lemmas brought to its conventions by <code>dictionary_lemma</code>: должна - должен, денег - деньги, ночью - ночь. The <code>print_stats</code> table and the error messages are in Russian.</p>
+<p>The class extends the <code>LexicalStats</code> of the <a href="https://sergeyshk.github.io/anyTS/stats/lexical_stats/">anyTS</a> core with the Russian layer: the dictionary is the Lyashevskaya and Sharoff <a href="../../datasets/freq2011/"><code>FreqDict</code></a> (<code>freq_dict_class</code>), and the ranks of the lemmas and the size of the list (<code>rank</code>, <code>top_size</code>) come from the embedded list of the Sharoff lemmas (<a href="#bands"><code>get_rank</code></a>). The words of a string are extracted by the Russian <a href="../../extractors/words/"><code>WordsExtractor</code></a>, and the words of a <code>Doc</code> and a <code>Document</code> without an extractor are those of their document (<code>ruts.utils.get_document</code>). Numbers (2020, 5.5, 3-й) are not words. The lemmas come from ruMorph: for a <code>Doc</code> and a <code>Document</code> with part-of-speech annotation by the part of speech of the word, for a string in the context of the sentence, for a <code>Doc</code> and a <code>Document</code> without annotation the same in the sentences whose words are those of the string, and for the other words and with a words extractor given by the first analysis; the proper nouns and the abbreviations by the same analysis, and for a <code>Doc</code> and a <code>Document</code> with annotation by its parts of speech and features. The keys of the words in the dictionary (<code>keys</code>, <code>dictionary_keys</code>) are the lemmas brought to its conventions by <code>dictionary_lemma</code>: должна - должен, денег - деньги, ночью - ночь. The <code>print_stats</code> table and the error messages are in Russian.</p>
 <div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">Code</label><label for="__tabbed_1_2">Result</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
@@ -2386,6 +2414,8 @@
 Доля слов из топ-10000                                  |   1.00
 Доля слов вне топ-10000                                 |   0.00
 Лексическая плотность                                   |   0.62
+Доля имен собственных                                   |   0.00
+Доля аббревиатур                                        |   0.00
 </code></pre></div>
 </div>
 </div>
@@ -2535,6 +2565,18 @@
 <td style="text-align: left;">Share of the content words</td>
 <td style="text-align: left;">0-1</td>
 <td style="text-align: left;">More content words</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>p_proper_nouns</code></td>
+<td style="text-align: left;">Share of the proper nouns</td>
+<td style="text-align: left;">0-1</td>
+<td style="text-align: left;">More names of persons, places and organizations</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>p_abbreviations</code></td>
+<td style="text-align: left;">Share of the abbreviations</td>
+<td style="text-align: left;">0-1</td>
+<td style="text-align: left;">More abbreviations, as in official and scientific texts</td>
 </tr>
 </tbody>
 </table>
@@ -2730,7 +2772,9 @@
  'p_top5000': 1.0,
  'p_top10000': 1.0,
  'p_beyond_top10000': 0.0,
- 'lexical_density': 0.625}
+ 'lexical_density': 0.625,
+ 'p_proper_nouns': 0.0,
+ 'p_abbreviations': 0.0}
 </code></pre></div>
 </div>
 </div>
