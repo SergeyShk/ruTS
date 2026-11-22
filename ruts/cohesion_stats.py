@@ -668,10 +668,8 @@ def _word_info(
     labels: Collection[str],
     tense: str | None,
     aspect: str | None,
-    abbreviated: bool = False,
 ) -> WordInfo:
-    """Признаки слова по лемме, части речи, признакам и пометам; признаки None - неизвестны,
-    abbreviated - аббревиатура, которую признаки не отмечают"""
+    """Признаки слова по лемме, части речи, признакам и пометам; признаки None - неизвестны"""
     demonstrative = lemma in DEMONSTRATIVE_LEMMAS and (
         lemma not in DEMONSTRATIVE_PRONOUN_LEMMAS or pos in ("PRON", "DET")
     )
@@ -688,7 +686,7 @@ def _word_info(
         tense=tense,
         aspect=aspect,
         proper=pos == "PROPN",
-        abbreviation=abbreviated or (feats or {}).get("Abbr") == "Yes",
+        abbreviation=(feats or {}).get("Abbr") == "Yes",
     )
 
 
@@ -781,7 +779,7 @@ def ud_info(
         Лемма - из разбора ruMorph с частью речи (lemmatize), римское число
         (ROMAN_NUMERAL) - числительное; знаменательное слово - по тем же признакам,
         что у строки (is_content_word), а без feats - по части речи; помета вводного
-        слова и аббревиатура - из разбора ruMorph с той же частью речи
+        слова - из разбора ruMorph с той же частью речи
 
     Аргументы:
         word (str): Слово
@@ -796,10 +794,10 @@ def ud_info(
     if ROMAN_NUMERAL.fullmatch(word):
         pos = "NUM"
     lemma = lemmatize(word, pos)
-    analysis = next((found for found in parse_all(word) if found.pos == pos), None)
-    labels = analysis.labels if analysis is not None else frozenset()
-    abbreviated = analysis is not None and analysis.feats.get("Abbr") == "Yes"
-    return _word_info(lemma, pos, feats, labels, tense, aspect, abbreviated)
+    labels = next(
+        (analysis.labels for analysis in parse_all(word) if analysis.pos == pos), frozenset()
+    )
+    return _word_info(lemma, pos, feats, labels, tense, aspect)
 
 
 @_takes_word
