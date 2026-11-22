@@ -32,7 +32,7 @@ TEXTS = {
     "prose/Chekhov/Альбом.txt": "Альбом. Короткий рассказ.[1]\n\nПримечания\n\n1\n\nСноска.",
     "poems/Pushkin/19 октября.txt": "Роняет лес багряный свой убор.",
     "poems/Pushkin/Борис Годунов.txt": "Драма в стихах о смутном времени.",
-    "poems/Lermontov/Парус.txt": "Белеет парус одинокий.",
+    "poems/Lermontov/Парус.txt": "Белеет парус одинокий (1).",
     "publicism/Tolstoy/Не могу молчать.txt": "Статья {о смертной} казни.",
 }
 INFOS = {
@@ -296,6 +296,23 @@ def test_strip_header():
             " идут zu sein2*.",
             "Часы идут zu sein.",
         ),
+        (
+            "Сыскался.\n\nПримечания к главе первой\n\n1\n\nСноска.\nГлава вторая\nКазнь.\n\n"
+            "Примечания к главе осьмой\n\n1\n\nСноска.",
+            "Сыскался.\n\nГлава вторая\nКазнь.",
+        ),
+        ("Посвящение {" + "Копия посвящения. " * 60 + "} Сидеть.", "Посвящение Сидеть."),
+        (
+            "конскрипции [воинской повинности {от лат, conscriptio)] - та, vieux-saxe [фарфоре --"
+            ' фр.)], Brunnen (источник (нем.)) такой-то, <"Отче наш" (лат.)> после.\n'
+            "ANTE LUCEM (До света - лат.)\n   1 Беранже. <Мир терпит крушение (франц.)>\nДалее.",
+            "конскрипции - та, vieux-saxe, Brunnen такой-то, после.\nANTE LUCEM\nДалее.",
+        ),
+        (
+            "Стих.\n\nVenena - Яд (лат.).\n1) - Благочестие (лат.)\n"
+            "Bella - Прекрасная (итал.) - название Флоренции.\n- Как звать господина? (франц.)",
+            "Стих.\n\n- Как звать господина? (франц.)",
+        ),
     ],
 )
 def test_clean_text(text, expected):
@@ -309,6 +326,13 @@ def test_author_braces(dataset, monkeypatch):
         russian_literature_module, "AUTHOR_BRACES", {("Tolstoy", "Не могу молчать")}
     )
     assert list(dataset.get_texts(genre="publicism")) == ["Статья о смертной казни."]
+
+
+def test_numbered_notes(dataset, monkeypatch):
+    """Число в скобках через пробел - метка сноски только в файлах NUMBERED_NOTES"""
+    assert list(dataset.get_texts(author="Лермонтов")) == ["Белеет парус одинокий (1)."]
+    monkeypatch.setattr(russian_literature_module, "NUMBERED_NOTES", {("Lermontov", "Парус")})
+    assert list(dataset.get_texts(author="Лермонтов")) == ["Белеет парус одинокий."]
 
 
 def test_trim_work():

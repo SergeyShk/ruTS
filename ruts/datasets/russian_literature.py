@@ -86,9 +86,29 @@ WORK_BOUNDS = {
     ("Bryusov", "Декадент"): ("ДЕКАДЕНТ", None),
     ("Gorky", "В людях"): ("В ЛЮДЯХ", None),
     ("Pushkin", "Борис Годунов"): (None, "Конец"),
+    ("Blok", "Стихотворения. Книга первая (1898-1904)"): (
+        "3. Распутья (1902-1904) - 65 стихотворений.",
+        None,
+    ),
+    ("Bryusov", "Предсмертный бред Вергилия"): ("I", None),
+    ("Tolstoy", "Война и мир. Том 1"): ("Война и мир. Том 1", None),
+    ("Tolstoy", "Война и мир. Том 2"): ("ВОЙНА И МИР (1863—1869, 1873) ТОМ ВТОРОЙ", None),
+    ("Tolstoy", "Война и мир. Том 3"): ("Война и мир. Том 3", None),
+    ("Tolstoy", "Война и мир. Том 4"): ("Война и мир. Том 4", None),
 }
 # В фигурных скобках этих файлов - авторский текст, а не сноски: снимаются только скобки
 AUTHOR_BRACES = frozenset({("Tolstoy", "Хаджи-Мурат")})
+# В этих файлах число в скобках через пробел или после знака - метка сноски: «конфидент (4)»
+NUMBERED_NOTES = frozenset(
+    {
+        ("Blok", "Стихотворения. Книга первая (1898-1904)"),
+        ("Dostoevsky", "Подросток"),
+        ("Pushkin", "История Пугачёва"),
+        ("Tolstoy", "Два письма к М.Ганди"),
+        ("Tolstoy", "Хаджи-Мурат"),
+    }
+)
+NUMBERED_NOTE = re.compile(r"\(\d{1,3}\)")
 _LINE = r"^[^\S\n]*{}[^\S\n]*[.:]?[^\S\n]*$"
 APPARATUS = re.compile(
     _LINE.format(
@@ -105,17 +125,34 @@ NOTE_BLOCK = re.compile(
     r"^[^\S\n]*-{10,}[^\S\n]*\n(?=[^\S\n]*\(?\d+\)?[^\S\n])(?:[^\S\n]*\S[^\n]*\n?)*", re.M
 )
 SOURCE_NOTES = re.compile(r"^[^\S\n]*Сверка произведена[^\n]*(?:\n[^\S\n]*\S[^\n]*)*", re.M)
-INSERT = re.compile(r"\[[^\[\]]{1,1000}\]|\{[^{}]{1,1000}\}")
+# Примечания к главе - до следующей главы
+CHAPTER_NOTES = re.compile(r"\nПримечания к главе [^\W\d_]+\n.*?(?=\nГлава [^\W\d_]+\n|\Z)", re.S)
+INSERT = re.compile(r"\[[^\[\]]{1,1000}\]|\{[^{}]+\}")
 _LANGUAGES = r"(?:фр|франц|лат|итал|ит|нем|англ|греч|дат|тюрк)\b"
-_LANGUAGE_MARK = rf"\((?:от\.?\s*)?{_LANGUAGES}[^()]*\)"
+# Открывающая фигурная скобка - опечатка источника вместо круглой: «{от лат, conscriptio)»
+_LANGUAGE_MARK = rf"[({{](?:от\.?\s*)?{_LANGUAGES}[^()]*\)"
+LANGUAGE_MARK = re.compile(_LANGUAGE_MARK, re.I)
 # Вставка в фигурных скобках - всегда сноска, в квадратных - если есть помета
 INSERT_MARK = re.compile(
-    rf"^\{{|{_LANGUAGE_MARK}|[-–—]\s*{_LANGUAGES}\.?\s*[\]}}]$|\b(?:ред|прим|примеч)\.", re.I
+    rf"^\{{|{_LANGUAGE_MARK}|[-–—]\s*{_LANGUAGES}\.?\)?\s*[\]}}]$|\b(?:ред|прим|примеч)\.",
+    re.I,
+)
+# Перевод в круглых или угловых скобках с пометой языка: «Brunnen (источник (нем.))»
+GLOSS = re.compile(
+    rf"\([^()\n]{{1,300}}{_LANGUAGE_MARK}\)|<[^<>]{{1,500}}{_LANGUAGE_MARK}>"
+    rf"|\([^()\n]{{1,300}}[-–—][^\S\n]*{_LANGUAGES}\.?\)",
+    re.I,
+)
+# Строка перевода после стихотворения или главы: «Venena - Яд (лат.).», «1) - Благочестие (лат.)»
+TRANSLATION_LINE = re.compile(
+    rf"^[^\S\n]*(?:(?:\*+\d*|\d+\))[^\S\n]*[-–—][^\S\n]*|(?![-–—])\S[^\n]*?[^\S\n][-–—][^\S\n]+)"
+    rf"[^\n]*?{_LANGUAGE_MARK}\.?(?:[^\S\n]+[-–—][^\n]*)?[^\S\n]*(?:\n|$)",
+    re.I | re.M,
 )
 # Примечание после главы: номер, затем до четырех непустых строк с пометой языка или «Прим.»
 NOTE_LINES = re.compile(
     rf"^[^\S\n]*\d{{1,3}}(?:[^\S\n]+|[^\S\n]*\n(?:[^\S\n]*\n)*)(?:[^\S\n]*\S[^\n]*\n){{0,3}}?"
-    rf"[^\n]*?(?:{_LANGUAGE_MARK}|\(прим(?:еч)?\.[^()]*\))[.)]*(?:\s*--\s*Ред\.)?[^\S\n]*(?:\n|$)",
+    rf"[^\n]*?(?:{_LANGUAGE_MARK}|\(прим(?:еч)?\.[^()]*\))[.)>]*(?:\s*--\s*Ред\.)?[^\S\n]*(?:\n|$)",
     re.I | re.M,
 )
 # Выражения начинаются с символа сноски, а не с ретроспективной проверки: так в разы быстрее
@@ -127,8 +164,11 @@ NOTE_DIGITS = re.compile(
     r"\d(?<=[^\W\d_]{2}\d)\d?(?!\w)|\d(?<=[^\W\d_][!?»]\d)\d?(?=\s)|\d(?<=[^\W\d_]\.\d)\d?$",
     re.M,
 )
-# Слово вразрядку через неразрывные пробелы («Ш\xa0у\xa0й\xa0с\xa0к\xa0и\xa0й»)
-SPACED_WORD = re.compile(r"(?<![^\W\d_])[^\W\d_](?:\xa0[^\W\d_]){2,}(?![^\W\d_])")
+# Слово вразрядку через неразрывные пробелы («Ш\xa0у\xa0й\xa0с\xa0к\xa0и\xa0й») от первого пробела:
+# выражение с символа, а не с класса букв, в десятки раз быстрее
+SPACED_WORD = re.compile(
+    r"\xa0(?<=[^\W\d_]\xa0)(?<![^\W\d_]{2}\xa0)[^\W\d_](?:\xa0[^\W\d_])+(?![^\W\d_])"
+)
 DEFAULT_DATASET_DIR = DEFAULT_DATA_DIR.joinpath("texts")
 
 
@@ -358,7 +398,10 @@ class RussianLiterature(Dataset):
                         raw = read_text(filepath)
                         if key in AUTHOR_BRACES:
                             raw = raw.replace("{", "").replace("}", "")
-                        text = trim_work(clean_text(raw), *WORK_BOUNDS.get(key, (None, None)))
+                        text = clean_text(raw)
+                        if key in NUMBERED_NOTES:
+                            text = _remove(NUMBERED_NOTE, text)
+                        text = trim_work(text, *WORK_BOUNDS.get(key, (None, None)))
                         text = strip_header(text, author, filepath.stem)
                         yield {**record, "text": text, "file": filepath}
 
@@ -565,12 +608,27 @@ def clean_text(text: str) -> str:
         text = text[: match.start()] + text[block.end() :]
     text = _strip_contents(text)
     text = SOURCE_NOTES.sub("", text)
+    text = CHAPTER_NOTES.sub("", text)
     text = NOTE_BLOCK.sub("", text)
     text = _until_stable(lambda text: _remove(INSERT, text, INSERT_MARK.search), text)
     text = NOTE_LINES.sub("", text)
+    text = _remove_translation_lines(_remove(GLOSS, text))
     return _until_stable(
         lambda text: _remove(NOTE_DIGITS, _remove(NOTE_MARKER, text)), text
     ).strip()
+
+
+def _remove_translation_lines(text: str) -> str:
+    """Удаление строк перевода: поиск от пометы языка, а не от начала каждой строки"""
+    parts = []
+    last = 0
+    for mark in LANGUAGE_MARK.finditer(text):
+        start = text.rfind("\n", 0, mark.start()) + 1
+        if start >= last and (line := TRANSLATION_LINE.match(text, start)):
+            parts.append(text[last:start])
+            last = line.end()
+    parts.append(text[last:])
+    return "".join(parts)
 
 
 def _until_stable(step: Callable[[str], str], text: str) -> str:
