@@ -7,7 +7,7 @@ from typing import Any, NamedTuple
 
 from anyts.datasets import sha256
 
-from ..constants import DEFAULT_DATA_DIR, USER_AGENT
+from ..constants import CORE_MESSAGES, DEFAULT_DATA_DIR, USER_AGENT
 from ..exceptions import DatasetNotFoundError, DownloadError, ParameterError
 from ..utils import normalize_yo
 from .dataset import Dataset, check_limit, download_file, extract_archive, to_path
@@ -184,10 +184,7 @@ class FreqDict(Dataset):
         if filepath or not self._filepath.is_file():
             if sha256(archive) != ARCHIVE_SHA256:
                 archive.unlink(missing_ok=True)
-                raise DownloadError(
-                    f"Файл {archive} не прошел проверку контрольной суммы и удален, "
-                    "повторите загрузку"
-                )
+                raise DownloadError(CORE_MESSAGES["checksum"].format(path=archive))
             extract_archive(archive, self.data_dir)
         self.check_data()
         load_entries.cache_clear()
