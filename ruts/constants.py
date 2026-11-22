@@ -157,54 +157,55 @@ READING_EASE_GRADES: tuple[tuple[float, float], ...] = (
     (30, 14),
     (0, 17),
 )
-# Нормы признаков по ступеням (level_norms): первый класс ступени GRADE_AGE_LEVELS -> признак ->
-# квартили (q1, q3) художественных текстов от 100 слов с меткой ступени из SovChLit и TextsByGrade
-LEVEL_NORMS: dict[int, dict[str, tuple[float, float]]] = {
-    1: {
-        "words_per_sent": (7.5, 10.3),
-        "letters_per_word": (4.53, 4.98),
-        "p_smog_complex_words": (0.0, 0.02),
-        "mtld": (101, 174),
+# Нормы признаков (level_norms): жанр -> первый класс ступени GRADE_AGE_LEVELS -> признак -> квартили
+# (q1, q3); fiction - художественные тексты от 100 слов с меткой ступени из SovChLit и TextsByGrade,
+# textbook - окна по 500 слов, до 30 окон с учебника, 38 учебников корпуса Иванова (2022)
+LEVEL_NORMS: dict[str, dict[int, dict[str, tuple[float, float]]]] = {
+    "fiction": {
+        1: {
+            "words_per_sent": (7.5, 10.3),
+            "letters_per_word": (4.53, 4.98),
+            "p_smog_complex_words": (0.0, 0.02),
+            "mtld": (101, 174),
+        },
+        4: {
+            "words_per_sent": (10.1, 14.6),
+            "letters_per_word": (5.15, 5.33),
+            "p_smog_complex_words": (0.039, 0.052),
+            "mtld": (220, 369),
+        },
+        10: {
+            "words_per_sent": (15.0, 18.4),
+            "letters_per_word": (5.11, 5.57),
+            "p_smog_complex_words": (0.035, 0.065),
+            "mtld": (276, 513),
+        },
     },
-    4: {
-        "words_per_sent": (10.1, 14.6),
-        "letters_per_word": (5.15, 5.33),
-        "p_smog_complex_words": (0.039, 0.052),
-        "mtld": (220, 369),
-    },
-    10: {
-        "words_per_sent": (15.0, 18.4),
-        "letters_per_word": (5.11, 5.57),
-        "p_smog_complex_words": (0.035, 0.065),
-        "mtld": (276, 513),
-    },
-}
-# Нормы учебных текстов (level_norms с genre="textbook"): квартили окон по 500 слов, до 30 окон
-# с учебника, 38 учебников корпуса Иванова (2022); ступени - как у LEVEL_NORMS
-TEXTBOOK_LEVEL_NORMS: dict[int, dict[str, tuple[float, float]]] = {
-    1: {
-        "words_per_sent": (7.4, 9.6),
-        "letters_per_word": (5.34, 5.77),
-        "p_smog_complex_words": (0.046, 0.078),
-        "mtld": (171, 290),
-    },
-    4: {
-        "words_per_sent": (8.6, 11.4),
-        "letters_per_word": (5.49, 6.04),
-        "p_smog_complex_words": (0.063, 0.108),
-        "mtld": (197, 349),
-    },
-    7: {
-        "words_per_sent": (11.1, 14.7),
-        "letters_per_word": (6.03, 6.72),
-        "p_smog_complex_words": (0.116, 0.178),
-        "mtld": (259, 500),
-    },
-    10: {
-        "words_per_sent": (13.9, 16.1),
-        "letters_per_word": (6.31, 6.82),
-        "p_smog_complex_words": (0.138, 0.19),
-        "mtld": (301, 556),
+    "textbook": {
+        1: {
+            "words_per_sent": (7.4, 9.6),
+            "letters_per_word": (5.34, 5.77),
+            "p_smog_complex_words": (0.046, 0.078),
+            "mtld": (171, 290),
+        },
+        4: {
+            "words_per_sent": (8.6, 11.4),
+            "letters_per_word": (5.49, 6.04),
+            "p_smog_complex_words": (0.063, 0.108),
+            "mtld": (197, 349),
+        },
+        7: {
+            "words_per_sent": (11.1, 14.7),
+            "letters_per_word": (6.03, 6.72),
+            "p_smog_complex_words": (0.116, 0.178),
+            "mtld": (259, 500),
+        },
+        10: {
+            "words_per_sent": (13.9, 16.1),
+            "letters_per_word": (6.31, 6.82),
+            "p_smog_complex_words": (0.138, 0.19),
+            "mtld": (301, 556),
+        },
     },
 }
 LEVEL_NORMS_DESC = {

@@ -33,7 +33,6 @@ from .constants import (
     SIS_GRADE_FREQ_STAGES,
     SIS_GRADE_STAGES,
     SMOG_COMPLEX_SYL_FACTOR,
-    TEXTBOOK_LEVEL_NORMS,
 )
 from .diversity_stats import DiversityStats
 from .exceptions import ParameterError, UnknownStatError
@@ -45,7 +44,6 @@ if TYPE_CHECKING:
 
 # Ядро возвращает времена в порядке скоростей нормы, а ruTS - при верхней и нижней ее границе
 _NORMS_FROM_MAX = {norm: speeds[::-1] for norm, speeds in READING_SPEED_NORMS.items()}
-_GENRE_LEVEL_NORMS = {"fiction": LEVEL_NORMS, "textbook": TEXTBOOK_LEVEL_NORMS}
 
 
 class ReadabilityStats(anyts.readability_stats.ReadabilityStats):
@@ -772,13 +770,12 @@ def level_norms(grade: float, genre: str = "fiction") -> dict[str, tuple[float, 
 
     Описание:
         Класс относится к ступени GRADE_AGE_LEVELS, как в grade_to_age. Нормы - квартили
-        q1-q3 признаков level_features у текстов жанра:
+        q1-q3 признаков level_features у текстов жанра (LEVEL_NORMS):
             fiction - художественные тексты от 100 слов с меткой ступени из наборов
-                SovChLit и TextsByGrade (LEVEL_NORMS), ступени 1-3, 4-6 и 10-11-й класс;
-                нормы 1-3-го класса сняты почти целиком с текстов 1-го класса (65 из 68)
-            textbook - окна по 500 слов учебников (TEXTBOOK_LEVEL_NORMS), ступени 1-11-го
-                класса
-        Результат - копия, справочник он не меняет
+                SovChLit и TextsByGrade, ступени 1-3, 4-6 и 10-11-й класс; нормы
+                1-3-го класса сняты почти целиком с текстов 1-го класса (65 из 68)
+            textbook - окна по 500 слов учебников, ступени 1-11-го класса
+        Результат - копия, справочник LEVEL_NORMS он не меняет
 
     Аргументы:
         grade (float): Класс читателя или сводный класс текста
@@ -801,14 +798,14 @@ def level_norms(grade: float, genre: str = "fiction") -> dict[str, tuple[float, 
     number: object = grade
     if isinstance(number, bool) or not isinstance(number, Real) or not isfinite(grade):
         raise ParameterError(f"Класс должен быть конечным числом, а не {grade!r}")
-    if not isinstance(genre, str) or genre not in _GENRE_LEVEL_NORMS:
+    if not isinstance(genre, str) or genre not in LEVEL_NORMS:
         raise ParameterError(
-            f"Неизвестный жанр норм: {genre!r}. Доступные жанры: {tuple(_GENRE_LEVEL_NORMS)}"
+            f"Неизвестный жанр норм: {genre!r}. Доступные жанры: {tuple(LEVEL_NORMS)}"
         )
     year = max(floor(grade + 0.5), GRADE_AGE_LEVELS[0][0])
     for low, high, _, _ in GRADE_AGE_LEVELS:
         if year <= high:
-            norms = _GENRE_LEVEL_NORMS[genre].get(low)
+            norms = LEVEL_NORMS[genre].get(low)
             return None if norms is None else dict(norms)
     return None
 

@@ -22,7 +22,6 @@ from ruts.constants import (
     RIX_LEVELS,
     SIS_GRADE_FREQ_STAGES,
     SIS_GRADE_STAGES,
-    TEXTBOOK_LEVEL_NORMS,
 )
 from ruts.exceptions import ParameterError, SourceTypeError, UnknownStatError
 from ruts.readability_stats import (
@@ -490,7 +489,7 @@ def test_print_stats(capsys, rs):
 )
 def test_level_norms(grade, stage):
     """Нормы ступени, к которой класс относится по таблице grade_to_age"""
-    assert level_norms(grade) == (None if stage is None else LEVEL_NORMS[stage])
+    assert level_norms(grade) == (None if stage is None else LEVEL_NORMS["fiction"][stage])
 
 
 @pytest.mark.parametrize(
@@ -498,13 +497,13 @@ def test_level_norms(grade, stage):
 )
 def test_textbook_level_norms(grade, stage):
     """У учебных текстов есть нормы и 7-9-го класса"""
-    expected = None if stage is None else TEXTBOOK_LEVEL_NORMS[stage]
+    expected = None if stage is None else LEVEL_NORMS["textbook"][stage]
     assert level_norms(grade, genre="textbook") == level_norms(grade, "textbook") == expected
 
 
 def test_level_norms_data():
     """Нормы - квартили: нижний не выше верхнего, признаки - ключи LEVEL_NORMS_DESC"""
-    for norms in (*LEVEL_NORMS.values(), *TEXTBOOK_LEVEL_NORMS.values()):
+    for norms in (norms for genre in LEVEL_NORMS.values() for norms in genre.values()):
         assert set(norms) == set(LEVEL_NORMS_DESC)
         assert all(low <= high for low, high in norms.values())
     for grade in (float("nan"), float("inf"), "3", True):
@@ -515,7 +514,8 @@ def test_level_norms_data():
             level_norms(2, genre)
     norms = level_norms(2)
     norms["words_per_sent"] = (1, 2)
-    assert level_norms(2)["words_per_sent"] == LEVEL_NORMS[1]["words_per_sent"] == (7.5, 10.3)
+    assert level_norms(2)["words_per_sent"] == LEVEL_NORMS["fiction"][1]["words_per_sent"]
+    assert LEVEL_NORMS["fiction"][1]["words_per_sent"] == (7.5, 10.3)
 
 
 def test_describe_level_norm():

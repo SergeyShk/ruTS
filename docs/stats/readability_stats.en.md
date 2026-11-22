@@ -735,7 +735,7 @@ The default stages of ruTS are taken from the `GRADE_TEXT` table of the [Plain R
 
 ## Stage norms { #level_norms }
 
-The `ruts.constants.LEVEL_NORMS` and `TEXTBOOK_LEVEL_NORMS` tables hold the norms of the features of the education stages - the usual ranges (quartiles) of the sentence length in words, the word length in letters, the share of words of five or more syllables and the lexical diversity MTLD of literary and educational texts. The literary norms come from texts of at least 100 words labeled with the stage in the [`SovChLit`](../datasets/sovchlit.md) (except five informational ones) and [`TextsByGrade`](../datasets/textsbygrade.md) datasets; school stages with at least 10 such texts have them:
+The `ruts.constants.LEVEL_NORMS` table holds the norms of the features of the education stages - the usual ranges (quartiles) of the sentence length in words, the word length in letters, the share of words of five or more syllables and the lexical diversity MTLD of literary (`fiction`) and educational (`textbook`) texts. The literary norms come from texts of at least 100 words labeled with the stage in the [`SovChLit`](../datasets/sovchlit.md) (except five informational ones) and [`TextsByGrade`](../datasets/textsbygrade.md) datasets; school stages with at least 10 such texts have them:
 
 | Stage | Texts | Words per sentence | Letters per word | Share of words of 5+ syllables | MTLD |
 | :---- | :---- | :----------------- | :--------------- | :----------------------------- | :--- |
