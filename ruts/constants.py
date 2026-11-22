@@ -164,9 +164,9 @@ LEVEL_NORMS: dict[str, dict[int, dict[str, tuple[float, float]]]] = {
     "fiction": {
         1: {
             "words_per_sent": (7.4, 10.3),
-            "letters_per_word": (4.54, 4.98),
+            "letters_per_word": (4.54, 4.96),
             "p_smog_complex_words": (0.0, 0.019),
-            "mtld": (104, 172),
+            "mtld": (103, 169),
         },
         4: {
             "words_per_sent": (10.1, 14.6),
