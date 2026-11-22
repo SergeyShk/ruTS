@@ -112,7 +112,7 @@ def test_substring_filter_folds_case_and_yo():
 def test_downloads_send_the_user_agent_of_ruts(tmp_path, monkeypatch):
     agents = []
 
-    def fake_download(url, dirpath, filename=None, force=False, user_agent=None):
+    def fake_download(url, dirpath, filename=None, force=False, user_agent=None, messages=None):
         agents.append(user_agent)
         raise DownloadError("Нет сети")
 

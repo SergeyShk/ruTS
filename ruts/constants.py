@@ -612,6 +612,28 @@ _RU_CORE_MESSAGES: dict[str, str] = {
     "texts_values": "Тексты должны соответствовать значениям один к одному: текстов {texts}, значений {values}",
     "texts_labels": "Тексты должны быть метками одного типа",
     "p_values": "p-значения должны лежать в [0, 1]",
+    "archive_extension": "У имени архива {name} нет расширения",
+    "checksum": "Файл {path} не прошел проверку контрольной суммы и удален, повторите загрузку",
+    "replace_directory": "Не удалось заменить каталог {path}: {error}",
+    "filter_value": "Поле {field} должно быть строкой, а не {type}",
+    "text_len_order": "Наименьшая длина текста больше наибольшей",
+    "path_type": "Путь должен быть строкой или Path, а не {type}",
+    "create_directory": "Не удалось создать каталог {path}: {error}",
+    "no_file_name": "В адресе {url} нет имени файла: укажите его",
+    "file_name": "Имя файла {name} должно быть именем без каталогов",
+    "download_file": "Не удалось загрузить файл {url}: {error}",
+    "download_length": "Не удалось загрузить файл {url}: получено {received} из {length} байт",
+    "no_archive": "Архив {path} не найден",
+    "not_archive": "Файл {path} не архив ZIP или TAR",
+    "extract_archive": "Не удалось извлечь архив {path}: {error}",
+    "empty_archive": "В архиве {path} нет файлов",
+    "archive_paths": "В архиве {path} есть пути вне каталога или ссылки",
+    "archive_directory": "Архив {path} поместил бы каталог на место {destination}",
+    "archive_file": "Архив {path} поместил бы файл на место {destination}",
+    "archive_itself": (
+        "Файлы архива {path} заменили бы его самого: дайте архиву расширение "
+        "или извлеките его в другой каталог"
+    ),
 }
 # Поверх MESSAGES: новый ключ патча ядра выйдет по-английски, а не сломает импорт
 CORE_MESSAGES: Mapping[str, str] = MappingProxyType({**MESSAGES, **_RU_CORE_MESSAGES})
@@ -655,6 +677,8 @@ _RU_CLI_TEXTS: dict[str, str] = {
     "title_option": "Заголовок отчета",
     "title_metavar": "ЗАГОЛОВОК",
     "report_encoding_option": "Кодировка файла; отчет - в UTF-8",
+    "report_stats_option": "Классы статистик через запятую: {names}; по умолчанию все",
+    "report_stats_option_default": "Классы статистик через запятую: {names}; по умолчанию {defaults}",
     "download_command": "Загрузить словари, которые нужны статистикам",
     "datasets_option": "Словари: {names}; по умолчанию все",
     "datasets_metavar": "словари",

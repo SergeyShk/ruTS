@@ -349,7 +349,16 @@ RUSSIAN = {
         "check_params",
         "cv_pattern",
     },
-    "ruts.datasets.dataset": {"Dataset", "substring_filter"},
+    "ruts.datasets.dataset": {
+        "Dataset",
+        "check_limit",
+        "download_file",
+        "extract_archive",
+        "fetch_archive",
+        "length_filters",
+        "substring_filter",
+        "to_path",
+    },
     "ruts.visualizers": {
         "HighlightedText",
         "delta_histogram_plot",

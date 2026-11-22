@@ -6,12 +6,12 @@ from pathlib import Path
 from typing import Any
 
 import numpy as np
-from anyts.datasets import check_limit, download_file, extract_archive, sha256, to_path
+from anyts.datasets import sha256
 
 from ..constants import DEFAULT_DATA_DIR, RU_VOWELS, USER_AGENT
 from ..exceptions import DatasetNotFoundError, DownloadError
 from ..utils import normalize_yo
-from .dataset import Dataset
+from .dataset import Dataset, check_limit, download_file, extract_archive, to_path
 
 NAME = "stress_dict"
 META = {

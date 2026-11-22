@@ -13,7 +13,7 @@ from ruts.cli import Command
 from ruts.constants import _RU_CLI_TEXTS, _RU_REPORT_TEXTS
 from ruts.datasets import FreqDict, StressDict
 from ruts.datasets.stress_dict import FILENAME
-from ruts.report import STATS_CLASSES, Report
+from ruts.report import STATS_CLASSES
 from tests.datasets.test_freq2011 import write_dict
 from tests.test_verse_stats import ROWS
 
@@ -51,9 +51,8 @@ def test_json_is_the_flat_statistics(capsys, text_file, dictionaries):
     assert Command().run(["stats", "-f", "json", text_file]) == 0
     found = json.loads(capsys.readouterr().out)[text_file]
     assert list(found) == list(STATS_CLASSES)
-    for name in STATS_CLASSES:
-        stats = Report.compute(STATS_CLASSES[name], Command().parse(TEXT))
-        assert found[name] == finite(stats.get_stats(flat=True)), name
+    for name, cls in STATS_CLASSES.items():
+        assert found[name] == finite(cls(TEXT).get_stats(flat=True)), name
 
 
 def test_default_classes(capsys):
@@ -130,6 +129,6 @@ def test_entry_points():
     (script,) = entry_points(group="console_scripts", name="ruts")
     assert script.value == "ruts.cli:main"
     found = subprocess.run(
-        [sys.executable, "-m", "ruts", "--help"], capture_output=True, check=True, text=True
+        [sys.executable, "-m", "ruts", "--help"], capture_output=True, check=True, encoding="utf-8"
     )
     assert "Статистики русских текстов" in found.stdout

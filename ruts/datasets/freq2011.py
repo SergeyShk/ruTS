@@ -5,12 +5,12 @@ from itertools import islice
 from pathlib import Path
 from typing import Any, NamedTuple
 
-from anyts.datasets import check_limit, download_file, extract_archive, sha256, to_path
+from anyts.datasets import sha256
 
 from ..constants import DEFAULT_DATA_DIR, USER_AGENT
 from ..exceptions import DatasetNotFoundError, DownloadError, ParameterError
 from ..utils import normalize_yo
-from .dataset import Dataset
+from .dataset import Dataset, check_limit, download_file, extract_archive, to_path
 
 NAME = "freq2011"
 META = {
