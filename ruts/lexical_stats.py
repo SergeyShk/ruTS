@@ -152,8 +152,8 @@ class LexicalStats(anyts.lexical_stats.LexicalStats):
         return get_document(source)
 
     def analyze(self, source: str | Doc | Document) -> list[LexicalWord]:
-        """Слова без чисел с леммами ruMorph (у строки - в контексте предложения) и признаком
-        знаменательного слова"""
+        """Слова без чисел с леммами ruMorph (у строки - в контексте предложения) и признаками
+        знаменательного слова, имени собственного и аббревиатуры"""
         extractor = self._words_extractor
         infos: list[WordInfo]
         parsed = is_doc(source) or is_document(source)

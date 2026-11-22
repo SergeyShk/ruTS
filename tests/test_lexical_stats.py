@@ -345,3 +345,10 @@ def test_proper_nouns_and_abbreviations(freq_dict, nlp):
     assert stats.p_abbreviations == 0.2  # СССР, г
     doc = LexicalStats(nlp(text), freq_dict=freq_dict)
     assert (doc.p_proper_nouns, doc.p_abbreviations) == (0.4, 0.2)
+
+
+def test_abbreviations_of_a_model(freq_dict, model_nlp):
+    """Аббревиатура слова Doc обычной модели - из разбора ruMorph с той же частью речи"""
+    text = "Маша приехала в Москву из СССР в 1990 г. Петров помог."
+    stats = LexicalStats(model_nlp(text), freq_dict=freq_dict)
+    assert stats.p_abbreviations > 0

@@ -1,9 +1,5 @@
 # Rhythm of the lines
 
-``` {.python .signature}
-rhythm_plot(patterns, stressed, ax=None, labels=None)
-```
-
 --8<-- "visualizers/verse.md:rhythm_plot"
 
 It is the function of the [anyTS](https://sergeyshk.github.io/anyTS/visualizers/verse/) core with the Russian labels of `ruts.constants.VISUALIZER_LABELS` by default; `labels` sets labels over them. The patterns of the lines are the `patterns` of [`VerseStats`](../stats/verse_stats.md), the character of a stressed syllable is `PATTERN_STRESSED` of `ruts.verse_stats`.

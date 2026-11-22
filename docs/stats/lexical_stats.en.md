@@ -234,5 +234,7 @@ The other methods - `get_stats`, `to_dataframe`, [`by_parts`](basic_stats.md#by_
      'p_top5000': 1.0,
      'p_top10000': 1.0,
      'p_beyond_top10000': 0.0,
-     'lexical_density': 0.625}
+     'lexical_density': 0.625,
+     'p_proper_nouns': 0.0,
+     'p_abbreviations': 0.0}
     ```
