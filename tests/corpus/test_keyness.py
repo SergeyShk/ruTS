@@ -3,6 +3,7 @@ from collections import Counter
 
 import pytest
 
+from ruts import WordsExtractor
 from ruts.corpus import Keyword, keyness
 from ruts.corpus.keyness import (
     calc_log_likelihood,
@@ -128,6 +129,35 @@ def test_keyness_freq_dict_context(tmp_path):
     texts = [["Мост", "сделан", "из", "стали"], ["Мы", "стали", "друзьями"]]
     assert {word: found(texts)[word] for word in ("сталь", "стать")} == {"сталь": 1, "стать": 1}
     assert "сталь" not in found({"стали": 1})
+
+
+def test_keyness_freq_dict_text(tmp_path):
+    """Текст цели разбирается в контексте своих предложений, со знаками препинания: обращение
+    «господа» - «господин», а не «господь», как в списке слов без знаков; список слов и список
+    текстов разбираются один раз для положительных и отрицательных ключевых слов"""
+    from ruts.corpus.keyness import _target_analyses
+
+    rows = ["Lemma\tPoS\tFreq(ipm)\tR\tD\tDoc"]
+    rows += [f"{lemma}\ts\t50.0\t90\t90\t1000" for lemma in ("господин", "господь", "вещь", "имя")]
+    tmp_path.joinpath(FILENAME).write_text("\n".join(rows) + "\n", encoding="utf-8")
+    freq_dict = FreqDict(data_dir=tmp_path)
+    text = (
+        "Не обижайтесь, господа, если мы называем вещи своими именами. Лиса бежала по лесу. "
+        "Это есть наш долг."
+    )
+    words = list(WordsExtractor().extract(text))
+    assert "господин" in {keyword.word for keyword in keyness(text, freq_dict)}
+    assert "господь" in {keyword.word for keyword in keyness(words, freq_dict)}
+    hits = _target_analyses.cache_info().hits
+    keyness(words, freq_dict, positive=False)
+    assert _target_analyses.cache_info().hits == hits + 1
+    texts = [words[:5], words[5:]]
+    keyness(texts, freq_dict)
+    keyness(texts, freq_dict, positive=False)
+    assert _target_analyses.cache_info().hits == hits + 2
+    with pytest.raises(ValueError):
+        keyness([], freq_dict)
+    assert {keyword.word for keyword in keyness(text, ["господа"])} >= {"Не", "Лиса"}
 
 
 def test_keyness_freq_dict_negative(homonym_dict):

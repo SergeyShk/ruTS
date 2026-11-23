@@ -406,7 +406,7 @@ load_connectors()
 
 ## Методы
 
-Методы `get_stats`, `to_dataframe`, [`by_parts`](basic_stats.md#by_parts), `print_stats` и `describe` - из [интерфейса статистик](https://sergeyshk.github.io/anyTS/stats/stats/) ядра anyTS; `describe` для статистик `get_stats` возвращает `None`: шкал у статистик связности нет.
+Методы `get_stats`, `to_dataframe`, [`by_parts`](basic_stats.md#by_parts) (только по строкам и абзацам), `print_stats` и `describe` - из [интерфейса статистик](https://sergeyshk.github.io/anyTS/stats/stats/) ядра anyTS; `describe` для статистик `get_stats` возвращает `None`: шкал у статистик связности нет.
 
 === "Код"
 
@@ -581,7 +581,7 @@ ud_info(word, pos, tense, aspect, feats=None)
 word_text(word)
 ```
 
-Признаки слова для статистик связности - именованный кортеж `WordInfo`: `lemma`, `noun`, `pronoun`, `demonstrative`, `argument`, `content`, `tense` и `aspect` по таблице классов слов. `word_info` берет их из первого разбора ruMorph, `analysis_info` - из заданного разбора, например выбранного по контексту, `words_info` - для слов предложений текста: по разбору из `analyses`, если он задан, иначе по первому. `token_info` берет их у слова дерева документа (`TreeWord`, например из `get_tree(get_document(doc)).words`, где `get_tree` - из `anyts.document`, а `get_document` - из `ruts.utils`): из разбора ruMorph, которым размечено слово (компонент `rumorph`), а без него - из его части речи и признаков UD, `ud_info` - из заданных части речи, времени, вида и признаков UD; лемма тогда берется из разбора ruMorph с этой частью речи, а не из леммы слова. `word_text` дает текст слова дерева без метки порядка байтов, знаков ударения, мягких переносов и точки сокращения, если без нее это то же слово.
+Признаки слова для статистик связности - именованный кортеж `WordInfo`: `lemma`, `noun`, `pronoun`, `demonstrative`, `argument`, `content`, `tense` и `aspect` по таблице классов слов, `proper` (имя собственное) и `abbreviation` (сокращение). `word_info` берет их из первого разбора ruMorph, `analysis_info` - из заданного разбора, например выбранного по контексту, `words_info` - для слов предложений текста: по разбору из `analyses`, если он задан, иначе по первому. `token_info` берет их у слова дерева документа (`TreeWord`, например из `get_tree(get_document(doc)).words`, где `get_tree` - из `anyts.document`, а `get_document` - из `ruts.utils`): из разбора ruMorph, которым размечено слово (компонент `rumorph`), а без него - из его части речи и признаков UD, `ud_info` - из заданных части речи, времени, вида и признаков UD; лемма тогда берется из разбора ruMorph с этой частью речи, а не из леммы слова. `word_text` дает текст слова дерева без метки порядка байтов, знаков ударения, мягких переносов и точки сокращения, если без нее это то же слово.
 
 | Параметр | Тип | По умолчанию | Описание |
 | :------- | :-- | :----------- | :------- |
@@ -613,9 +613,9 @@ word_text(word)
 === "Результат"
 
     ```
-    WordInfo(lemma='смотреть', noun=False, pronoun=False, demonstrative=False, argument=False, content=True, tense='Past', aspect='Imp')
+    WordInfo(lemma='смотреть', noun=False, pronoun=False, demonstrative=False, argument=False, content=True, tense='Past', aspect='Imp', proper=False, abbreviation=False)
     ['Он', 'заплатил', '5', 'руб', '.']
-    WordInfo(lemma='рубль', noun=True, pronoun=False, demonstrative=False, argument=True, content=True, tense=None, aspect=None)
+    WordInfo(lemma='рубль', noun=True, pronoun=False, demonstrative=False, argument=True, content=True, tense=None, aspect=None, proper=False, abbreviation=True)
     ```
 
 ## Местоимение { #is_pronoun }

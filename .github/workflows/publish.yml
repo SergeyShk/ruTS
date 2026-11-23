@@ -38,6 +38,10 @@ jobs:
           uv run --isolated --no-project --with dist/*.whl python -c
           "import ruts; from ruts.lexical_stats import get_rank; get_rank('кот');
           ruts.CohesionStats('Кот спит. Кот ест.').get_stats(); ruts.StyleStats('Кот спит.').get_stats()"
+      - name: Check the command of the wheel
+        run: >-
+          echo "Кот спит. Пёс лежит." |
+          uv run --isolated --no-project --with dist/*.whl ruts stats -s basic,phon -f csv
       - name: Publish distribution (test)
         if: github.event_name == 'push'
         run: uv publish --index testpypi --trusted-publishing always

@@ -61,7 +61,7 @@ keyness(target, reference, measure='log_likelihood', min_freq=1, positive=True, 
 | :------- | :-- | :----------- | :------- |
 | `lemmatize` | `bool` | `True` | Целевой корпус из словоформ, `False` - из лемм (только с `FreqDict`) |
 
-Незагруженный частотный словарь дает `DatasetNotFoundError`, а `n` больше 1 при нем - `ParameterError`.
+Целевой корпус может быть и текстом (`str`). Незагруженный частотный словарь дает `DatasetNotFoundError`, а `n` больше 1 при нем - `ParameterError`.
 
 <!-- core: corpus/keyness.md:check_keyness_params f41ebfd -->
 ``` {.python .signature}
@@ -98,7 +98,7 @@ FrequencyReference(counts, size, missing=0.0, key=None, keep=None, keys=None)
 | `size` | `CORPUS_SIZE` из `ruts.datasets.freq2011`, 92 млн словоупотреблений современного подкорпуса Национального корпуса русского языка |
 | `missing` | наименьшая частота словаря `FreqDict.min_ipm`, 0.4 ipm (около 37 употреблений) |
 | `key` | лемма словаря: лемма словоформы по ruMorph (с `lemmatize=False` и у сокращений - само слово), приведенная к соглашениям словаря, как в [`LexicalStats`](../stats/lexical_stats.md) |
-| `keys` | леммы словаря словоформ текста, как у `key`, но по разбору ruMorph в контексте текста: «из стали» - «сталь», «мы стали» - «стать»; с `lemmatize=False` его нет |
+| `keys` | леммы словаря словоформ текста, как у `key`, но по разбору ruMorph в контексте: «из стали» - «сталь», «мы стали» - «стать»; у текста - в контексте его предложений, у списка слов - всего списка, где без знаков препинания омонимы разбираются хуже («господа» - «господь»); с `lemmatize=False` его нет |
 | `keep` | слова из кириллических букв; числа, слова с латиницей и сокращения, которые ruMorph раскрывает в другое слово, без своей статьи в словаре («т.», «г.») отбрасываются |
 
 Статья словаря, к которой не приводится ни одна словоформа, не бывает отрицательным ключевым словом: «во» и «со» словарь ведет отдельными статьями, а [ruMorph](https://github.com/SergeyShk/ruMorph) приводит эти словоформы к «в» и «с».
@@ -108,16 +108,15 @@ FrequencyReference(counts, size, missing=0.0, key=None, keep=None, keys=None)
 === "Код"
 
     ``` python
-    from ruts import WordsExtractor
     from ruts.corpus import keyness
     from ruts.datasets import FreqDict
 
     # Словарь загружается один раз: FreqDict().download()
-    words = WordsExtractor().extract(
+    text = (
         "Кот сидел на окне и смотрел на птиц. Птицы улетели, и кот уснул на окне. "
         "Завтра кот снова будет сидеть на окне и смотреть на птиц."
     )
-    [(k.word, round(k.log_ratio, 1)) for k in keyness(words, FreqDict(), min_freq=3, top_n=2)]
+    [(k.word, round(k.log_ratio, 1)) for k in keyness(text, FreqDict(), min_freq=3, top_n=2)]
     ```
 
 === "Результат"

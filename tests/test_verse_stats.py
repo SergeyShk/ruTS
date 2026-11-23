@@ -531,3 +531,35 @@ def test_stress_dict_type(call):
     """Словарь ударений не того типа - SourceTypeError, как у LexicalStats с freq_dict"""
     with pytest.raises(SourceTypeError, match=r"^Словарь ударений должен быть StressDict$"):
         call()
+
+
+def test_stresses_of_uncertain_words(tmp_path):
+    """Слово вне словаря берет ударение леммы на икте, а не последний икт; словарное ударение
+    последнего слова строки на слабой позиции снимается рифмой; без метра служебные безударны,
+    кроме последнего слова строки"""
+    extra = {
+        ("тальяночка", "таль^яночка"),
+        ("играл", "игр^ал"),
+        ("голос", "г^олос"),
+        ("узнаю", "узн^аю"),
+        ("мою", "мо^ю"),
+        ("песню", "п^есню"),
+        ("тихую", "т^ихую"),
+        ("перед", "п^еред"),
+        ("ними", "н^ими"),
+        ("тоже", "т^оже"),
+    }
+    lines = "\n".join("\t".join(row) for row in sorted(set(ROWS) | extra)) + "\n"
+    tmp_path.joinpath(FILENAME).write_text(lines, encoding="utf-8")
+    stress_dict = StressDict(data_dir=tmp_path)
+    vs = VerseStats(f"{ONEGIN}\nИ на тальяночке играл", stress_dict)
+    assert vs.accentuate().split("\n")[4] == "И на талья́ночке игра́л"
+    vs = VerseStats(f"{ONEGIN}\nИ голос твой я узнаю,\nИ песню тихую мою.", stress_dict)
+    assert vs.accentuate().split("\n")[4] == "И го́лос тво́й я узнаю́,"
+    assert vs.rhyme_schemes == ("ABABCC",)
+    vs = VerseStats("Холм перед ними был дик и нем", stress_dict)
+    assert vs.meter is None
+    assert vs.accentuate() == "Хо́лм перед ни́ми бы́л ди́к и не́м"
+    vs = VerseStats("Холм перед ними был дик и тоже", stress_dict)
+    assert vs.meter is None
+    assert vs.accentuate() == "Хо́лм перед ни́ми бы́л ди́к и то́же"

@@ -96,7 +96,7 @@ Poems without a year do not pass the year filters. An `author` or a `theme` that
     И стих мой ты без смеха при
     ```
 
-`get_records` with the same parameters extracts records (with headers) from the dataset. Record fields: `author` - author, `title` - title or first line, `themes` - tuple of themes (empty without annotation), `year_from` and `year_to` - years of writing (`None` without a date), `text` - text.
+`get_records` with the same parameters extracts records (with headers) from the dataset. Record fields: `author` - author, `title` - title or first line, `themes` - tuple of themes (empty without annotation), `year_from` and `year_to` - years of writing (`None` without a date), `text` - text. The texts of the dataset have no blank lines between stanzas, so a poem in them is one stanza.
 
 === "Code"
 

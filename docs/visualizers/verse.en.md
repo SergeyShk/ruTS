@@ -8,10 +8,13 @@ Two stanzas of Pushkin's «Winter Morning» - iambic tetrameter with the stress 
 
 ``` python
 from ruts import VerseStats
+from ruts.datasets import PoetryCorpus
 from ruts.verse_stats import PATTERN_STRESSED
 from ruts.visualizers import rhythm_plot
 
-vs = VerseStats(text)
+records = PoetryCorpus().get_records(author="Александр Пушкин")
+poem = next(record["text"] for record in records if record["title"] == "Зимнее утро")
+vs = VerseStats("\n".join(poem.split("\n")[:12]))
 rhythm_plot(vs.patterns, PATTERN_STRESSED)
 ```
 

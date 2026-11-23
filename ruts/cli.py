@@ -7,6 +7,7 @@ from typing import TYPE_CHECKING, ClassVar
 import anyts.cli
 from anyts.stats import Stats
 
+from . import __version__
 from .constants import CLI_TEXTS
 from .datasets.freq2011 import NAME as FREQ_DICT_NAME, FreqDict
 from .datasets.stress_dict import NAME as STRESS_DICT_NAME, StressDict
@@ -52,6 +53,7 @@ class Command(anyts.cli.Command):
     }
     texts: ClassVar[Mapping[str, str]] = CLI_TEXTS
     report_class = Report
+    version = __version__
 
     def parse(self, text: str) -> Document:
         """Документ anySeg (ruts.utils.get_document)"""

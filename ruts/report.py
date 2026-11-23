@@ -9,7 +9,7 @@ from anyts.stats import Stats
 
 from .basic_stats import BasicStats
 from .cohesion_stats import CohesionStats
-from .constants import REPORT_TEXTS, VISUALIZER_LABELS
+from .constants import CORE_MESSAGES, REPORT_TEXTS, VISUALIZER_LABELS
 from .diversity_stats import DiversityStats
 from .lexical_stats import LexicalStats
 from .morph_stats import MorphStats
@@ -79,7 +79,7 @@ class Report(anyts.report.Report):
         save: Запись отчета в файл в кодировке UTF-8
 
     Исключения:
-        ParameterError: Если skip_errors не bool
+        ParameterError: Если skip_errors не bool или stats_classes не словарь классов статистик
         SourceTypeError, SourceError: Как у классов статистик, без skip_errors
 
     Пример использования:
@@ -104,6 +104,7 @@ class Report(anyts.report.Report):
     highlight_class = HighlightedText
     visualizer_labels: ClassVar[Mapping[str, Mapping[str, str]]] = VISUALIZER_LABELS
     texts: ClassVar[Mapping[str, str]] = REPORT_TEXTS
+    messages: ClassVar[Mapping[str, str]] = CORE_MESSAGES
 
     def parse(self, source: str | Doc | Document) -> Document:
         """Документ anySeg (ruts.utils.get_document)"""

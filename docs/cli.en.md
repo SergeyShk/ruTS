@@ -3,12 +3,12 @@
 The command `ruts` counts the statistics of texts without Python code: it prints them as a table, JSON or CSV, for the whole text or its parts, writes an HTML report and downloads the dictionaries. It is installed with the library; `python -m ruts` is the same.
 
 ``` bash
+ruts download
 ruts stats текст.txt
 ruts stats -f json глава1.txt глава2.txt
 ruts stats -s basic,readability -p sentences -f csv -o предложения.csv текст.txt
 cat текст.txt | ruts stats -f json
 ruts report текст.txt -t "Мой текст" -o отчет.html
-ruts download
 ```
 
 ## Command { #Command }

@@ -110,9 +110,12 @@ The recommended [pipeline](https://sergeyshk.github.io/ruTS/en/components/#load_
 0.8888888888888888
 ```
 
+The statistics of every sentence, line or paragraph come as a table with a row per part: `BasicStats.by_parts(text, "sentences")`, and so for the other classes.
+
 The same statistics without Python - with the command `ruts` (a table, JSON or CSV, by parts of a text) and an HTML report in one page:
 
 ```bash
+ruts download  # the frequency and stress dictionaries, once
 ruts stats -f json text.txt
 ruts report text.txt -o report.html
 ```
