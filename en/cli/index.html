@@ -2231,12 +2231,12 @@
 
 <h1 id="command-line">Command line<a class="headerlink" href="#command-line" title="Permanent link">&para;</a></h1>
 <p>The command <code>ruts</code> counts the statistics of texts without Python code: it prints them as a table, JSON or CSV, for the whole text or its parts, writes an HTML report and downloads the dictionaries. It is installed with the library; <code>python -m ruts</code> is the same.</p>
-<div class="highlight"><pre><span></span><code>ruts<span class="w"> </span>stats<span class="w"> </span>текст.txt
+<div class="highlight"><pre><span></span><code>ruts<span class="w"> </span>download
+ruts<span class="w"> </span>stats<span class="w"> </span>текст.txt
 ruts<span class="w"> </span>stats<span class="w"> </span>-f<span class="w"> </span>json<span class="w"> </span>глава1.txt<span class="w"> </span>глава2.txt
 ruts<span class="w"> </span>stats<span class="w"> </span>-s<span class="w"> </span>basic,readability<span class="w"> </span>-p<span class="w"> </span>sentences<span class="w"> </span>-f<span class="w"> </span>csv<span class="w"> </span>-o<span class="w"> </span>предложения.csv<span class="w"> </span>текст.txt
 cat<span class="w"> </span>текст.txt<span class="w"> </span><span class="p">|</span><span class="w"> </span>ruts<span class="w"> </span>stats<span class="w"> </span>-f<span class="w"> </span>json
 ruts<span class="w"> </span>report<span class="w"> </span>текст.txt<span class="w"> </span>-t<span class="w"> </span><span class="s2">"Мой текст"</span><span class="w"> </span>-o<span class="w"> </span>отчет.html
-ruts<span class="w"> </span>download
 </code></pre></div>
 <h2 id="Command">Command<a class="headerlink" href="#Command" title="Permanent link">&para;</a></h2>
 <div class="signature highlight"><pre><span></span><code><span class="n">Command</span><span class="p">()</span>
@@ -2274,7 +2274,7 @@ ruts<span class="w"> </span>download
 <tr>
 <td style="text-align: left;"><code>-o</code>, <code>--output</code></td>
 <td style="text-align: left;">the standard output</td>
-<td style="text-align: left;">File of the output; the standard output for <code>-</code></td>
+<td style="text-align: left;">File of the output, replaced only by a result; the standard output for <code>-</code></td>
 </tr>
 <tr>
 <td style="text-align: left;"><code>-e</code>, <code>--encoding</code></td>
@@ -2284,9 +2284,9 @@ ruts<span class="w"> </span>download
 </tbody>
 </table>
 <p>The standard input is read as a file, its line breaks and its byte order mark alike, and a table is printed as every text is counted.</p>
-<p>Its command <code>download</code>, of a library with <code>datasets</code>, downloads the datasets its classes need, those named or every one, again with <code>--force</code>, and names each on the standard output; a dataset that cannot be downloaded goes to the standard error with the exit code 1, while the others are downloaded.</p>
-<p>Its command <code>report</code> writes the <a href="https://sergeyshk.github.io/anyTS/report/">HTML report</a> of a text, from a file or from the standard input, to <code>-o</code> or to the standard output, with the classes of <code>-s</code> and the title of <code>-t</code>, <code>--title</code>. <code>-e</code> is the encoding of the file, and the report is in UTF-8, which it declares; the statistics of the report, and of its table of sentences, are counted as by <code>stats</code>. A class that cannot count the text is left out of the report, and its error goes to the standard error with the exit code 1.</p>
-<p><code>run(argv=None)</code> runs the command with the arguments, those of the command line by default, and returns the exit code: 0; 1 when a file cannot be read or written or a class cannot count a text, whose error goes to the standard error while the other texts and classes are counted, and when the reader of the output stops, as <code>head</code>, without a message; 2 for wrong arguments, an unknown encoding among them, with the help of <code>argparse</code>; 130 when interrupted.</p>
+<p>Its command <code>download</code>, of a library with <code>datasets</code>, downloads the datasets its classes need, those named or every one, again with <code>--force</code>, and names each on the standard output.</p>
+<p>Its command <code>report</code> writes the <a href="https://sergeyshk.github.io/anyTS/report/">HTML report</a> of a text, from a file or from the standard input, to <code>-o</code> or to the standard output, with the classes of <code>-s</code> and the title of <code>-t</code>, <code>--title</code>; its statistics, those of its table of sentences too, are counted as by <code>stats</code>, and a class that cannot count the text is left out of it.</p>
+<p><code>run(argv=None)</code> runs the command with the arguments, those of the command line by default, and returns the exit code: 0; 1 when a file cannot be read or written, a class cannot count a text or a dataset cannot be downloaded, whose error goes to the standard error while the others are counted, and when the reader of the output stops, as <code>head</code>, without a message; 2 for wrong arguments, an unknown encoding among them, with the help of <code>argparse</code>, and without a command, with the help of the command; 130 when interrupted. <code>-V</code>, <code>--version</code> prints the versions of the library and of the core.</p>
 <p>Raises <code>ParameterError</code> when a subclass is defined with texts that <code>check_messages</code> rejects against <code>CLI_TEXTS</code>, or with <code>default_stats</code> that names a class not in <code>stats_classes</code>.</p>
 <p>In ruTS anySeg splits the text (<code>get_document</code>), and the classes of <code>-s</code> are:</p>
 <table>
@@ -2370,7 +2370,7 @@ ruts<span class="w"> </span>download
 </tr>
 </tbody>
 </table>
-<p>The style is in the page and the plots draw their text as paths, so they need no font; they are made without <code>pyplot</code>, so that a command opens no window. The page is the same for the same text, and the ids of its plots differ. Every text of the source and of the statistics goes through <code>escape</code>, so that it never becomes markup.</p>
+<p>The page is the same for the same text, and no text of the source or of the statistics becomes markup.</p>
 <table>
 <thead>
 <tr>
@@ -2407,7 +2407,7 @@ ruts<span class="w"> </span>download
 </tr>
 </tbody>
 </table>
-<p>The object keeps <code>document</code>, <code>title</code>, the statistics of every class by name, <code>stats</code>, and the errors of the classes left out, <code>errors</code>. <code>to_html()</code> returns the page, and <code>save(path)</code> writes it to a file in UTF-8, the encoding the page declares. A source a class cannot count raises the error of the class, unless <code>skip_errors</code>; a <code>skip_errors</code> that is not a <code>bool</code> raises <code>ParameterError</code>.</p>
+<p>The object keeps <code>document</code>, <code>title</code>, the statistics of every class by name, <code>stats</code>, and the errors of the classes left out, <code>errors</code>. <code>to_html()</code> returns the page, and <code>save(path)</code> writes it to a file in UTF-8, the encoding the page declares. A source a class cannot count raises the error of the class, unless <code>skip_errors</code>; a <code>skip_errors</code> that is not a <code>bool</code> and <code>stats_classes</code> that are not a dictionary of classes of statistics raise <code>ParameterError</code>.</p>
 <p>In ruTS <code>Report</code> is in <code>ruts.report</code>: its classes are <code>STATS_CLASSES</code> of the same module, the classes of the command but <code>verse</code>; the columns of the sentences are the characters, the words, the syllables, the Flesch reading ease and the water; the highlighting is <a href="../visualizers/highlight/"><code>HighlightedText</code></a> with its default layers.</p>
 <div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">Code</label><label for="__tabbed_1_2">Result</label></div>
 <div class="tabbed-content">

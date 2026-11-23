@@ -2231,15 +2231,15 @@
 
 <h1 id="_1">Командная строка<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h1>
 <p>Команда <code>ruts</code> считает статистики текстов без кода на Python: выводит их таблицей, JSON или CSV, целиком или по частям текста, пишет HTML-отчет и загружает словари. Она ставится вместе с библиотекой; <code>python -m ruts</code> - то же самое.</p>
-<div class="highlight"><pre><span></span><code>ruts<span class="w"> </span>stats<span class="w"> </span>текст.txt
+<div class="highlight"><pre><span></span><code>ruts<span class="w"> </span>download
+ruts<span class="w"> </span>stats<span class="w"> </span>текст.txt
 ruts<span class="w"> </span>stats<span class="w"> </span>-f<span class="w"> </span>json<span class="w"> </span>глава1.txt<span class="w"> </span>глава2.txt
 ruts<span class="w"> </span>stats<span class="w"> </span>-s<span class="w"> </span>basic,readability<span class="w"> </span>-p<span class="w"> </span>sentences<span class="w"> </span>-f<span class="w"> </span>csv<span class="w"> </span>-o<span class="w"> </span>предложения.csv<span class="w"> </span>текст.txt
 cat<span class="w"> </span>текст.txt<span class="w"> </span><span class="p">|</span><span class="w"> </span>ruts<span class="w"> </span>stats<span class="w"> </span>-f<span class="w"> </span>json
 ruts<span class="w"> </span>report<span class="w"> </span>текст.txt<span class="w"> </span>-t<span class="w"> </span><span class="s2">"Мой текст"</span><span class="w"> </span>-o<span class="w"> </span>отчет.html
-ruts<span class="w"> </span>download
 </code></pre></div>
 <h2 id="Command">Команда<a class="headerlink" href="#Command" title="Permanent link">&para;</a></h2>
-<!-- core: cli.md:Command dad88e1 -->
+<!-- core: cli.md:Command 84cbecf -->
 <div class="signature highlight"><pre><span></span><code><span class="n">Command</span><span class="p">()</span>
 </code></pre></div>
 <p>Командная строка статистик языковой библиотеки. Ее команда <code>stats</code> читает тексты из файлов, а без них или для <code>-</code> - из стандартного ввода, разбирает каждый текст один раз (<code>parse</code>) и выводит статистики классов <code>stats_classes</code>:</p>
@@ -2275,7 +2275,7 @@ ruts<span class="w"> </span>download
 <tr>
 <td style="text-align: left;"><code>-o</code>, <code>--output</code></td>
 <td style="text-align: left;">стандартный вывод</td>
-<td style="text-align: left;">Файл вывода; для <code>-</code> - стандартный вывод</td>
+<td style="text-align: left;">Файл вывода, который заменяется только результатом; для <code>-</code> - стандартный вывод</td>
 </tr>
 <tr>
 <td style="text-align: left;"><code>-e</code>, <code>--encoding</code></td>
@@ -2285,9 +2285,9 @@ ruts<span class="w"> </span>download
 </tbody>
 </table>
 <p>Стандартный ввод читается как файл: переводы строки и метка порядка байтов - так же, а таблица выводится по мере подсчета каждого текста.</p>
-<p>Ее команда <code>download</code> у библиотеки с <code>datasets</code> загружает наборы данных, которые нужны ее классам, - названные или все, с <code>--force</code> - заново, - и называет каждый на стандартном выводе; набор, который не удалось загрузить, уходит в стандартный поток ошибок с кодом выхода 1, а остальные загружаются.</p>
-<p>Ее команда <code>report</code> записывает <a href="https://sergeyshk.github.io/anyTS/report/">HTML-отчет</a> о тексте из файла или стандартного ввода в <code>-o</code> или на стандартный вывод, с классами <code>-s</code> и заголовком <code>-t</code>, <code>--title</code>. <code>-e</code> - кодировка файла, а отчет - в UTF-8, которую он и объявляет; статистики отчета и его таблицы предложений считаются, как в <code>stats</code>. Класс, который не может посчитать текст, в отчет не входит, а его ошибка уходит в стандартный поток ошибок с кодом выхода 1.</p>
-<p><code>run(argv=None)</code> запускает команду с аргументами, по умолчанию - командной строки, и возвращает код выхода: 0; 1, если файл не удалось прочитать или записать или класс не смог посчитать текст - его ошибка уходит в стандартный поток ошибок, а остальные тексты и классы считаются, - и если читатель вывода, как <code>head</code>, остановился, без сообщения; 2 для неверных аргументов, среди них неизвестной кодировки, со справкой <code>argparse</code>; 130 при прерывании.</p>
+<p>Ее команда <code>download</code> у библиотеки с <code>datasets</code> загружает наборы данных, которые нужны ее классам, - названные или все, с <code>--force</code> - заново, - и называет каждый на стандартном выводе.</p>
+<p>Ее команда <code>report</code> записывает <a href="https://sergeyshk.github.io/anyTS/report/">HTML-отчет</a> о тексте из файла или стандартного ввода в <code>-o</code> или на стандартный вывод, с классами <code>-s</code> и заголовком <code>-t</code>, <code>--title</code>; его статистики, в том числе статистики таблицы предложений, считаются, как в <code>stats</code>, а класс, который не может посчитать текст, в отчет не входит.</p>
+<p><code>run(argv=None)</code> запускает команду с аргументами, по умолчанию - командной строки, и возвращает код выхода: 0; 1, если файл не удалось прочитать или записать, класс не смог посчитать текст или набор данных не удалось загрузить - ошибка уходит в стандартный поток ошибок, а остальные считаются, - и если читатель вывода, как <code>head</code>, остановился, без сообщения; 2 для неверных аргументов, среди них неизвестной кодировки, со справкой <code>argparse</code>, и без команды - со справкой команды; 130 при прерывании. <code>-V</code>, <code>--version</code> выводит версии библиотеки и ядра.</p>
 <p>Дает <code>ParameterError</code>, когда подкласс определен с текстами, которые <code>check_messages</code> отвергает по <code>CLI_TEXTS</code>, или с <code>default_stats</code>, где назван класс не из <code>stats_classes</code>.</p>
 <p>В ruTS текст делит anySeg (<code>get_document</code>), а классы <code>-s</code> такие:</p>
 <table>
@@ -2340,9 +2340,9 @@ ruts<span class="w"> </span>download
 </tr>
 </tbody>
 </table>
-<p>Синтаксических статистик в команде нет: <code>SyntaxStats</code> нужен <code>Doc</code> с разбором зависимостей. <code>ruts download</code> загружает <a href="../datasets/freq2011/">частотный словарь</a> <code>freq2011</code> для <code>lexical</code> и <a href="../datasets/stressdict/">словарь ударений</a> <code>stress_dict</code> для <code>verse</code>; без словаря класс не считается, а его ошибка называет эту команду.</p>
+<p>Синтаксических статистик в команде нет: <code>SyntaxStats</code> нужен <code>Doc</code> с разбором зависимостей. <code>ruts download</code> загружает <a href="../datasets/freq2011/">частотный словарь</a> <code>freq2011</code> для <code>lexical</code> и <a href="../datasets/stressdict/">словарь ударений</a> <code>stress_dict</code> для <code>verse</code>; без словаря класс не считается, а его ошибка называет эту команду. Сообщения самого <code>argparse</code> о неверных аргументах, например «invalid choice», остаются английскими.</p>
 <h2 id="Report">Отчет<a class="headerlink" href="#Report" title="Permanent link">&para;</a></h2>
-<!-- core: report.md:Report 11b473b -->
+<!-- core: report.md:Report a4ff058 -->
 <div class="signature highlight"><pre><span></span><code><span class="n">Report</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">stats_classes</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">skip_errors</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 </code></pre></div>
 <p>HTML-отчет о статистиках текста. Текст разбирается один раз (<code>parse</code>), каждый класс считает его и его предложения методом <code>compute</code>, а разделы идут по <code>sections</code>, каждый - метод <code>section_&lt;name&gt;</code>, который дает фрагмент HTML:</p>
@@ -2372,7 +2372,7 @@ ruts<span class="w"> </span>download
 </tr>
 </tbody>
 </table>
-<p>Стиль - в самой странице, а графики рисуют текст контурами, так что шрифт им не нужен; строятся они без <code>pyplot</code>, поэтому команда не открывает окон. Для одного текста страница одна и та же, а идентификаторы ее графиков различаются. Каждый текст источника и статистик проходит через <code>escape</code>, так что никогда не становится разметкой.</p>
+<p>Для одного текста страница одна и та же, и ни один текст источника или статистик не становится разметкой.</p>
 <table>
 <thead>
 <tr>
@@ -2409,7 +2409,7 @@ ruts<span class="w"> </span>download
 </tr>
 </tbody>
 </table>
-<p>Объект хранит <code>document</code>, <code>title</code>, статистики каждого класса по имени, <code>stats</code>, и ошибки пропущенных классов, <code>errors</code>. <code>to_html()</code> возвращает страницу, а <code>save(path)</code> записывает ее в файл в UTF-8 - кодировке, которую страница объявляет. Источник, который класс не может посчитать, дает ошибку класса, если нет <code>skip_errors</code>; <code>skip_errors</code>, который не <code>bool</code>, дает <code>ParameterError</code>.</p>
+<p>Объект хранит <code>document</code>, <code>title</code>, статистики каждого класса по имени, <code>stats</code>, и ошибки пропущенных классов, <code>errors</code>. <code>to_html()</code> возвращает страницу, а <code>save(path)</code> записывает ее в файл в UTF-8 - кодировке, которую страница объявляет. Источник, который класс не может посчитать, дает ошибку класса, если нет <code>skip_errors</code>; <code>skip_errors</code>, который не <code>bool</code>, и <code>stats_classes</code>, которые не словарь классов статистик, дают <code>ParameterError</code>.</p>
 <p>В ruTS <code>Report</code> лежит в <code>ruts.report</code>: его классы - <code>STATS_CLASSES</code> того же модуля, классы команды без <code>verse</code>; столбцы предложений - символы, слова, слоги, индекс удобочитаемости Флеша и водность; подсветка - <a href="../visualizers/highlight/"><code>HighlightedText</code></a> со слоями по умолчанию.</p>
 <div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">Код</label><label for="__tabbed_1_2">Результат</label></div>
 <div class="tabbed-content">

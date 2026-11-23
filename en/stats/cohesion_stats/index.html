@@ -3277,7 +3277,7 @@
 </div>
 </div>
 <h2 id="methods">Methods<a class="headerlink" href="#methods" title="Permanent link">&para;</a></h2>
-<p>The methods <code>get_stats</code>, <code>to_dataframe</code>, <a href="../basic_stats/#by_parts"><code>by_parts</code></a>, <code>print_stats</code> and <code>describe</code> are those of the <a href="https://sergeyshk.github.io/anyTS/stats/stats/">statistics interface</a> of the anyTS core; <code>describe</code> gives <code>None</code> for the statistics of <code>get_stats</code>: the cohesion statistics have no scales.</p>
+<p>The methods <code>get_stats</code>, <code>to_dataframe</code>, <a href="../basic_stats/#by_parts"><code>by_parts</code></a> (by lines and paragraphs only), <code>print_stats</code> and <code>describe</code> are those of the <a href="https://sergeyshk.github.io/anyTS/stats/stats/">statistics interface</a> of the anyTS core; <code>describe</code> gives <code>None</code> for the statistics of <code>get_stats</code>: the cohesion statistics have no scales.</p>
 <div class="tabbed-set tabbed-alternate" data-tabs="5:2"><input checked="checked" id="__tabbed_5_1" name="__tabbed_5" type="radio" /><input id="__tabbed_5_2" name="__tabbed_5" type="radio" /><div class="tabbed-labels"><label for="__tabbed_5_1">Code</label><label for="__tabbed_5_2">Result</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
@@ -3495,7 +3495,7 @@
 </code></pre></div>
 <div class="signature highlight"><pre><span></span><code><span class="n">word_text</span><span class="p">(</span><span class="n">word</span><span class="p">)</span>
 </code></pre></div>
-<p>The features of a word for the cohesion statistics, a <code>WordInfo</code> named tuple: <code>lemma</code>, <code>noun</code>, <code>pronoun</code>, <code>demonstrative</code>, <code>argument</code>, <code>content</code>, <code>tense</code> and <code>aspect</code> after the table of the classes of words. <code>word_info</code> takes them from the first ruMorph analysis, <code>analysis_info</code> from a given analysis, for example one chosen by context, <code>words_info</code> for the words of the sentences of a text: by the analysis of <code>analyses</code> when it is given, otherwise by the first one. <code>token_info</code> takes them from a word of the tree of a document (<code>TreeWord</code>, for example of <code>get_tree(get_document(doc)).words</code>, where <code>get_tree</code> comes from <code>anyts.document</code> and <code>get_document</code> from <code>ruts.utils</code>): from the ruMorph analysis the word is annotated with (the <code>rumorph</code> component), and without it from its part of speech and features of UD, <code>ud_info</code> from a given part of speech, tense, aspect and features of UD; the lemma then comes from the ruMorph analysis with that part of speech, not from the lemma of the word. <code>word_text</code> gives the text of a word of the tree without a byte order mark, stress marks, soft hyphens and the period of an abbreviation when the word is the same without it.</p>
+<p>The features of a word for the cohesion statistics, a <code>WordInfo</code> named tuple: <code>lemma</code>, <code>noun</code>, <code>pronoun</code>, <code>demonstrative</code>, <code>argument</code>, <code>content</code>, <code>tense</code> and <code>aspect</code> after the table of the classes of words, <code>proper</code> (a proper noun) and <code>abbreviation</code> (an abbreviation). <code>word_info</code> takes them from the first ruMorph analysis, <code>analysis_info</code> from a given analysis, for example one chosen by context, <code>words_info</code> for the words of the sentences of a text: by the analysis of <code>analyses</code> when it is given, otherwise by the first one. <code>token_info</code> takes them from a word of the tree of a document (<code>TreeWord</code>, for example of <code>get_tree(get_document(doc)).words</code>, where <code>get_tree</code> comes from <code>anyts.document</code> and <code>get_document</code> from <code>ruts.utils</code>): from the ruMorph analysis the word is annotated with (the <code>rumorph</code> component), and without it from its part of speech and features of UD, <code>ud_info</code> from a given part of speech, tense, aspect and features of UD; the lemma then comes from the ruMorph analysis with that part of speech, not from the lemma of the word. <code>word_text</code> gives the text of a word of the tree without a byte order mark, stress marks, soft hyphens and the period of an abbreviation when the word is the same without it.</p>
 <table>
 <thead>
 <tr>
@@ -3573,9 +3573,9 @@
 </code></pre></div>
 </div>
 <div class="tabbed-block">
-<div class="highlight"><pre><span></span><code>WordInfo(lemma='смотреть', noun=False, pronoun=False, demonstrative=False, argument=False, content=True, tense='Past', aspect='Imp')
+<div class="highlight"><pre><span></span><code>WordInfo(lemma='смотреть', noun=False, pronoun=False, demonstrative=False, argument=False, content=True, tense='Past', aspect='Imp', proper=False, abbreviation=False)
 ['Он', 'заплатил', '5', 'руб', '.']
-WordInfo(lemma='рубль', noun=True, pronoun=False, demonstrative=False, argument=True, content=True, tense=None, aspect=None)
+WordInfo(lemma='рубль', noun=True, pronoun=False, demonstrative=False, argument=True, content=True, tense=None, aspect=None, proper=False, abbreviation=True)
 </code></pre></div>
 </div>
 </div>

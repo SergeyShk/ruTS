@@ -2377,7 +2377,7 @@
 <div class="signature highlight"><pre><span></span><code><span class="n">LexicalStats</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">words_extractor</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">freq_dict</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
 </code></pre></div>
 <!-- core: stats/lexical_stats.md:LexicalStats dfdfd1b -->
-<p>Лексическая сложность (lexical sophistication) по образцу TAALES (Kyle, Crossley и Berger, 2018) - насколько редки слова текста: статистики по частотному словарю и его униграммной модели, доли частотных полос списка самых частых лемм, лексическая плотность и доли имен собственных и аббревиатур. Статистики по словарю вычисляются при первом обращении, поэтому полосам и долям данные словаря не нужны. Источник данных - текст, объект <code>Doc</code> библиотеки <a href="https://github.com/explosion/spaCy">spaCy</a> или <code>Document</code> библиотеки <a href="https://github.com/SergeyShk/anySeg">anySeg</a>; он читается через свой <a href="https://sergeyshk.github.io/anyTS/document/">документ</a>: по умолчанию - его слова Universal Dependencies без чисел, с их леммами, частями речи и признаками.</p>
+<p>Лексическая сложность (lexical sophistication) по образцу TAALES (Kyle, Crossley и Berger, 2018) - насколько редки слова текста: статистики по частотному словарю и его униграммной модели, доли частотных полос списка самых частых лемм, лексическая плотность и доли имен собственных и сокращений. Статистики по словарю вычисляются при первом обращении, поэтому полосам и долям данные словаря не нужны. Источник данных - текст, объект <code>Doc</code> библиотеки <a href="https://github.com/explosion/spaCy">spaCy</a> или <code>Document</code> библиотеки <a href="https://github.com/SergeyShk/anySeg">anySeg</a>; он читается через свой <a href="https://sergeyshk.github.io/anyTS/document/">документ</a>: по умолчанию - его слова Universal Dependencies без чисел, с их леммами, частями речи и признаками.</p>
 <p>Исключения:</p>
 <ul>
 <li><code>SourceTypeError</code> - источник, который не строка, не <code>Doc</code> и не <code>Document</code>, <code>parse</code>, который возвращает не <code>Document</code>, словарь другого класса, чем у библиотеки, или, без <code>freq_dict_class</code>, словарь без <code>lookup</code> и <code>ipm</code> или его отсутствие; <code>analyze</code>, который дает не объекты <code>LexicalWord</code>;</li>
@@ -2385,7 +2385,7 @@
 </ul>
 <p>В ruTS <code>SourceTypeError</code> дает также экстрактор другого типа, <code>SourceError</code> - только источник без слов, а метрики по словарю без загруженного словаря - <code>DatasetNotFoundError</code>.</p>
 <p>Слова текста сравниваются с частотами языка (<a href="https://doi.org/10.3758/s13428-017-0924-4">TAALES</a>), а не между собой, как в <a href="../diversity_stats/">метриках лексического разнообразия</a>.</p>
-<p>Класс расширяет <code>LexicalStats</code> ядра <a href="https://sergeyshk.github.io/anyTS/stats/lexical_stats/">anyTS</a> русским слоем: словарь - <a href="../../datasets/freq2011/"><code>FreqDict</code></a> Ляшевской и Шарова (<code>freq_dict_class</code>), ранги лемм и размер списка (<code>rank</code>, <code>top_size</code>) - из вшитого списка лемм Шарова (<a href="#bands"><code>get_rank</code></a>). Слова строки извлекает русский <a href="../../extractors/words/"><code>WordsExtractor</code></a>, а слова <code>Doc</code> и <code>Document</code> без экстрактора - слова их документа (<code>ruts.utils.get_document</code>). Числа (2020, 5.5, 3-й) словами не считаются. Леммы дает ruMorph: для <code>Doc</code> и <code>Document</code> с разметкой частей речи - по части речи слова, для строки - в контексте предложения, для <code>Doc</code> и <code>Document</code> без разметки - так же в предложениях, слова которых совпадают со словами строки, а для остальных слов и с заданным экстрактором слов - по первому разбору; имена собственные и аббревиатуры - по тому же разбору, а у <code>Doc</code> и <code>Document</code> с разметкой - по ее частям речи и признакам. Ключи слов в словаре (<code>keys</code>, <code>dictionary_keys</code>) - леммы, приведенные к его соглашениям функцией <code>dictionary_lemma</code>: должна - должен, денег - деньги, ночью - ночь. Таблица <code>print_stats</code> и сообщения об ошибках - по-русски.</p>
+<p>Класс расширяет <code>LexicalStats</code> ядра <a href="https://sergeyshk.github.io/anyTS/stats/lexical_stats/">anyTS</a> русским слоем: словарь - <a href="../../datasets/freq2011/"><code>FreqDict</code></a> Ляшевской и Шарова (<code>freq_dict_class</code>), ранги лемм и размер списка (<code>rank</code>, <code>top_size</code>) - из вшитого списка лемм Шарова (<a href="#bands"><code>get_rank</code></a>). Слова строки извлекает русский <a href="../../extractors/words/"><code>WordsExtractor</code></a>, а слова <code>Doc</code> и <code>Document</code> без экстрактора - слова их документа (<code>ruts.utils.get_document</code>). Числа (2020, 5.5, 3-й) словами не считаются. Леммы дает ruMorph: для <code>Doc</code> и <code>Document</code> с разметкой частей речи - по части речи слова, для строки - в контексте предложения, для <code>Doc</code> и <code>Document</code> без разметки - так же в предложениях, слова которых совпадают со словами строки, а для остальных слов и с заданным экстрактором слов - по первому разбору; имена собственные и сокращения - по тому же разбору, а у <code>Doc</code> и <code>Document</code> с разметкой - по ее частям речи и признакам. Ключи слов в словаре (<code>keys</code>, <code>dictionary_keys</code>) - леммы, приведенные к его соглашениям функцией <code>dictionary_lemma</code>: должна - должен, денег - деньги, ночью - ночь. Таблица <code>print_stats</code> и сообщения об ошибках - по-русски.</p>
 <div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">Код</label><label for="__tabbed_1_2">Результат</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
@@ -2416,7 +2416,7 @@
 Доля слов вне топ-10000                                 |   0.00
 Лексическая плотность                                   |   0.62
 Доля имен собственных                                   |   0.00
-Доля аббревиатур                                        |   0.00
+Доля сокращений                                         |   0.00
 </code></pre></div>
 </div>
 </div>
@@ -2577,9 +2577,9 @@
 </tr>
 <tr>
 <td style="text-align: left;"><code>p_abbreviations</code></td>
-<td style="text-align: left;">Доля аббревиатур</td>
+<td style="text-align: left;">Доля сокращений: аббревиатур (СССР), графических сокращений (т., см), инициалов</td>
 <td style="text-align: left;">0-1</td>
-<td style="text-align: left;">больше аббревиатур, как в официальных и научных текстах</td>
+<td style="text-align: left;">больше сокращений, как в официальных и научных текстах</td>
 </tr>
 </tbody>
 </table>

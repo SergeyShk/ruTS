@@ -2555,7 +2555,7 @@
 </tr>
 </tbody>
 </table>
-<p>Незагруженный частотный словарь дает <code>DatasetNotFoundError</code>, а <code>n</code> больше 1 при нем - <code>ParameterError</code>.</p>
+<p>Целевой корпус может быть и текстом (<code>str</code>). Незагруженный частотный словарь дает <code>DatasetNotFoundError</code>, а <code>n</code> больше 1 при нем - <code>ParameterError</code>.</p>
 <!-- core: corpus/keyness.md:check_keyness_params f41ebfd -->
 <div class="signature highlight"><pre><span></span><code><span class="n">check_keyness_params</span><span class="p">(</span><span class="n">measure</span><span class="o">=</span><span class="s1">'log_likelihood'</span><span class="p">,</span> <span class="n">min_freq</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">top_n</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">positive</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">messages</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
 </code></pre></div>
@@ -2641,7 +2641,7 @@
 </tr>
 <tr>
 <td style="text-align: left;"><code>keys</code></td>
-<td style="text-align: left;">леммы словаря словоформ текста, как у <code>key</code>, но по разбору ruMorph в контексте текста: «из стали» - «сталь», «мы стали» - «стать»; с <code>lemmatize=False</code> его нет</td>
+<td style="text-align: left;">леммы словаря словоформ текста, как у <code>key</code>, но по разбору ruMorph в контексте: «из стали» - «сталь», «мы стали» - «стать»; у текста - в контексте его предложений, у списка слов - всего списка, где без знаков препинания омонимы разбираются хуже («господа» - «господь»); с <code>lemmatize=False</code> его нет</td>
 </tr>
 <tr>
 <td style="text-align: left;"><code>keep</code></td>
@@ -2654,16 +2654,15 @@
 <div class="tabbed-set tabbed-alternate" data-tabs="2:2"><input checked="checked" id="__tabbed_2_1" name="__tabbed_2" type="radio" /><input id="__tabbed_2_2" name="__tabbed_2" type="radio" /><div class="tabbed-labels"><label for="__tabbed_2_1">Код</label><label for="__tabbed_2_2">Результат</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
-<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">ruts</span><span class="w"> </span><span class="kn">import</span> <span class="n">WordsExtractor</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">ruts.corpus</span><span class="w"> </span><span class="kn">import</span> <span class="n">keyness</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">ruts.corpus</span><span class="w"> </span><span class="kn">import</span> <span class="n">keyness</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">ruts.datasets</span><span class="w"> </span><span class="kn">import</span> <span class="n">FreqDict</span>
 
 <span class="c1"># Словарь загружается один раз: FreqDict().download()</span>
-<span class="n">words</span> <span class="o">=</span> <span class="n">WordsExtractor</span><span class="p">()</span><span class="o">.</span><span class="n">extract</span><span class="p">(</span>
+<span class="n">text</span> <span class="o">=</span> <span class="p">(</span>
     <span class="s2">"Кот сидел на окне и смотрел на птиц. Птицы улетели, и кот уснул на окне. "</span>
     <span class="s2">"Завтра кот снова будет сидеть на окне и смотреть на птиц."</span>
 <span class="p">)</span>
-<span class="p">[(</span><span class="n">k</span><span class="o">.</span><span class="n">word</span><span class="p">,</span> <span class="nb">round</span><span class="p">(</span><span class="n">k</span><span class="o">.</span><span class="n">log_ratio</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">keyness</span><span class="p">(</span><span class="n">words</span><span class="p">,</span> <span class="n">FreqDict</span><span class="p">(),</span> <span class="n">min_freq</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">top_n</span><span class="o">=</span><span class="mi">2</span><span class="p">)]</span>
+<span class="p">[(</span><span class="n">k</span><span class="o">.</span><span class="n">word</span><span class="p">,</span> <span class="nb">round</span><span class="p">(</span><span class="n">k</span><span class="o">.</span><span class="n">log_ratio</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">keyness</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">FreqDict</span><span class="p">(),</span> <span class="n">min_freq</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">top_n</span><span class="o">=</span><span class="mi">2</span><span class="p">)]</span>
 </code></pre></div>
 </div>
 <div class="tabbed-block">

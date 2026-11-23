@@ -3290,7 +3290,7 @@
 </div>
 </div>
 <h2 id="_5">Методы<a class="headerlink" href="#_5" title="Permanent link">&para;</a></h2>
-<p>Методы <code>get_stats</code>, <code>to_dataframe</code>, <a href="../basic_stats/#by_parts"><code>by_parts</code></a>, <code>print_stats</code> и <code>describe</code> - из <a href="https://sergeyshk.github.io/anyTS/stats/stats/">интерфейса статистик</a> ядра anyTS; <code>describe</code> для статистик <code>get_stats</code> возвращает <code>None</code>: шкал у статистик связности нет.</p>
+<p>Методы <code>get_stats</code>, <code>to_dataframe</code>, <a href="../basic_stats/#by_parts"><code>by_parts</code></a> (только по строкам и абзацам), <code>print_stats</code> и <code>describe</code> - из <a href="https://sergeyshk.github.io/anyTS/stats/stats/">интерфейса статистик</a> ядра anyTS; <code>describe</code> для статистик <code>get_stats</code> возвращает <code>None</code>: шкал у статистик связности нет.</p>
 <div class="tabbed-set tabbed-alternate" data-tabs="5:2"><input checked="checked" id="__tabbed_5_1" name="__tabbed_5" type="radio" /><input id="__tabbed_5_2" name="__tabbed_5" type="radio" /><div class="tabbed-labels"><label for="__tabbed_5_1">Код</label><label for="__tabbed_5_2">Результат</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
@@ -3512,7 +3512,7 @@
 </code></pre></div>
 <div class="signature highlight"><pre><span></span><code><span class="n">word_text</span><span class="p">(</span><span class="n">word</span><span class="p">)</span>
 </code></pre></div>
-<p>Признаки слова для статистик связности - именованный кортеж <code>WordInfo</code>: <code>lemma</code>, <code>noun</code>, <code>pronoun</code>, <code>demonstrative</code>, <code>argument</code>, <code>content</code>, <code>tense</code> и <code>aspect</code> по таблице классов слов. <code>word_info</code> берет их из первого разбора ruMorph, <code>analysis_info</code> - из заданного разбора, например выбранного по контексту, <code>words_info</code> - для слов предложений текста: по разбору из <code>analyses</code>, если он задан, иначе по первому. <code>token_info</code> берет их у слова дерева документа (<code>TreeWord</code>, например из <code>get_tree(get_document(doc)).words</code>, где <code>get_tree</code> - из <code>anyts.document</code>, а <code>get_document</code> - из <code>ruts.utils</code>): из разбора ruMorph, которым размечено слово (компонент <code>rumorph</code>), а без него - из его части речи и признаков UD, <code>ud_info</code> - из заданных части речи, времени, вида и признаков UD; лемма тогда берется из разбора ruMorph с этой частью речи, а не из леммы слова. <code>word_text</code> дает текст слова дерева без метки порядка байтов, знаков ударения, мягких переносов и точки сокращения, если без нее это то же слово.</p>
+<p>Признаки слова для статистик связности - именованный кортеж <code>WordInfo</code>: <code>lemma</code>, <code>noun</code>, <code>pronoun</code>, <code>demonstrative</code>, <code>argument</code>, <code>content</code>, <code>tense</code> и <code>aspect</code> по таблице классов слов, <code>proper</code> (имя собственное) и <code>abbreviation</code> (сокращение). <code>word_info</code> берет их из первого разбора ruMorph, <code>analysis_info</code> - из заданного разбора, например выбранного по контексту, <code>words_info</code> - для слов предложений текста: по разбору из <code>analyses</code>, если он задан, иначе по первому. <code>token_info</code> берет их у слова дерева документа (<code>TreeWord</code>, например из <code>get_tree(get_document(doc)).words</code>, где <code>get_tree</code> - из <code>anyts.document</code>, а <code>get_document</code> - из <code>ruts.utils</code>): из разбора ruMorph, которым размечено слово (компонент <code>rumorph</code>), а без него - из его части речи и признаков UD, <code>ud_info</code> - из заданных части речи, времени, вида и признаков UD; лемма тогда берется из разбора ruMorph с этой частью речи, а не из леммы слова. <code>word_text</code> дает текст слова дерева без метки порядка байтов, знаков ударения, мягких переносов и точки сокращения, если без нее это то же слово.</p>
 <table>
 <thead>
 <tr>
@@ -3590,9 +3590,9 @@
 </code></pre></div>
 </div>
 <div class="tabbed-block">
-<div class="highlight"><pre><span></span><code>WordInfo(lemma='смотреть', noun=False, pronoun=False, demonstrative=False, argument=False, content=True, tense='Past', aspect='Imp')
+<div class="highlight"><pre><span></span><code>WordInfo(lemma='смотреть', noun=False, pronoun=False, demonstrative=False, argument=False, content=True, tense='Past', aspect='Imp', proper=False, abbreviation=False)
 ['Он', 'заплатил', '5', 'руб', '.']
-WordInfo(lemma='рубль', noun=True, pronoun=False, demonstrative=False, argument=True, content=True, tense=None, aspect=None)
+WordInfo(lemma='рубль', noun=True, pronoun=False, demonstrative=False, argument=True, content=True, tense=None, aspect=None, proper=False, abbreviation=True)
 </code></pre></div>
 </div>
 </div>

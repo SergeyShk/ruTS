@@ -2553,7 +2553,7 @@
 </tr>
 </tbody>
 </table>
-<p>A frequency dictionary that is not downloaded raises <code>DatasetNotFoundError</code>, and an <code>n</code> above 1 with it <code>ParameterError</code>.</p>
+<p>The target corpus may also be a text (<code>str</code>). A frequency dictionary that is not downloaded raises <code>DatasetNotFoundError</code>, and an <code>n</code> above 1 with it <code>ParameterError</code>.</p>
 <div class="signature highlight"><pre><span></span><code><span class="n">check_keyness_params</span><span class="p">(</span><span class="n">measure</span><span class="o">=</span><span class="s1">'log_likelihood'</span><span class="p">,</span> <span class="n">min_freq</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">top_n</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">positive</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">messages</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
 </code></pre></div>
 <p>Checks the parameters of <code>keyness</code> before a frequency dictionary is read: it raises <code>ParameterError</code> unless the measure is one of <code>KEYNESS_MEASURES</code>, the minimum frequency is an integer, the number of keywords is <code>None</code> or an integer of at least one, the length of the n-grams <code>n</code> is an integer of at least one and <code>positive</code> is a <code>bool</code>. With <code>target</code> it also raises <code>SourceTypeError</code> unless the target corpus is a list of strings, a list of such lists or a mapping of strings to whole frequencies, or if most of its words or of the words of one of its texts hold a space, and <code>SourceError</code> for a negative, nan or infinite frequency.</p>
@@ -2637,7 +2637,7 @@
 </tr>
 <tr>
 <td style="text-align: left;"><code>keys</code></td>
-<td style="text-align: left;">the lemmas of the dictionary of the word forms of a text, as of <code>key</code>, but by the ruMorph analysis in the context of the text: «из стали» - «сталь», «мы стали» - «стать»; none with <code>lemmatize=False</code></td>
+<td style="text-align: left;">the lemmas of the dictionary of the word forms of a text, as of <code>key</code>, but by the ruMorph analysis in context: «из стали» - «сталь», «мы стали» - «стать»; of a text in the context of its sentences, of a list of words in that of the whole list, where without punctuation homonyms are analysed worse («господа» - «господь»); none with <code>lemmatize=False</code></td>
 </tr>
 <tr>
 <td style="text-align: left;"><code>keep</code></td>
@@ -2650,16 +2650,15 @@
 <div class="tabbed-set tabbed-alternate" data-tabs="2:2"><input checked="checked" id="__tabbed_2_1" name="__tabbed_2" type="radio" /><input id="__tabbed_2_2" name="__tabbed_2" type="radio" /><div class="tabbed-labels"><label for="__tabbed_2_1">Code</label><label for="__tabbed_2_2">Result</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
-<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">ruts</span><span class="w"> </span><span class="kn">import</span> <span class="n">WordsExtractor</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">ruts.corpus</span><span class="w"> </span><span class="kn">import</span> <span class="n">keyness</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">ruts.corpus</span><span class="w"> </span><span class="kn">import</span> <span class="n">keyness</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">ruts.datasets</span><span class="w"> </span><span class="kn">import</span> <span class="n">FreqDict</span>
 
 <span class="c1"># The dictionary is downloaded once with FreqDict().download()</span>
-<span class="n">words</span> <span class="o">=</span> <span class="n">WordsExtractor</span><span class="p">()</span><span class="o">.</span><span class="n">extract</span><span class="p">(</span>
+<span class="n">text</span> <span class="o">=</span> <span class="p">(</span>
     <span class="s2">"Кот сидел на окне и смотрел на птиц. Птицы улетели, и кот уснул на окне. "</span>
     <span class="s2">"Завтра кот снова будет сидеть на окне и смотреть на птиц."</span>
 <span class="p">)</span>
-<span class="p">[(</span><span class="n">k</span><span class="o">.</span><span class="n">word</span><span class="p">,</span> <span class="nb">round</span><span class="p">(</span><span class="n">k</span><span class="o">.</span><span class="n">log_ratio</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">keyness</span><span class="p">(</span><span class="n">words</span><span class="p">,</span> <span class="n">FreqDict</span><span class="p">(),</span> <span class="n">min_freq</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">top_n</span><span class="o">=</span><span class="mi">2</span><span class="p">)]</span>
+<span class="p">[(</span><span class="n">k</span><span class="o">.</span><span class="n">word</span><span class="p">,</span> <span class="nb">round</span><span class="p">(</span><span class="n">k</span><span class="o">.</span><span class="n">log_ratio</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">keyness</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">FreqDict</span><span class="p">(),</span> <span class="n">min_freq</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">top_n</span><span class="o">=</span><span class="mi">2</span><span class="p">)]</span>
 </code></pre></div>
 </div>
 <div class="tabbed-block">
