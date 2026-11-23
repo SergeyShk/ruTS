@@ -532,12 +532,15 @@ def _assign_stresses(lines: Sequence[_Line], meter: str | None) -> None:
         получает икт, при нескольких иктах - ударение своей леммы, если оно на икте,
         иначе последний. Кандидаты-икты слова без словарного ударения и слова со
         словарным ударением на слабой позиции запоминаются для снятия по рифме. Без
-        метра ставится словарное ударение или ударение леммы, служебные слова безударны
+        метра ставится словарное ударение или ударение леммы, служебные слова безударны,
+        кроме последнего слова строки
     """
     for line in lines:
         movable = _movable(line, meter)
+        last = _last_word(line) if meter is None else None
         for word in line.words:
             candidates = _ictuses(word, meter)
+            weak = word.text in VERSE_WEAK_WORDS and word is not last
             if word.unstressed or not word.n_syllables:
                 word.result = -1
             elif word.marked:
@@ -545,9 +548,8 @@ def _assign_stresses(lines: Sequence[_Line], meter: str | None) -> None:
             elif word.text in VERSE_PROCLITICS:
                 word.result = -1
             elif word.n_syllables == 1:
-                weak = meter is None and word.text in VERSE_WEAK_WORDS
                 word.result = 0 if candidates or (meter is None and not weak) else -1
-            elif word.text in VERSE_WEAK_WORDS and word.stress is not None:
+            elif weak and word.stress is not None:
                 word.result = word.stress if word.stress in candidates else -1
             elif word.stress is not None:
                 word.result = candidates[0] if word in movable else word.stress

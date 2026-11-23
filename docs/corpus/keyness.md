@@ -61,7 +61,7 @@ keyness(target, reference, measure='log_likelihood', min_freq=1, positive=True, 
 | :------- | :-- | :----------- | :------- |
 | `lemmatize` | `bool` | `True` | Целевой корпус из словоформ, `False` - из лемм (только с `FreqDict`) |
 
-Целевой корпус может быть и текстом (`str`): его слова с разборами в контексте предложений дает ruMorph, как в `LexicalStats`. Незагруженный частотный словарь дает `DatasetNotFoundError`, а `n` больше 1 при нем - `ParameterError`.
+Целевой корпус может быть и текстом (`str`). Незагруженный частотный словарь дает `DatasetNotFoundError`, а `n` больше 1 при нем - `ParameterError`.
 
 <!-- core: corpus/keyness.md:check_keyness_params f41ebfd -->
 ``` {.python .signature}

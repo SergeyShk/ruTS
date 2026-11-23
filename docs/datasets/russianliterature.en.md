@@ -4,7 +4,7 @@
 RussianLiterature(data_dir=DEFAULT_DATASET_DIR)
 ```
 
-The [RusLit](https://github.com/d0rj/RusLit) collection of Russian classical literature (on Kaggle - [russian-literature](https://www.kaggle.com/datasets/d0rj3228/russian-literature)): 373 works by 12 authors of the 19th - early 20th century, 38 million characters, four genres:
+The [RusLit](https://github.com/d0rj/RusLit) collection of Russian classical literature (on Kaggle - [russian-literature](https://www.kaggle.com/datasets/d0rj3228/russian-literature)): 373 works by 12 authors of the 19th - early 20th century, 37 million characters, four genres:
 
 | Genre | Key | Authors | Works |
 | :---- | :-- | :------ | :---- |

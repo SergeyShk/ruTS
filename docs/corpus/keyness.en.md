@@ -44,7 +44,7 @@ The function wraps `keyness` of the [anyTS](https://sergeyshk.github.io/anyTS/co
 | :-------- | :--- | :------ | :---------- |
 | `lemmatize` | `bool` | `True` | The target corpus is word forms, `False` - lemmas (`FreqDict` only) |
 
-The target corpus may also be a text (`str`): ruMorph gives its words with their analyses in the context of the sentences, as in `LexicalStats`. A frequency dictionary that is not downloaded raises `DatasetNotFoundError`, and an `n` above 1 with it `ParameterError`.
+The target corpus may also be a text (`str`). A frequency dictionary that is not downloaded raises `DatasetNotFoundError`, and an `n` above 1 with it `ParameterError`.
 
 --8<-- "corpus/keyness.md:check_keyness_params"
 

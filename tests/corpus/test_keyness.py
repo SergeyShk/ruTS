@@ -133,9 +133,9 @@ def test_keyness_freq_dict_context(tmp_path):
 
 def test_keyness_freq_dict_text(tmp_path):
     """Текст цели разбирается в контексте своих предложений, со знаками препинания: обращение
-    «господа» - «господин», а не «господь», как в списке слов без знаков; список слов разбирается
-    один раз для положительных и отрицательных ключевых слов"""
-    from ruts.corpus.keyness import _list_analyses
+    «господа» - «господин», а не «господь», как в списке слов без знаков; список слов и список
+    текстов разбираются один раз для положительных и отрицательных ключевых слов"""
+    from ruts.corpus.keyness import _target_analyses
 
     rows = ["Lemma\tPoS\tFreq(ipm)\tR\tD\tDoc"]
     rows += [f"{lemma}\ts\t50.0\t90\t90\t1000" for lemma in ("господин", "господь", "вещь", "имя")]
@@ -148,9 +148,13 @@ def test_keyness_freq_dict_text(tmp_path):
     words = list(WordsExtractor().extract(text))
     assert "господин" in {keyword.word for keyword in keyness(text, freq_dict)}
     assert "господь" in {keyword.word for keyword in keyness(words, freq_dict)}
-    hits = _list_analyses.cache_info().hits
+    hits = _target_analyses.cache_info().hits
     keyness(words, freq_dict, positive=False)
-    assert _list_analyses.cache_info().hits == hits + 1
+    assert _target_analyses.cache_info().hits == hits + 1
+    texts = [words[:5], words[5:]]
+    keyness(texts, freq_dict)
+    keyness(texts, freq_dict, positive=False)
+    assert _target_analyses.cache_info().hits == hits + 2
     assert {keyword.word for keyword in keyness(text, ["господа"])} >= {"Не", "Лиса"}
 
 

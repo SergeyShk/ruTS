@@ -4,7 +4,7 @@
 RussianLiterature(data_dir=DEFAULT_DATASET_DIR)
 ```
 
-Собрание русской классической литературы [RusLit](https://github.com/d0rj/RusLit) (на Kaggle - [russian-literature](https://www.kaggle.com/datasets/d0rj3228/russian-literature)): 373 произведения 12 авторов XIX - начала XX века, 38 млн символов, четыре жанра:
+Собрание русской классической литературы [RusLit](https://github.com/d0rj/RusLit) (на Kaggle - [russian-literature](https://www.kaggle.com/datasets/d0rj3228/russian-literature)): 373 произведения 12 авторов XIX - начала XX века, 37 млн символов, четыре жанра:
 
 | Жанр | Ключ | Авторы | Произведений |
 | :--- | :--- | :----- | :----------- |

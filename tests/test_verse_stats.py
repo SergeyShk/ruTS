@@ -535,7 +535,8 @@ def test_stress_dict_type(call):
 
 def test_stresses_of_uncertain_words(tmp_path):
     """Слово вне словаря берет ударение леммы на икте, а не последний икт; словарное ударение
-    последнего слова строки на слабой позиции снимается рифмой; без метра служебные безударны"""
+    последнего слова строки на слабой позиции снимается рифмой; без метра служебные безударны,
+    кроме последнего слова строки"""
     extra = {
         ("тальяночка", "таль^яночка"),
         ("играл", "игр^ал"),
@@ -546,6 +547,7 @@ def test_stresses_of_uncertain_words(tmp_path):
         ("тихую", "т^ихую"),
         ("перед", "п^еред"),
         ("ними", "н^ими"),
+        ("тоже", "т^оже"),
     }
     lines = "\n".join("\t".join(row) for row in sorted(set(ROWS) | extra)) + "\n"
     tmp_path.joinpath(FILENAME).write_text(lines, encoding="utf-8")
@@ -558,3 +560,6 @@ def test_stresses_of_uncertain_words(tmp_path):
     vs = VerseStats("Холм перед ними был дик и нем", stress_dict)
     assert vs.meter is None
     assert vs.accentuate() == "Хо́лм перед ни́ми бы́л ди́к и не́м"
+    vs = VerseStats("Холм перед ними был дик и тоже", stress_dict)
+    assert vs.meter is None
+    assert vs.accentuate() == "Хо́лм перед ни́ми бы́л ди́к и то́же"
