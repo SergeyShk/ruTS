@@ -663,6 +663,9 @@ _RU_CORE_MESSAGES: dict[str, str] = {
         "Файлы архива {path} заменили бы его самого: дайте архиву расширение "
         "или извлеките его в другой каталог"
     ),
+    "report_stats_classes": (
+        "Классы статистик должны быть словарем классов статистик по именам, а не {type}"
+    ),
 }
 # Поверх MESSAGES: новый ключ патча ядра выйдет по-английски, а не сломает импорт
 CORE_MESSAGES: Mapping[str, str] = MappingProxyType({**MESSAGES, **_RU_CORE_MESSAGES})
@@ -674,6 +677,7 @@ _RU_CLI_TEXTS: dict[str, str] = {
     "positionals": "позиционные аргументы",
     "options": "параметры",
     "help_option": "показать эту справку и выйти",
+    "version_option": "показать версии библиотеки и ядра и выйти",
     "stats_command": "Вывести статистики текстов",
     "files": "Файлы текстов; без них или для - стандартный ввод",
     "files_metavar": "файлы",
@@ -699,6 +703,9 @@ _RU_CLI_TEXTS: dict[str, str] = {
     "parts_classes": "ни один класс не считает части {parts}",
     "file_error": "{source}: {error}",
     "decode_error": "{source}: {error}; укажите кодировку параметром -e",
+    "no_file": "{source}: нет такого файла или каталога",
+    "is_directory": "{source}: это каталог",
+    "no_access": "{source}: нет доступа",
     "stats_error": "{source}, {name}: {error}",
     "report_command": "Записать HTML-отчет о тексте",
     "file": "Файл текста; без него или для - стандартный ввод",

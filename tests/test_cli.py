@@ -117,6 +117,18 @@ def test_datasets():
     assert command.run(["download", "freq"]) == 2
 
 
+def test_version_and_file_errors(capsys, tmp_path):
+    """--version называет версии ruTS и ядра, ошибки файлов - по-русски"""
+    assert Command().run(["--version"]) == 0
+    assert re.fullmatch(r"ruts \S+ \(anyTS \S+\)\n", capsys.readouterr().out)
+    missing = str(tmp_path / "нет.txt")
+    assert Command().run(["stats", missing, str(tmp_path)]) == 1
+    assert capsys.readouterr().err.splitlines() == [
+        f"ruts: {missing}: нет такого файла или каталога",
+        f"ruts: {tmp_path}: это каталог",
+    ]
+
+
 @pytest.mark.core_sync
 def test_texts_are_translated():
     """Русские тексты команды и отчета полны: новый ключ ядра не выйдет по-английски"""
