@@ -19,7 +19,7 @@ jobs:
       - name: Pin ruts to the released version
         if: github.event_name == 'release'
         run: |
-          sed -i 's|^ruts @ .*|ruts==${{ github.event.release.tag_name }}|' demo/requirements.txt
+          sed -i 's|^ruts[ =].*|ruts==${{ github.event.release.tag_name }}|' demo/requirements.txt
           # Индекс, который читает pip, обновляется позже JSON релиза
           for attempt in $(seq 1 60); do
             curl -sf -H "Accept: application/vnd.pypi.simple.v1+json" https://pypi.org/simple/ruts/ \
