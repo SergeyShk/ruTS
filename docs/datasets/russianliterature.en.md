@@ -13,7 +13,7 @@ The [RusLit](https://github.com/d0rj/RusLit) collection of Russian classical lit
 | Publicism | `publicism` | Tolstoy | 26 |
 | Drama | `drama` | Pushkin (5), Chekhov (2), Gorky (2), Gogol (1) | 10 |
 
-The texts are in the public domain (Kaggle states the PDDL license), collected from LitLib, Wikisource and Ilibrary. All works but 27 have a year of writing (`1825` or `1824-1825`). Records give authors by their Russian names instead of folder names (`Chekhov` → «Антон Чехов»). The plays of the collection lie in the folders of prose and poetry, the dataset assigns them to drama. The texts are freed of the notes and footnotes, the author's ones included, the commentaries and articles of the editions, the variants, the tables of contents and the translations, and nine files of the imprint and the contents of an edition, of publishers' prefaces and of repeated other works. The collection suits authorship attribution and genre comparison.
+The texts are in the public domain (Kaggle states the PDDL license), collected from LitLib, Wikisource and Ilibrary. All works but 27 have a year of writing (`1825` or `1824-1825`). Records give authors by their Russian names instead of folder names (`Chekhov` → «Антон Чехов»). The plays of the collection lie in the folders of prose and poetry, the dataset assigns them to drama. The texts are freed of the notes and footnotes, the author's ones included, the commentaries and articles of the editions, the variants, the tables of contents and the translations, and eleven files of the imprint and the contents of an edition, of publishers' prefaces, of articles of the edition and of repeated other works. «Ночь перед Рождеством» is also part of «Вечера на хуторе близ Диканьки», and «Соловьиный сад» of «Стихотворения. Книга третья (1907-1916)». The collection suits authorship attribution and genre comparison.
 
 The repository archive (20 MB) is downloaded at a pinned commit, texts are read one at a time.
 
@@ -112,5 +112,5 @@ Works without a year do not pass the year filters. An unknown genre, an `author`
     ```
     Дедушка 1870 1870 11408
     Железная дорога 1864 1864 4952
-    Мороз, красный нос 1862 1864 28773
+    Мороз, красный нос 1862 1864 28771
     ```

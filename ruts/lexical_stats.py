@@ -113,7 +113,7 @@ class LexicalStats(anyts.lexical_stats.LexicalStats):
         p_beyond_top10000 (float): Доля слов с леммой вне топ-10000
         lexical_density (float): Доля знаменательных слов
         p_proper_nouns (float): Доля имен собственных
-        p_abbreviations (float): Доля аббревиатур
+        p_abbreviations (float): Доля сокращений: аббревиатур, графических сокращений, инициалов
 
     Методы:
         band_coverage: Доли слов или лемм по частотным полосам

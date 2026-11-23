@@ -3,12 +3,12 @@
 Команда `ruts` считает статистики текстов без кода на Python: выводит их таблицей, JSON или CSV, целиком или по частям текста, пишет HTML-отчет и загружает словари. Она ставится вместе с библиотекой; `python -m ruts` - то же самое.
 
 ``` bash
+ruts download
 ruts stats текст.txt
 ruts stats -f json глава1.txt глава2.txt
 ruts stats -s basic,readability -p sentences -f csv -o предложения.csv текст.txt
 cat текст.txt | ruts stats -f json
 ruts report текст.txt -t "Мой текст" -o отчет.html
-ruts download
 ```
 
 ## Команда { #Command }

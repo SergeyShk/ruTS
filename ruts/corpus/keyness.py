@@ -23,6 +23,7 @@ from ..datasets.freq2011 import CORPUS_SIZE, Entry, FreqDict
 from ..exceptions import ParameterError
 from ..lexical_stats import DICTIONARY_WORD, dictionary_lemma
 from ..utils import (
+    analyze_text,
     core_messages,
     get_morph_analyzer,
     normalize_yo,
@@ -42,7 +43,7 @@ UNREACHABLE_FILES = {
 
 
 def keyness(
-    target: Sequence[str] | Sequence[Sequence[str]] | Mapping[str, int],
+    target: str | Sequence[str] | Sequence[Sequence[str]] | Mapping[str, int],
     reference: Sequence[str]
     | Sequence[Sequence[str]]
     | Mapping[str, float]
@@ -67,13 +68,16 @@ def keyness(
         хи-квадрат, BIC, ELL) отрицательны, если слово чаще в эталоне. Нулевая частота
         при расчете %DIFF, Log Ratio и отношения шансов заменяется на 0.5 (Hardie 2014)
         С эталоном FreqDict слова цели приводятся к леммам словаря, как в LexicalStats:
-        словоформы списка - по разбору в контексте своего текста, частоты - по слову;
+        слова текста - по разбору в контексте его предложений, список словоформ - в
+        контексте списка, где без знаков препинания омонимы разбираются хуже («господа» -
+        «господь»), частоты - по слову;
         числа и латиница отбрасываются, частота в эталоне - ipm, умноженная на объем
         корпуса словаря (92 млн); слово вне словаря получает его наименьшую частоту
         (min_ipm) и бывает только положительным ключевым словом. Сокращение сравнивается
         со своей статьей (ссср, млн), а без нее отбрасывается, если ruMorph раскрывает
         его в другое слово (т., г.). Статья, которой нет в цели и к которой не приводится
-        ни одна форма ее лексем ruMorph, отрицательным ключевым словом не бывает
+        ни одна форма ее лексем по первому разбору ruMorph, отрицательным ключевым словом
+        не бывает
 
     Ссылки:
         https://ucrel.lancs.ac.uk/llwizard.html
@@ -81,8 +85,8 @@ def keyness(
         http://cass.lancs.ac.uk/log-ratio-an-informal-introduction/
 
     Аргументы:
-        target (list[str]|list[list[str]]|dict[str, int]): Слова целевого корпуса -
-            одного текста или списка текстов - или их частоты
+        target (str|list[str]|list[list[str]]|dict[str, int]): Текст целевого корпуса,
+            его слова - одного текста или списка текстов - или их частоты
         reference (list[str]|list[list[str]]|dict[str, float]|FreqDict|FrequencyReference):
             Слова эталонного корпуса - одного текста или списка текстов, их частоты,
             частотный словарь или эталон по частотам
@@ -107,6 +111,11 @@ def keyness(
         DatasetNotFoundError: Если частотный словарь не загружен
     """
     messages = core_messages(messages)
+    context = None
+    if isinstance(target, str):
+        pairs = analyze_text(target)
+        target = [word for word, _ in pairs]
+        context = [analysis for _, analysis in pairs]
     if not isinstance(reference, FreqDict):
         return anyts.corpus.keyness(
             target, reference, measure, min_freq, positive, top_n, n, messages=messages
@@ -117,7 +126,7 @@ def keyness(
             f"Частотный словарь хранит слова: N-граммам нужны слова обоих корпусов, а не n={n}"
         )
     key = _dictionary_key(reference.entries, lemmatize)
-    keys = _dictionary_keys(reference.entries) if lemmatize else None
+    keys = _dictionary_keys(reference.entries, context) if lemmatize else None
     frequency = _frequency_reference(reference, key, keys)
     if positive:
         return anyts.corpus.keyness(
@@ -139,22 +148,35 @@ def _dictionary_key(entries: Mapping[str, Entry], lemmatize: bool) -> Callable[[
     return key
 
 
-def _dictionary_keys(entries: Mapping[str, Entry]) -> Callable[[Sequence[str]], list[str]]:
-    """Статьи словаря для словоформ текста цели по разборам ruMorph в контексте"""
+def _dictionary_keys(
+    entries: Mapping[str, Entry], context: Sequence[rumorph.Analysis] | None = None
+) -> Callable[[Sequence[str]], list[str]]:
+    """Статьи словаря для словоформ текста цели по разборам ruMorph в контексте: разборам
+    текста цели (context) или списка слов"""
 
     def keys(words: Sequence[str]) -> list[str]:
-        analyzer = get_morph_analyzer()
-        found = []
-        for start in range(0, len(words), KEYS_CHUNK):
-            chunk = words[start : start + KEYS_CHUNK]
-            analyses = analyzer.analyze_sentence([strip_marks(word) for word in chunk])
-            found += [
-                _entry(word, options[0], entries, True)
-                for word, options in zip(chunk, analyses, strict=True)
-            ]
-        return found
+        analyses = context if context is not None else _list_analyses(tuple(words))
+        return [
+            _entry(word, analysis, entries, True)
+            for word, analysis in zip(words, analyses, strict=True)
+        ]
 
     return keys
+
+
+@lru_cache(maxsize=1)
+def _list_analyses(words: tuple[str, ...]) -> tuple[rumorph.Analysis, ...]:
+    """Разборы ruMorph слов списка в контексте друг друга; последний список хранится, так что
+    положительные и отрицательные ключевые слова одной цели разбирают ее один раз"""
+    analyzer = get_morph_analyzer()
+    found: list[rumorph.Analysis] = []
+    for start in range(0, len(words), KEYS_CHUNK):
+        chunk = words[start : start + KEYS_CHUNK]
+        found += [
+            options[0]
+            for options in analyzer.analyze_sentence([strip_marks(word) for word in chunk])
+        ]
+    return tuple(found)
 
 
 def _entry(

@@ -111,7 +111,7 @@ EXAMPLES = {
         "Мчится взморьем, мчится морем,\n"
         "Отдаваясь воле волн.\n"
         "Месяц матовый взирает,\n"
-        "Месяц горький полон грусти.\n\n"
+        "Месяц горькой грусти полн.\n\n"
         "Умер вечер. Ночь чернеет.\n"
         "Ропщет море. Мрак растёт.\n"
         "Чёлн томленья тьмой охвачен.\n"
@@ -242,7 +242,8 @@ def lexical_table(doc: Doc) -> pd.DataFrame:
         for key in LEXICAL_STATS_DESC
         if key.startswith(("p_top", "p_beyond"))
     }
-    bands["lexical_density"] = ls.lexical_density
+    for key in ("lexical_density", "p_proper_nouns", "p_abbreviations"):
+        bands[key] = getattr(ls, key)
     return stats_table(bands, LEXICAL_STATS_DESC)
 
 

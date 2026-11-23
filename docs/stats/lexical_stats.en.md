@@ -44,7 +44,7 @@ The class extends the `LexicalStats` of the [anyTS](https://sergeyshk.github.io/
     Доля слов вне топ-10000                                 |   0.00
     Лексическая плотность                                   |   0.62
     Доля имен собственных                                   |   0.00
-    Доля аббревиатур                                        |   0.00
+    Доля сокращений                                         |   0.00
     ```
 
 ## Parameters

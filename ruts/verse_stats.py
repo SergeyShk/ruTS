@@ -35,7 +35,7 @@ from .syllables import (
     _word_stress,
     word_stress as word_stress,
 )
-from .utils import MARKED, _check_text, get_document, take_marks
+from .utils import MARKED, _check_text, get_document, parse_word, take_marks
 
 if TYPE_CHECKING:
     from anyseg import Document
@@ -81,6 +81,7 @@ class _Word:
     n_syllables: int
     offset: int
     stress: int | None
+    lemma_stress: int | None = None
     certain: bool = False
     marked: bool = False
     unstressed: bool = False
@@ -408,6 +409,8 @@ def _parse_lines(
                 mark = next(marks, None)
                 stress = _word_stress(word_text, stress_dict) if mark is None else mark
                 word = _Word(word_text, match.start(), match.end(), n_syllables, offset, stress)
+                if stress is None and n_syllables > 1:
+                    word.lemma_stress = _lemma_stress(word_text, n_syllables, stress_dict)
                 word.marked = mark is not None
                 word.certain = "ё" in word_text or word.marked
                 word.fixed = (
@@ -431,6 +434,17 @@ def _parse_lines(
                     host.certain = host.fixed = False
             lines.append(_Line(line_text, words, offset, number))
     return lines
+
+
+def _lemma_stress(word: str, n_syllables: int, stress_dict: StressDict) -> int | None:
+    """Ударный слог слова вне словаря по ударению его многосложной леммы ruMorph: основа обычно
+    ударна так же (тальяночке - тальяночка); None, если лемма та же или односложна (текут -
+    течь), ее нет в словаре или ее ударение дальше конца слова"""
+    lemma = parse_word(word).lemma.lower()
+    if lemma == word or _count_vowels(lemma) < 2:
+        return None
+    stress = _word_stress(lemma, stress_dict)
+    return stress if stress is not None and stress < n_syllables else None
 
 
 def _fit_meter(lines: Sequence[_Line]) -> str | None:
@@ -515,8 +529,10 @@ def _assign_stresses(lines: Sequence[_Line], meter: str | None) -> None:
         проклитики и клитики безударны, односложные слова ударны на икте, служебные -
         если словарное ударение попадает на икт; у остальных слов словарное ударение
         сохраняется или переносится на икт (_movable). Слово без словарного ударения
-        получает икт, при нескольких иктах - последний, а кандидаты запоминаются
-        для снятия по рифме; без метра ставится словарное ударение
+        получает икт, при нескольких иктах - ударение своей леммы, если оно на икте,
+        иначе последний. Кандидаты-икты слова без словарного ударения и слова со
+        словарным ударением на слабой позиции запоминаются для снятия по рифме. Без
+        метра ставится словарное ударение или ударение леммы, служебные слова безударны
     """
     for line in lines:
         movable = _movable(line, meter)
@@ -529,21 +545,23 @@ def _assign_stresses(lines: Sequence[_Line], meter: str | None) -> None:
             elif word.text in VERSE_PROCLITICS:
                 word.result = -1
             elif word.n_syllables == 1:
-                word.result = 0 if candidates or meter is None else -1
+                weak = meter is None and word.text in VERSE_WEAK_WORDS
+                word.result = 0 if candidates or (meter is None and not weak) else -1
             elif word.text in VERSE_WEAK_WORDS and word.stress is not None:
-                word.result = word.stress if word.stress in candidates or meter is None else -1
+                word.result = word.stress if word.stress in candidates else -1
             elif word.stress is not None:
                 word.result = candidates[0] if word in movable else word.stress
             elif len(candidates) == 1:
                 word.result = candidates[0]
             elif candidates:
-                word.result = candidates[-1]
+                word.result = (
+                    word.lemma_stress if word.lemma_stress in candidates else candidates[-1]
+                )
             else:
-                word.result = -1
+                word.result = -1 if word.lemma_stress is None else word.lemma_stress
+            uncertain = word.stress is None or (word.stress not in candidates and not word.certain)
             word.candidates = (
-                candidates
-                if word.stress is None and not word.unstressed and len(candidates) > 1
-                else []
+                candidates if uncertain and not word.unstressed and len(candidates) > 1 else []
             )
         _set_ending(line)
 
@@ -604,8 +622,9 @@ def _resolve_by_rhyme(lines: Sequence[_Line]) -> None:
 
     Описание:
         Если у последнего слова строки несколько кандидатов (икты в слове без
-        словарного ударения), выбирается тот, при котором строка рифмуется
-        с соседней в окне RHYME_WINDOW той же строфы
+        словарного ударения или со словарным ударением на слабой позиции),
+        выбирается тот, при котором строка рифмуется с соседней в окне RHYME_WINDOW
+        той же строфы
     """
     for number, line in enumerate(lines):
         last = _last_word(line)

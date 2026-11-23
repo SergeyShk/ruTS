@@ -265,7 +265,7 @@ The primary connectors (`primary`) are conjunctions, adverbs and particles (по
 
 ## Methods
 
-The methods `get_stats`, `to_dataframe`, [`by_parts`](basic_stats.md#by_parts), `print_stats` and `describe` are those of the [statistics interface](https://sergeyshk.github.io/anyTS/stats/stats/) of the anyTS core; `describe` gives `None` for the statistics of `get_stats`: the cohesion statistics have no scales.
+The methods `get_stats`, `to_dataframe`, [`by_parts`](basic_stats.md#by_parts) (by lines and paragraphs only), `print_stats` and `describe` are those of the [statistics interface](https://sergeyshk.github.io/anyTS/stats/stats/) of the anyTS core; `describe` gives `None` for the statistics of `get_stats`: the cohesion statistics have no scales.
 
 === "Code"
 
@@ -412,7 +412,7 @@ ud_info(word, pos, tense, aspect, feats=None)
 word_text(word)
 ```
 
-The features of a word for the cohesion statistics, a `WordInfo` named tuple: `lemma`, `noun`, `pronoun`, `demonstrative`, `argument`, `content`, `tense` and `aspect` after the table of the classes of words. `word_info` takes them from the first ruMorph analysis, `analysis_info` from a given analysis, for example one chosen by context, `words_info` for the words of the sentences of a text: by the analysis of `analyses` when it is given, otherwise by the first one. `token_info` takes them from a word of the tree of a document (`TreeWord`, for example of `get_tree(get_document(doc)).words`, where `get_tree` comes from `anyts.document` and `get_document` from `ruts.utils`): from the ruMorph analysis the word is annotated with (the `rumorph` component), and without it from its part of speech and features of UD, `ud_info` from a given part of speech, tense, aspect and features of UD; the lemma then comes from the ruMorph analysis with that part of speech, not from the lemma of the word. `word_text` gives the text of a word of the tree without a byte order mark, stress marks, soft hyphens and the period of an abbreviation when the word is the same without it.
+The features of a word for the cohesion statistics, a `WordInfo` named tuple: `lemma`, `noun`, `pronoun`, `demonstrative`, `argument`, `content`, `tense` and `aspect` after the table of the classes of words, `proper` (a proper noun) and `abbreviation` (an abbreviation). `word_info` takes them from the first ruMorph analysis, `analysis_info` from a given analysis, for example one chosen by context, `words_info` for the words of the sentences of a text: by the analysis of `analyses` when it is given, otherwise by the first one. `token_info` takes them from a word of the tree of a document (`TreeWord`, for example of `get_tree(get_document(doc)).words`, where `get_tree` comes from `anyts.document` and `get_document` from `ruts.utils`): from the ruMorph analysis the word is annotated with (the `rumorph` component), and without it from its part of speech and features of UD, `ud_info` from a given part of speech, tense, aspect and features of UD; the lemma then comes from the ruMorph analysis with that part of speech, not from the lemma of the word. `word_text` gives the text of a word of the tree without a byte order mark, stress marks, soft hyphens and the period of an abbreviation when the word is the same without it.
 
 | Parameter | Type | Default | Description |
 | :-------- | :--- | :------ | :---------- |
@@ -444,9 +444,9 @@ The features of a word for the cohesion statistics, a `WordInfo` named tuple: `l
 === "Result"
 
     ```
-    WordInfo(lemma='смотреть', noun=False, pronoun=False, demonstrative=False, argument=False, content=True, tense='Past', aspect='Imp')
+    WordInfo(lemma='смотреть', noun=False, pronoun=False, demonstrative=False, argument=False, content=True, tense='Past', aspect='Imp', proper=False, abbreviation=False)
     ['Он', 'заплатил', '5', 'руб', '.']
-    WordInfo(lemma='рубль', noun=True, pronoun=False, demonstrative=False, argument=True, content=True, tense=None, aspect=None)
+    WordInfo(lemma='рубль', noun=True, pronoun=False, demonstrative=False, argument=True, content=True, tense=None, aspect=None, proper=False, abbreviation=True)
     ```
 
 ## Pronoun { #is_pronoun }

@@ -44,7 +44,7 @@ The function wraps `keyness` of the [anyTS](https://sergeyshk.github.io/anyTS/co
 | :-------- | :--- | :------ | :---------- |
 | `lemmatize` | `bool` | `True` | The target corpus is word forms, `False` - lemmas (`FreqDict` only) |
 
-A frequency dictionary that is not downloaded raises `DatasetNotFoundError`, and an `n` above 1 with it `ParameterError`.
+The target corpus may also be a text (`str`): ruMorph gives its words with their analyses in the context of the sentences, as in `LexicalStats`. A frequency dictionary that is not downloaded raises `DatasetNotFoundError`, and an `n` above 1 with it `ParameterError`.
 
 --8<-- "corpus/keyness.md:check_keyness_params"
 
@@ -60,7 +60,7 @@ The frequency dictionary `FreqDict` passed as `reference` is turned into such a 
 | `size` | `CORPUS_SIZE` of `ruts.datasets.freq2011`, 92 million tokens of the modern subcorpus of the Russian National Corpus |
 | `missing` | the least frequency of the dictionary `FreqDict.min_ipm`, 0.4 ipm (about 37 occurrences) |
 | `key` | the lemma of the dictionary: the ruMorph lemma of a word form (with `lemmatize=False` and for an abbreviation the word itself) brought to the conventions of the dictionary, as in [`LexicalStats`](../stats/lexical_stats.md) |
-| `keys` | the lemmas of the dictionary of the word forms of a text, as of `key`, but by the ruMorph analysis in the context of the text: «из стали» - «сталь», «мы стали» - «стать»; none with `lemmatize=False` |
+| `keys` | the lemmas of the dictionary of the word forms of a text, as of `key`, but by the ruMorph analysis in context: «из стали» - «сталь», «мы стали» - «стать»; of a text in the context of its sentences, of a list of words in that of the whole list, where without punctuation homonyms are analysed worse («господа» - «господь»); none with `lemmatize=False` |
 | `keep` | words of Cyrillic letters; numbers, words with Latin letters and abbreviations that ruMorph expands into another word and that have no entry of their own in the dictionary («т.», «г.») are left out |
 
 A dictionary entry that no word form is reduced to is never a negative keyword: the dictionary keeps «во» and «со» as entries of their own, while [ruMorph](https://github.com/SergeyShk/ruMorph) reduces these word forms to «в» and «с».
@@ -70,16 +70,15 @@ With `lemmatize=False` a lemma loses the conventions of the dictionary - the sho
 === "Code"
 
     ``` python
-    from ruts import WordsExtractor
     from ruts.corpus import keyness
     from ruts.datasets import FreqDict
 
     # The dictionary is downloaded once with FreqDict().download()
-    words = WordsExtractor().extract(
+    text = (
         "Кот сидел на окне и смотрел на птиц. Птицы улетели, и кот уснул на окне. "
         "Завтра кот снова будет сидеть на окне и смотреть на птиц."
     )
-    [(k.word, round(k.log_ratio, 1)) for k in keyness(words, FreqDict(), min_freq=3, top_n=2)]
+    [(k.word, round(k.log_ratio, 1)) for k in keyness(text, FreqDict(), min_freq=3, top_n=2)]
     ```
 
 === "Result"

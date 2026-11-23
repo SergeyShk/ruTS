@@ -191,7 +191,7 @@ def test_keyness_checks_before_the_dictionary(tmp_path):
     with pytest.raises(ParameterError):
         keyness(["кот"], freq_dict, measure="x")
     with pytest.raises(SourceTypeError):
-        keyness("кот спит", freq_dict)
+        keyness(["кот", 5], freq_dict)
     with pytest.raises(SourceTypeError):
         keyness({"кот": 1.5}, freq_dict)
 

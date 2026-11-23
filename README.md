@@ -110,9 +110,12 @@ python -m spacy download ru_core_news_sm
 0.8888888888888888
 ```
 
+Статистики каждого предложения, строки или абзаца - таблицей со строкой на часть: `BasicStats.by_parts(text, "sentences")`, так же у других классов.
+
 Те же статистики без Python - командой `ruts` (таблица, JSON или CSV, по частям текста) и HTML-отчетом одной страницей:
 
 ```bash
+ruts download  # словари частот и ударений, один раз
 ruts stats -f json текст.txt
 ruts report текст.txt -o отчет.html
 ```
