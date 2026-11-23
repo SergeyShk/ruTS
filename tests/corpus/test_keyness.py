@@ -155,6 +155,8 @@ def test_keyness_freq_dict_text(tmp_path):
     keyness(texts, freq_dict)
     keyness(texts, freq_dict, positive=False)
     assert _target_analyses.cache_info().hits == hits + 2
+    with pytest.raises(ValueError):
+        keyness([], freq_dict)
     assert {keyword.word for keyword in keyness(text, ["господа"])} >= {"Не", "Лиса"}
 
 
