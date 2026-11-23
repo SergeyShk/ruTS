@@ -63,6 +63,7 @@ nav:
 theme:
   name: material
   language: ru
+  favicon: img/favicon.png
   palette:
     - media: "(prefers-color-scheme: light)"
       scheme: default
